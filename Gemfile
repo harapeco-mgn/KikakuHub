@@ -1,4 +1,3 @@
-# Gemfile
 source "https://rubygems.org"
 
 ruby "3.3.0"
@@ -23,8 +22,27 @@ gem "sassc-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
+
+  # コード品質チェック
+  gem "rubocop", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rails-omakase", require: false
+
+  # デバッグツール
+  gem "pry-byebug"
+  gem "better_errors"
+  gem "binding_of_caller"
+
+  # テスト関連
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
 end
 
 group :development do
   gem "web-console"
+
+  # 開発効率向上
+  gem "annotate"
+  gem "bullet"
 end
