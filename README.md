@@ -231,8 +231,7 @@ erDiagram
 
 
 ## ER図（Mermaid）全体構想
-
-```mermaid
+```
 erDiagram
   USERS ||--o{ COMMUNITIES : "owns (owner_id)"
   USERS ||--o{ COMMUNITY_MEMBERSHIPS : "has"
@@ -347,7 +346,6 @@ erDiagram
     datetime created_at
     datetime updated_at
   }
-
 ```
 <img width="1659" height="1056" alt="Image" src="https://github.com/user-attachments/assets/1c807a25-5721-4c94-97cd-33c728eb725c" />
 
