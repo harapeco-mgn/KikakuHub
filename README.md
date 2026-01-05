@@ -200,7 +200,7 @@ erDiagram
     bigint id PK
     bigint community_id FK
     bigint user_id FK "creator"
-    string category "tech/community"
+    string category "tech/community/youtube"
     string title
     text description
     datetime created_at
