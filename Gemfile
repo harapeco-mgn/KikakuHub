@@ -14,11 +14,10 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
 # 認証
-gem "sorcery"
+gem "devise"
 
-# Bootstrap
-gem "bootstrap", "~> 5.3"
-gem "sassc-rails"
+# tailwindcss
+gem "tailwindcss-rails"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
