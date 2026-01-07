@@ -12,10 +12,11 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
+gem "rails-i18n"
 
 # 認証
 gem "devise"
-
+gem "devise-i18n"
 # tailwindcss
 gem "tailwindcss-rails"
 
