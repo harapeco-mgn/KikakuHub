@@ -44,4 +44,6 @@ group :development do
   # 開発効率向上
   gem "annotate"
   gem "bullet"
+
+  gem "letter_opener_web"
 end
