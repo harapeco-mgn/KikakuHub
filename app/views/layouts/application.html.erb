@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
-    <title><%= content_for(:title) || "Kikaku Hub" %></title>
+    <title><%= content_for(:title) || t("app.name", default: "Kikaku Hub") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Kikaku Hub">
@@ -11,19 +11,76 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="min-h-screen bg-white text-gray-900">
+    <header class="border-b">
+    <div class="mx-auto max-w-5xl px-5">
+  <% if notice.present? %>
+    <div class="mt-4 rounded border border-green-200 bg-green-50 p-3 text-green-800" role="alert">
+      <p class="font-semibold"><%= t("flash.notice", default: "お知らせ") %></p>
+      <p><%= notice %></p>
+    </div>
+  <% end %>
+
+  <% if alert.present? %>
+    <div class="mt-4 rounded border border-red-200 bg-red-50 p-3 text-red-800" role="alert">
+      <p class="font-semibold"><%= t("flash.alert", default: "注意") %></p>
+      <p><%= alert %></p>
+    </div>
+  <% end %>
+</div>
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        <%= link_to t("app.name", default: "Kikaku Hub"),
+                    root_path,
+                    class: "text-lg font-semibold" %>
+
+        <nav class="flex items-center gap-3 text-sm">
+          <% if user_signed_in? %>
+            <span class="text-gray-600">
+              <%= t("nav.logged_in_as", email: current_user.email, default: "#{current_user.email} でログイン中") %>
+            </span>
+
+            <%= link_to t("nav.sign_out", default: "ログアウト"),
+                        destroy_user_session_path,
+                        data: { turbo_method: :delete },
+                        class: "rounded bg-gray-900 px-3 py-2 text-white" %>
+          <% else %>
+            <%= link_to t("nav.sign_in", default: "ログイン"),
+                        new_user_session_path,
+                        class: "rounded border px-3 py-2" %>
+
+            <%= link_to t("nav.sign_up", default: "新規登録"),
+                        new_user_registration_path,
+                        class: "rounded bg-gray-900 px-3 py-2 text-white" %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-5xl px-5">
+      <% if notice.present? %>
+        <div class="mt-4 rounded border border-green-200 bg-green-50 p-3 text-green-800" role="alert">
+          <p class="font-semibold"><%= t("flash.notice", default: "お知らせ") %></p>
+          <p><%= notice %></p>
+        </div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div class="mt-4 rounded border border-red-200 bg-red-50 p-3 text-red-800" role="alert">
+          <p class="font-semibold"><%= t("flash.alert", default: "注意") %></p>
+          <p><%= alert %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <main class="mx-auto max-w-5xl px-5 py-8">
       <%= yield %>
     </main>
   </body>

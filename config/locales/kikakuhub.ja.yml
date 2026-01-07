@@ -1,0 +1,11 @@
+ja:
+  app:
+    name: "Kikaku Hub"
+  nav:
+    sign_in: "ログイン"
+    sign_up: "新規登録"
+    sign_out: "ログアウト"
+    logged_in_as: "%{email} でログイン中"
+  flash:
+    notice: "お知らせ"
+    alert: "注意"
