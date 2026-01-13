@@ -21,7 +21,31 @@
         </button>
       </div>
     </div>
+    <div class="flex items-center gap-3">
+  <div class="text-sm text-gray-700">
+    投票数: <span class="font-semibold"><%= @theme.theme_votes.count %></span>
+  </div>
 
+  <% if user_signed_in? %>
+    <% voted = current_user.theme_votes.exists?(theme: @theme) %>
+
+    <% if voted %>
+      <%= button_to "取消",
+        theme_vote_path(@theme),
+        method: :delete,
+        class: "rounded border px-3 py-1 text-sm" %>
+    <% else %>
+      <%= button_to "投票",
+        theme_vote_path(@theme),
+        method: :post,
+        class: "rounded bg-black px-3 py-1 text-sm text-white" %>
+    <% end %>
+  <% else %>
+    <%= link_to "ログインして投票",
+      new_user_session_path,
+      class: "text-sm underline" %>
+  <% end %>
+</div>
     <div class="mt-6 whitespace-pre-wrap text-gray-800">
       <%= @theme.description %>
     </div>

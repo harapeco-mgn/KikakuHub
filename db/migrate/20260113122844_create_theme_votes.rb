@@ -7,6 +7,6 @@ class CreateThemeVotes < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
-    add_index :theme_votes, [:user_id, :theme_id], unique: true
+    add_index :theme_votes, [ :user_id, :theme_id ], unique: true
   end
 end
