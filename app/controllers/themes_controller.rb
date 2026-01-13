@@ -15,7 +15,7 @@ class ThemesController < ApplicationController
 
   def create
     @theme = current_user.themes.build(theme_params)
-    @theme.community_id = 1 #MVPなので仮で1をセット
+    @theme.community_id = 1 # MVPなので仮で1をセット
 
     if @theme.save
       redirect_to @theme, notice: "テーマが作成されました。"
