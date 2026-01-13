@@ -7,4 +7,7 @@ class Theme < ApplicationRecord
   validates :category, presence: true
   validates :title, presence: true
   validates :description, presence: true
+
+  has_many :theme_votes, dependent: :destroy
+  has_many :voters, through: :theme_votes, source: :user
 end
