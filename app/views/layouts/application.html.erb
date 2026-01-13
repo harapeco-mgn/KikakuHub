@@ -21,21 +21,6 @@
 
   <body class="min-h-screen bg-white text-gray-900">
     <header class="border-b">
-    <div class="mx-auto max-w-5xl px-5">
-  <% if notice.present? %>
-    <div class="mt-4 rounded border border-green-200 bg-green-50 p-3 text-green-800" role="alert">
-      <p class="font-semibold"><%= t("flash.notice", default: "お知らせ") %></p>
-      <p><%= notice %></p>
-    </div>
-  <% end %>
-
-  <% if alert.present? %>
-    <div class="mt-4 rounded border border-red-200 bg-red-50 p-3 text-red-800" role="alert">
-      <p class="font-semibold"><%= t("flash.alert", default: "注意") %></p>
-      <p><%= alert %></p>
-    </div>
-  <% end %>
-</div>
       <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
         <%= link_to t("app.name", default: "Kikaku Hub"),
                     root_path,
