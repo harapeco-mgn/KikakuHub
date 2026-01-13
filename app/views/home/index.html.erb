@@ -2,3 +2,49 @@
   <h1 class="font-bold text-4xl">Home#index</h1>
   <p>Find me in app/views/home/index.html.erb</p>
 </div>
+<div class="mx-auto max-w-4xl px-4 py-10">
+  <div class="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+    <p class="text-sm font-medium text-gray-500">KikakuHub</p>
+
+    <h1 class="mt-2 text-4xl font-bold tracking-tight text-gray-900">
+      テーマを集めて、投票・議論の土台を作る
+    </h1>
+
+    <p class="mt-4 leading-relaxed text-gray-700">
+      投稿されたテーマを一覧・詳細で確認し、今後の投票やコメント、参加表明につなげます。
+    </p>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <%= link_to "テーマ一覧を見る", themes_path,
+                  class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700" %>
+
+      <% if user_signed_in? %>
+        <%= link_to "テーマを作成", new_theme_path,
+                    class: "inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50" %>
+      <% else %>
+        <%= link_to "ログイン", new_user_session_path,
+                    class: "inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50" %>
+
+        <%= link_to "招待キーで登録", new_user_registration_path,
+                    class: "inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-8 grid gap-4 md:grid-cols-3">
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <p class="text-sm font-semibold text-gray-900">1. テーマ投稿</p>
+      <p class="mt-2 text-sm text-gray-700">カテゴリ・タイトル・概要を投稿。</p>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <p class="text-sm font-semibold text-gray-900">2. 一覧・詳細</p>
+      <p class="mt-2 text-sm text-gray-700">気になるテーマを確認。</p>
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+      <p class="text-sm font-semibold text-gray-900">3. 次の機能へ</p>
+      <p class="mt-2 text-sm text-gray-700">投票・コメント・参加表明へ拡張。</p>
+    </div>
+  </div>
+</div>
