@@ -112,6 +112,11 @@
             params: { rsvp: { status: :undecided } },
             class: btn_class.call(current_status == "undecided") %>
     </div>
+    <p class="mt-2 text-sm text-gray-600">
+  参加: <%= @rsvp_counts[:attending] %> /
+  不参加: <%= @rsvp_counts[:not_attending] %> /
+  未定: <%= @rsvp_counts[:undecided] %>
+</p>
 
     <% if @theme.secondary_enabled? %>
       <% secondary_label = @theme.secondary_label.presence || "第2ボタン" %>

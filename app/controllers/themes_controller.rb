@@ -11,6 +11,7 @@ class ThemesController < ApplicationController
     @theme_comment  = ThemeComment.new
     @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
     @rsvp = current_user.rsvps.find_by(theme: @theme) if user_signed_in?
+    @rsvp_counts = @theme.rsvp_counts
   end
 
   def new

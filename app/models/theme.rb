@@ -14,4 +14,13 @@ class Theme < ApplicationRecord
   has_many :theme_comments, dependent: :destroy
   has_many :rsvps, dependent: :destroy
   has_many :rsvp_users, through: :rsvps, source: :user
+
+  def rsvp_counts
+    grouped = rsvps.group(:status).count.symbolize_keys
+    {
+    attending:     grouped.fetch(:attending, 0),
+    not_attending: grouped.fetch(:not_attending, 0),
+    undecided:     grouped.fetch(:undecided, 0)
+    }
+  end
 end
