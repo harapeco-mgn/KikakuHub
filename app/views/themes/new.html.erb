@@ -1,10 +1,16 @@
-<div class="mx-auto max-w-2xl px-4 py-8">
+<div class="mx-auto max-w-2xl">
   <div class="mb-6">
-    <h1 class="text-2xl font-bold">テーマ作成</h1>
-    <p class="mt-1 text-sm text-gray-600">投票・コメント・参加表明の土台となるテーマを作成します。</p>
+    <%= link_to "← テーマ一覧へ戻る", themes_path, class: "btn btn-ghost btn-sm gap-1 pl-0" %>
   </div>
 
-  <div class="rounded-2xl border bg-white p-6 shadow-sm">
-    <%= render "form", theme: @theme %>
+  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+    <div class="card-body">
+      <h1 class="card-title text-2xl font-bold">テーマを投稿</h1>
+      <p class="text-sm text-base-content/60">やりたい企画を提案して、投票・参加表明を集めましょう。</p>
+
+      <div class="divider"></div>
+
+      <%= render "form", theme: @theme %>
+    </div>
   </div>
 </div>

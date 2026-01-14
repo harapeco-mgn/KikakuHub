@@ -1,45 +1,64 @@
-<div class="mx-auto max-w-4xl px-4 py-8">
-  <div class="mb-6 flex items-center justify-between">
-    <h1 class="text-2xl font-bold">テーマ一覧</h1>
-
-    <% if user_signed_in? %>
-      <%= link_to "テーマ作成", new_theme_path,
-                  class: "rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" %>
-    <% end %>
+<!-- Header -->
+<div class="mb-8 flex items-center justify-between">
+  <div>
+    <h1 class="text-3xl font-bold">テーマ一覧</h1>
+    <p class="mt-1 text-sm text-base-content/60">投稿されたテーマに投票・参加表明して、需要を可視化しましょう</p>
   </div>
 
-  <div class="space-y-4">
-    <% @themes.each do |theme| %>
-      <div class="rounded-2xl border bg-white p-5 shadow-sm">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="text-xs text-gray-500">
-              <span class="rounded-full bg-gray-100 px-2 py-1"><%= theme.category %></span>
-              ・投稿者：<%= theme.user&.email || "unknown" %>
-              ・<%= l(theme.created_at, format: :short) rescue theme.created_at.to_s %>
-            </p>
+  <% if user_signed_in? %>
+    <%= link_to "テーマを投稿", new_theme_path,
+                class: "btn btn-primary shadow-md" %>
+  <% end %>
+</div>
 
-            <h2 class="mt-2 text-lg font-semibold">
-              <%= link_to theme.title, theme_path(theme), class: "hover:underline" %>
+<!-- Theme List -->
+<div class="space-y-4">
+  <% @themes.each do |theme| %>
+    <div class="card card-side bg-base-100 shadow-md ring-1 ring-base-300 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/50">
+      <div class="card-body">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              <span class="badge badge-primary"><%= theme.category %></span>
+              <span class="text-xs text-base-content/60">
+                投稿者：<%= theme.user&.email || "unknown" %> ・ <%= l(theme.created_at, format: :short) rescue theme.created_at.to_s %>
+              </span>
+            </div>
+
+            <h2 class="card-title text-lg">
+              <%= link_to theme.title, theme_path(theme), class: "link-hover link-primary" %>
             </h2>
 
-            <p class="mt-2 text-sm text-gray-700">
+            <p class="mt-2 text-sm text-base-content/70">
               <%= truncate(theme.description.to_s, length: 120) %>
             </p>
           </div>
 
-          <div class="shrink-0">
-            <%= link_to "詳細", theme_path(theme),
-                        class: "text-sm text-indigo-600 hover:underline" %>
+          <div class="flex shrink-0 flex-col items-end gap-2">
+            <div class="rounded-lg bg-primary/10 px-3 py-1 text-center">
+              <span class="text-lg font-bold text-primary"><%= theme.theme_votes.count rescue 0 %></span>
+              <span class="block text-xs text-base-content/60">投票</span>
+            </div>
+            <%= link_to "詳細を見る", theme_path(theme),
+                        class: "btn btn-ghost btn-sm text-primary" %>
           </div>
         </div>
       </div>
-    <% end %>
+    </div>
+  <% end %>
 
-    <% if @themes.blank? %>
-      <div class="rounded-2xl border bg-gray-50 p-6 text-center text-gray-600">
-        まだテーマがありません。
+  <% if @themes.blank? %>
+    <div class="card bg-base-100 ring-1 ring-base-300">
+      <div class="card-body items-center py-16 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        <h3 class="mt-4 text-lg font-semibold">まだテーマが投稿されていません</h3>
+        <p class="mt-2 max-w-sm text-sm text-base-content/60">最初のテーマを投稿して、イベント企画のきっかけを作りましょう。</p>
+        <% if user_signed_in? %>
+          <%= link_to "テーマを投稿する", new_theme_path, class: "btn btn-primary mt-6" %>
+        <% else %>
+          <%= link_to "ログインして投稿", new_user_session_path, class: "btn btn-primary mt-6" %>
+        <% end %>
       </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </div>
