@@ -6,8 +6,10 @@ class ThemesController < ApplicationController
   end
 
   def show
-    @theme = Theme.find(params[:id])
-  end
+  @theme = Theme.find(params[:id])
+  @theme_comment  = ThemeComment.new
+  @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
+end
 
   def new
     @theme = Theme.new
