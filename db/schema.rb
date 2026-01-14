@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_14_003304) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_14_003658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_14_003304) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "secondary_enabled"
+    t.string "secondary_label"
     t.index ["community_id"], name: "index_themes_on_community_id"
     t.index ["user_id"], name: "index_themes_on_user_id"
   end
