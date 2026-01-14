@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   scope module: :themes do
     resource  :vote,           only: %i[create destroy]
     resources :theme_comments, only: [ :create ]
-    resource :rsvp,            only: [:update]
+    resource :rsvp,            only: [ :update ]
   end
 end
 

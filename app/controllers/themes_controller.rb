@@ -1,7 +1,7 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_theme, only: [:show]
-  
+  before_action :set_theme, only: [ :show ]
+
   def index
     @themes = Theme.order(created_at: :desc)
   end
