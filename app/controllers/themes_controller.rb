@@ -1,15 +1,18 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_theme, only: [ :show ]
 
   def index
     @themes = Theme.order(created_at: :desc)
   end
 
   def show
-  @theme = Theme.find(params[:id])
-  @theme_comment  = ThemeComment.new
-  @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
-end
+    @theme = Theme.find(params[:id])
+    @theme_comment  = ThemeComment.new
+    @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
+    @rsvp = current_user.rsvps.find_by(theme: @theme) if user_signed_in?
+    @rsvp_counts = @theme.rsvp_counts
+  end
 
   def new
     @theme = Theme.new
@@ -29,6 +32,10 @@ end
   private
 
   def theme_params
-    params.require(:theme).permit(:category, :title, :description)
+    params.require(:theme).permit(:category, :title, :description, :secondary_enabled, :secondary_label)
+  end
+
+  def set_theme
+    @theme = Theme.find(params[:id])
   end
 end

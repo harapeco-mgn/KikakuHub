@@ -6,10 +6,21 @@ class Theme < ApplicationRecord
 
   validates :category, presence: true
   validates :title, presence: true
-  validates :description, presence: true
-  validates :body, presence: true, length: { maximum: 255 }
+  validates :description, presence: true, length: { maximum: 255 }
+  validates :secondary_label, presence: true, if: :secondary_enabled?
 
   has_many :theme_votes, dependent: :destroy
   has_many :voters, through: :theme_votes, source: :user
   has_many :theme_comments, dependent: :destroy
+  has_many :rsvps, dependent: :destroy
+  has_many :rsvp_users, through: :rsvps, source: :user
+
+  def rsvp_counts
+    grouped = rsvps.group(:status).count.symbolize_keys
+    {
+    attending:     grouped.fetch(:attending, 0),
+    not_attending: grouped.fetch(:not_attending, 0),
+    undecided:     grouped.fetch(:undecided, 0)
+    }
+  end
 end
