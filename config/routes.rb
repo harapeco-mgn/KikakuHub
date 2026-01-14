@@ -3,8 +3,11 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "users/registrations" }
 
   resources :themes, only: %i[index show new create] do
-    resource :vote, only: %i[create destroy], module: :themes
+  scope module: :themes do
+    resource  :vote,          only: %i[create destroy]
+    resources :theme_comments, only: [ :create ]
   end
+end
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"

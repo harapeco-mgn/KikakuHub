@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_13_122844) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_13_235018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_13_122844) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "theme_comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "theme_id", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["theme_id"], name: "index_theme_comments_on_theme_id"
+    t.index ["user_id"], name: "index_theme_comments_on_user_id"
   end
 
   create_table "theme_votes", force: :cascade do |t|
@@ -54,6 +64,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_13_122844) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "theme_comments", "themes"
+  add_foreign_key "theme_comments", "users"
   add_foreign_key "theme_votes", "themes"
   add_foreign_key "theme_votes", "users"
   add_foreign_key "themes", "communities"
