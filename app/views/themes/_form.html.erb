@@ -1,59 +1,59 @@
 <%= form_with model: theme, class: "space-y-6" do |f| %>
   <% if theme.errors.any? %>
-    <div class="rounded-lg border border-red-300 bg-red-50 p-4">
-      <p class="font-semibold text-red-700">入力内容を確認してください</p>
-      <ul class="mt-2 list-disc pl-5 text-sm text-red-700">
-        <% theme.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
+    <div role="alert" class="alert alert-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <div>
+        <h3 class="font-bold">入力内容を確認してください</h3>
+        <ul class="list-inside list-disc text-sm">
+          <% theme.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
     </div>
   <% end %>
 
-  <div>
-    <%= f.label :category, class: "block text-sm font-medium" %>
+  <fieldset class="fieldset">
+    <%= f.label :category, "カテゴリ", class: "fieldset-legend" %>
     <%= f.select :category,
                  Theme.categories.keys.map { |k| [k, k] },
                  { include_blank: "選択してください" },
-                 class: "mt-1 block w-full rounded-md border-gray-300" %>
-    <p class="mt-1 text-xs text-gray-500">tech / community のみ</p>
+                 class: "select select-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+    <span class="label-text-alt text-base-content/60">tech / community から選択</span>
+  </fieldset>
+
+  <fieldset class="fieldset">
+    <%= f.label :title, "タイトル", class: "fieldset-legend" %>
+    <%= f.text_field :title, class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary", placeholder: "テーマのタイトルを入力" %>
+  </fieldset>
+
+  <div data-controller="secondary-button" data-secondary-button-default-label-value="登壇も興味あり" class="rounded-lg bg-base-200 p-4">
+    <label class="label cursor-pointer justify-start gap-3">
+      <%= f.check_box :secondary_enabled,
+            class: "checkbox checkbox-primary",
+            data: { secondary_button_target: "checkbox", action: "change->secondary-button#toggle" } %>
+      <span class="label-text font-medium">第2ボタンを表示する</span>
+    </label>
+
+    <div data-secondary-button-target="panel" class="<%= f.object.secondary_enabled? ? 'mt-3' : 'mt-3 hidden' %>">
+      <fieldset class="fieldset">
+        <%= f.label :secondary_label, "第2ボタンの文言", class: "fieldset-legend" %>
+        <%= f.text_field :secondary_label,
+              value: (f.object.secondary_label.presence || "登壇も興味あり"),
+              data: { secondary_button_target: "input" },
+              class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+        <span class="label-text-alt text-base-content/60">例：「登壇も興味あり」「運営を手伝いたい」</span>
+      </fieldset>
+    </div>
   </div>
 
-  <div>
-    <%= f.label :title, class: "block text-sm font-medium" %>
-    <%= f.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300", placeholder: "例：" %>
-  </div>
-  <div
-  data-controller="secondary-button"
-  data-secondary-button-default-label-value="登壇も興味あり"
->
-  <label class="inline-flex items-center gap-2">
-    <%= f.check_box :secondary_enabled,
-          data: { secondary_button_target: "checkbox", action: "change->secondary-button#toggle" } %>
-    <span class="text-sm">第2ボタンを表示する</span>
-  </label>
+  <fieldset class="fieldset">
+    <%= f.label :description, "概要", class: "fieldset-legend" %>
+    <%= f.text_area :description, rows: 6, class: "textarea textarea-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary", placeholder: "テーマの概要や目的を記載してください" %>
+  </fieldset>
 
-  <div
-    data-secondary-button-target="panel"
-    class="<%= f.object.secondary_enabled? ? 'mt-2' : 'mt-2 hidden' %>"
-  >
-    <%= f.label :secondary_label, "第2ボタンの文言", class: "block text-sm" %>
-
-    <%= f.text_field :secondary_label,
-          value: (f.object.secondary_label.presence || "登壇も興味あり"),
-          data: { secondary_button_target: "input" },
-          class: "mt-1 w-full rounded border px-3 py-2" %>
-
-    <p class="mt-1 text-xs text-gray-500">例：「登壇も興味あり」</p>
-  </div>
-</div>
-  <div>
-    <%= f.label :description, class: "block text-sm font-medium" %>
-    <%= f.text_area :description, rows: 6, class: "mt-1 block w-full rounded-md border-gray-300", placeholder: "テーマの概要を書いてください" %>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <%= f.submit class: "rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" %>
-    <%= link_to "戻る", themes_path, class: "text-sm text-gray-600 hover:underline" %>
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "btn btn-primary" %>
+    <%= link_to "キャンセル", themes_path, class: "btn btn-ghost" %>
   </div>
 <% end %>
