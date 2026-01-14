@@ -23,7 +23,30 @@
     <%= f.label :title, class: "block text-sm font-medium" %>
     <%= f.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300", placeholder: "例：" %>
   </div>
+  <div
+  data-controller="secondary-button"
+  data-secondary-button-default-label-value="登壇も興味あり"
+>
+  <label class="inline-flex items-center gap-2">
+    <%= f.check_box :secondary_enabled,
+          data: { secondary_button_target: "checkbox", action: "change->secondary-button#toggle" } %>
+    <span class="text-sm">第2ボタンを表示する</span>
+  </label>
 
+  <div
+    data-secondary-button-target="panel"
+    class="<%= f.object.secondary_enabled? ? 'mt-2' : 'mt-2 hidden' %>"
+  >
+    <%= f.label :secondary_label, "第2ボタンの文言", class: "block text-sm" %>
+
+    <%= f.text_field :secondary_label,
+          value: (f.object.secondary_label.presence || "登壇も興味あり"),
+          data: { secondary_button_target: "input" },
+          class: "mt-1 w-full rounded border px-3 py-2" %>
+
+    <p class="mt-1 text-xs text-gray-500">例：「登壇も興味あり」</p>
+  </div>
+</div>
   <div>
     <%= f.label :description, class: "block text-sm font-medium" %>
     <%= f.text_area :description, rows: 6, class: "mt-1 block w-full rounded-md border-gray-300", placeholder: "テーマの概要を書いてください" %>

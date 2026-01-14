@@ -32,7 +32,7 @@ class ThemesController < ApplicationController
   private
 
   def theme_params
-    params.require(:theme).permit(:category, :title, :description)
+    params.require(:theme).permit(:category, :title, :description, :secondary_enabled, :secondary_label)
   end
 
   def set_theme
