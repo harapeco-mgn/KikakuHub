@@ -49,5 +49,12 @@ COPY --from=builder /usr/local/bundle /usr/local/bundle
 # ビルドステージからアプリケーションをコピー
 COPY --from=builder /rails /rails
 
+# entrypoint をコピー
+COPY bin/render-entrypoint.sh /usr/bin/render-entrypoint.sh
+RUN chmod +x /usr/bin/render-entrypoint.sh
+
+# 起動前に必ず migrate を走らせる
+ENTRYPOINT ["/usr/bin/render-entrypoint.sh"]
+
 # 本番環境用の起動コマンド
 CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0' -p ${PORT:-3000}"]
