@@ -12,4 +12,6 @@ class Theme < ApplicationRecord
   has_many :theme_votes, dependent: :destroy
   has_many :voters, through: :theme_votes, source: :user
   has_many :theme_comments, dependent: :destroy
+  has_many :rsvps, dependent: :destroy
+  has_many :rsvp_users, through: :rsvps, source: :user
 end

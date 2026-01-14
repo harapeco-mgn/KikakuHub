@@ -82,6 +82,36 @@
         </div>
       <% end %>
     </div>
+    <% if user_signed_in? %>
+  <div class="mt-4 space-y-2">
+    <div class="flex gap-2">
+      <%= button_to "参加", theme_rsvp_path(@theme),
+            method: :patch,
+            params: { rsvp: { status: :attending } },
+            class: "px-3 py-2 rounded bg-gray-200" %>
+
+      <%= button_to "不参加", theme_rsvp_path(@theme),
+            method: :patch,
+            params: { rsvp: { status: :not_attending } },
+            class: "px-3 py-2 rounded bg-gray-200" %>
+
+      <%= button_to "未定", theme_rsvp_path(@theme),
+            method: :patch,
+            params: { rsvp: { status: :undecided } },
+            class: "px-3 py-2 rounded bg-gray-200" %>
+    </div>
+
+    <% if @theme.secondary_enabled? %>
+      <%= button_to (@theme.secondary_label.presence || "第2ボタン"),
+            theme_rsvp_path(@theme),
+            method: :patch,
+            params: { rsvp: { secondary_interest: true } },
+            class: "px-3 py-2 rounded bg-gray-200" %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="mt-4 text-sm text-gray-600">参加状態の変更にはログインが必要です。</p>
+<% end %>
 
     <div class="mt-6 border-t pt-4">
       <% if @theme_comments.any? %>

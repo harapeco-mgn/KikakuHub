@@ -4,8 +4,9 @@ Rails.application.routes.draw do
 
   resources :themes, only: %i[index show new create] do
   scope module: :themes do
-    resource  :vote,          only: %i[create destroy]
+    resource  :vote,           only: %i[create destroy]
     resources :theme_comments, only: [ :create ]
+    resource :rsvp,            only: [:update]
   end
 end
 
