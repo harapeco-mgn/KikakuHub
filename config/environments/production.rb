@@ -111,15 +111,17 @@ if smtp_address.present? && smtp_port.present? && smtp_user.present? && smtp_pas
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
+  smtp_port_i = smtp_port.to_i
   config.action_mailer.smtp_settings = {
-    address: smtp_address,
-    port: smtp_port.to_i,
-    domain: app_host,
-    user_name: smtp_user,
-    password: smtp_pass,
-    authentication: "plain",
-    enable_starttls_auto: true
-  }
+  address: smtp_address,
+  port: smtp_port_i,
+  domain: app_host,
+  user_name: smtp_user,
+  password: smtp_pass,
+  authentication: "plain",
+  enable_starttls_auto: (smtp_port_i == 587),
+  ssl: (smtp_port_i == 465)
+}
 else
   # build時など env が無いときは落とさず、送信だけ無効
   config.action_mailer.perform_deliveries = false
