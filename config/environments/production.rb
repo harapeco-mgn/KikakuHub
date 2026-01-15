@@ -91,24 +91,36 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
+  
+app_host = ENV["APP_HOST"]
+
+if app_host.present?
   config.action_mailer.default_url_options = {
-    host: ENV.fetch("APP_HOST"),
+    host: app_host,
     protocol: "https"
   }
+end
 
-  # 本番でメール送信を有効化
+smtp_address = ENV["SMTP_ADDRESS"]
+smtp_port    = ENV["SMTP_PORT"]
+smtp_user    = ENV["SMTP_USERNAME"]
+smtp_pass    = ENV["SMTP_PASSWORD"]
+
+if smtp_address.present? && smtp_port.present? && smtp_user.present? && smtp_pass.present?
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
-
-  # Gmail SMTP
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              ENV.fetch("SMTP_ADDRESS"),
-    port:                 ENV.fetch("SMTP_PORT").to_i,
-    domain:               ENV.fetch("APP_HOST"),
-    user_name:            ENV.fetch("SMTP_USERNAME"),
-    password:             ENV.fetch("SMTP_PASSWORD"),
-    authentication:       "plain",
+    address: smtp_address,
+    port: smtp_port.to_i,
+    domain: app_host,
+    user_name: smtp_user,
+    password: smtp_pass,
+    authentication: "plain",
     enable_starttls_auto: true
   }
+else
+  # build時など env が無いときは落とさず、送信だけ無効
+  config.action_mailer.perform_deliveries = false
+end
 end
