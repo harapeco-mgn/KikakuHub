@@ -90,7 +90,9 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-
+if defined?(Rails::Server) && ENV["MAILER_FROM"].blank?
+  Rails.logger.warn("MAILER_FROM is not set. Password reset mail won't be sent correctly.")
+end
   
 app_host = ENV["APP_HOST"]
 
