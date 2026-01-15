@@ -53,8 +53,8 @@ COPY --from=builder /rails /rails
 COPY bin/render-entrypoint.sh /usr/bin/render-entrypoint.sh
 RUN chmod +x /usr/bin/render-entrypoint.sh
 
-# 起動前に必ず migrate を走らせる
+# 起動前に必ず migrate を走らせる（既存のまま）
 ENTRYPOINT ["/usr/bin/render-entrypoint.sh"]
 
-# 本番環境用の起動コマンド
-CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0' -p ${PORT:-3000}"]
+# 本番環境用の起動コマンド（migrate→seed→起動）
+CMD ["bash", "-c", "bundle exec rails db:migrate && bundle exec rails db:seed && rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0' -p ${PORT:-3000}"]
