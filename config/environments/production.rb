@@ -61,6 +61,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
+  config.action_mailer.default_url_options = { host: "example.com" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -89,41 +90,4 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-if defined?(Rails::Server) && ENV["MAILER_FROM"].blank?
-  Rails.logger.warn("MAILER_FROM is not set. Password reset mail won't be sent correctly.")
-end
-  
-app_host = ENV["APP_HOST"]
-
-if app_host.present?
-  config.action_mailer.default_url_options = {
-    host: app_host,
-    protocol: "https"
-  }
-end
-
-smtp_address = ENV["SMTP_ADDRESS"]
-smtp_port    = ENV["SMTP_PORT"]
-smtp_user    = ENV["SMTP_USERNAME"]
-smtp_pass    = ENV["SMTP_PASSWORD"]
-
-if smtp_address.present? && smtp_port.present? && smtp_user.present? && smtp_pass.present?
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
-  smtp_port_i = smtp_port.to_i
-  config.action_mailer.smtp_settings = {
-  address: smtp_address,
-  port: smtp_port_i,
-  domain: app_host,
-  user_name: smtp_user,
-  password: smtp_pass,
-  authentication: "plain",
-  enable_starttls_auto: (smtp_port_i == 587),
-  ssl: (smtp_port_i == 465)
-}
-else
-  # build時など env が無いときは落とさず、送信だけ無効
-  config.action_mailer.perform_deliveries = false
-end
 end
