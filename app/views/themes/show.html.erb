@@ -17,26 +17,7 @@
         <h1 class="text-2xl font-bold"><%= @theme.title %></h1>
       </div>
 
-      <!-- Vote Section -->
-      <div class="card card-compact bg-base-200 shadow-sm ring-1 ring-base-300">
-        <div class="card-body items-center text-center">
-          <span class="text-3xl font-bold text-primary"><%= @theme.theme_votes.count %></span>
-          <span class="text-xs text-base-content/60">投票</span>
-          <% if user_signed_in? %>
-            <% voted = current_user.theme_votes.exists?(theme: @theme) %>
-            <% if voted %>
-              <%= button_to "投票を取り消す", theme_vote_path(@theme), method: :delete,
-                    class: "btn btn-outline btn-sm mt-2", form_class: "inline" %>
-            <% else %>
-              <%= button_to "このテーマに投票", theme_vote_path(@theme), method: :post,
-                    class: "btn btn-primary btn-sm mt-2", form_class: "inline" %>
-            <% end %>
-          <% else %>
-            <%= link_to "ログインして投票", new_user_session_path,
-                  class: "btn btn-primary btn-sm mt-2" %>
-          <% end %>
-        </div>
-      </div>
+      <%= render "themes/vote_section", theme: @theme %>
     </header>
 
     <div class="divider"></div>
@@ -52,85 +33,11 @@
   <div class="card-body">
     <h2 class="card-title">コメント</h2>
 
-    <% if @theme_comment&.errors&.any? %>
-      <div role="alert" class="alert alert-error my-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <div>
-          <h3 class="font-bold">入力内容を確認してください</h3>
-          <ul class="list-inside list-disc text-sm">
-            <% @theme_comment.errors.full_messages.each do |msg| %>
-              <li><%= msg %></li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
-    <% end %>
+    <%= render "themes/comment_form", theme: @theme, theme_comment: @theme_comment %>
 
-    <!-- Comment Form -->
-    <div class="mt-4">
-      <%= form_with model: [@theme, @theme_comment], class: "space-y-3" do |f| %>
-        <%= f.text_area :body, rows: 4, placeholder: "このテーマに対する意見や補足情報を入力してください",
-              class: "textarea textarea-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
-        <div class="flex justify-end">
-          <%= f.submit "コメントを投稿", class: "btn btn-neutral" %>
-        </div>
-      <% end %>
-    </div>
-
-    <!-- RSVP Section -->
-    <% if user_signed_in? %>
-      <% current_status = @rsvp&.status %>
-      <% secondary_on = @rsvp&.secondary_interest? || false %>
-
-      <div class="divider">参加表明</div>
-
-      <div class="flex flex-wrap gap-2">
-        <%= button_to "参加", theme_rsvp_path(@theme), method: :patch,
-              params: { rsvp: { status: :attending } },
-              class: "btn #{current_status == 'attending' ? 'btn-success' : 'btn-outline btn-success'}" %>
-        <%= button_to "不参加", theme_rsvp_path(@theme), method: :patch,
-              params: { rsvp: { status: :not_attending } },
-              class: "btn #{current_status == 'not_attending' ? 'btn-error' : 'btn-outline btn-error'}" %>
-        <%= button_to "未定", theme_rsvp_path(@theme), method: :patch,
-              params: { rsvp: { status: :undecided } },
-              class: "btn #{current_status == 'undecided' ? 'btn-warning' : 'btn-outline btn-warning'}" %>
-      </div>
-
-      <div class="mt-3 flex gap-4 text-sm text-base-content/60">
-        <span>参加: <%= @rsvp_counts[:attending] %></span>
-        <span>不参加: <%= @rsvp_counts[:not_attending] %></span>
-        <span>未定: <%= @rsvp_counts[:undecided] %></span>
-      </div>
-
-      <% if @theme.secondary_enabled? %>
-        <% secondary_label = @theme.secondary_label.presence || "第2ボタン" %>
-        <% next_secondary = !secondary_on %>
-        <div class="mt-4">
-          <%= button_to "#{secondary_label}（#{secondary_on ? 'ON' : 'OFF'}）",
-                theme_rsvp_path(@theme), method: :patch,
-                params: { rsvp: { secondary_interest: next_secondary } },
-                class: "btn #{secondary_on ? 'btn-accent' : 'btn-outline btn-accent'}" %>
-        </div>
-      <% end %>
-    <% else %>
-      <div role="alert" class="alert mt-4">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 shrink-0 stroke-info"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span>参加状態の変更にはログインが必要です。</span>
-        <%= link_to "ログイン", new_user_session_path, class: "btn btn-sm btn-primary" %>
-      </div>
-    <% end %>
+    <%= render "themes/rsvp_section", theme: @theme, rsvp: @rsvp, rsvp_counts: @rsvp_counts %>
 
     <!-- Comments List -->
-    <div class="divider">コメント一覧</div>
-    <% if @theme_comments.any? %>
-      <div class="space-y-4">
-        <%= render @theme_comments %>
-      </div>
-    <% else %>
-      <div class="py-8 text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-        <p class="mt-3 text-base-content/60">まだコメントはありません。最初のコメントを投稿してみましょう。</p>
-      </div>
-    <% end %>
+    <%= render "themes/comments_list", theme: @theme, theme_comments: @theme_comments %>
   </div>
 </div>

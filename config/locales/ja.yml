@@ -1,0 +1,20 @@
+ja:
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      blank: "を入力してください"
+      too_long: "は%{count}文字以内で入力してください"
+      required: "を入力してください"
+  activerecord:
+    models:
+      theme: "テーマ"
+      theme_comment: "コメント"
+    attributes:
+      theme:
+        category: "カテゴリ"
+        title: "タイトル"
+        description: "説明"
+        secondary_label: "第2ボタン名"
+        community: "コミュニティ"
+      theme_comment:
+        body: "コメント"
