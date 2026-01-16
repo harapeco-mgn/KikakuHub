@@ -50,19 +50,24 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  # config.cache_store = :mem_cache_store
+# Replace the default in-process memory cache store with a durable alternative.
+# config.cache_store = :mem_cache_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  # config.active_job.queue_adapter = :resque
+# Replace the default in-process and non-durable queuing backend for Active Job.
+# config.active_job.queue_adapter = :resque
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+# Ignore bad email addresses and do not raise email delivery errors.
+# Set this to true and configure the email server for immediate delivery to raise delivery errors.
+# config.action_mailer.raise_delivery_errors = false
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+# Set host to be used by links generated in mailer templates.
 
+config.action_mailer.delivery_method = :resend
+
+config.action_mailer.default_url_options = {
+  host: ENV["APP_HOST"],
+  protocol: "https"
+}
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
   #   user_name: Rails.application.credentials.dig(:smtp, :user_name),

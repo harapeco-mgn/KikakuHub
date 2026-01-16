@@ -16,6 +16,7 @@ gem "bootsnap", require: false
 # 認証
 gem "devise"
 gem "devise-i18n"
+gem "resend"
 
 # tailwindcss
 gem "tailwindcss-rails"

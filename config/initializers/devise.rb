@@ -24,7 +24,7 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
+  # config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -65,32 +65,32 @@ Devise.setup do |config|
   # modifying a user and when used to authenticate or find a user. Default is :email.
   config.strip_whitespace_keys = [ :email ]
 
-  # Tell if authentication through request.params is enabled. True by default.
-  # It can be set to an array that will enable params authentication only for the
-  # given strategies, for example, `config.params_authenticatable = [:database]` will
-  # enable it only for database (email + password) authentication.
-  # config.params_authenticatable = true
+   # Tell if authentication through request.params is enabled. True by default.
+   # It can be set to an array that will enable params authentication only for the
+   # given strategies, for example, `config.params_authenticatable = [:database]` will
+   # enable it only for database (email + password) authentication.
+   # config.params_authenticatable = true
 
-  # Tell if authentication through HTTP Auth is enabled. False by default.
-  # It can be set to an array that will enable http authentication only for the
-  # given strategies, for example, `config.http_authenticatable = [:database]` will
-  # enable it only for database authentication.
-  # For API-only applications to support authentication "out-of-the-box", you will likely want to
-  # enable this with :database unless you are using a custom strategy.
-  # The supported strategies are:
-  # :database      = Support basic authentication with authentication key + password
-  # config.http_authenticatable = false
+   # Tell if authentication through HTTP Auth is enabled. False by default.
+   # It can be set to an array that will enable http authentication only for the
+   # given strategies, for example, `config.http_authenticatable = [:database]` will
+   # enable it only for database authentication.
+   # For API-only applications to support authentication "out-of-the-box", you will likely want to
+   # enable this with :database unless you are using a custom strategy.
+   # The supported strategies are:
+   # :database      = Support basic authentication with authentication key + password
+   # config.http_authenticatable = false
 
-  # If 401 status code should be returned for AJAX requests. True by default.
-  # config.http_authenticatable_on_xhr = true
+   # If 401 status code should be returned for AJAX requests. True by default.
+   # config.http_authenticatable_on_xhr = true
 
-  # The realm used in Http Basic Authentication. 'Application' by default.
-  # config.http_authentication_realm = 'Application'
+   # The realm used in Http Basic Authentication. 'Application' by default.
+   # config.http_authentication_realm = 'Application'
 
-  # It will change confirmation, password recovery and other workflows
-  # to behave the same regardless if the e-mail provided was right or wrong.
-  # Does not affect registerable.
-  # config.paranoid = true
+   # It will change confirmation, password recovery and other workflows
+   # to behave the same regardless if the e-mail provided was right or wrong.
+   # Does not affect registerable.
+   config.paranoid = true
 
   # By default Devise will store the user in session. You can skip storage for
   # particular strategies by setting this option.
@@ -310,4 +310,5 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
+  config.mailer_sender = ENV.fetch("MAILER_FROM")
 end
