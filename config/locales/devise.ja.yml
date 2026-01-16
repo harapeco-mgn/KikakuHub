@@ -4,3 +4,6 @@ ja:
       unauthenticated: "ログインもしくはアカウント登録してください。"
       user:
         unauthenticated: "ログインもしくはアカウント登録してください。"
+    mailer:
+      reset_password_instructions:
+        subject: "【KikakuHub】パスワード再設定のご案内"
