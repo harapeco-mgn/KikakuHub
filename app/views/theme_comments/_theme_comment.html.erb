@@ -1,20 +1,7 @@
 <div id="<%= dom_id(theme_comment) %>" class="card card-compact bg-base-200/50 shadow-sm transition-colors hover:bg-base-200">
   <div class="card-body">
-    <% user = theme_comment.user %>
-    <% display_name =
-      if user&.respond_to?(:name) && user.name.present?
-        user.name
-      elsif user&.respond_to?(:email) && user.email.present?
-        user.email
-      else
-        "ユーザー"
-      end
-    %>
 
     <div class="flex items-center justify-between gap-3">
-      <p class="text-sm font-semibold">
-        <%= display_name %>
-      </p>
       <div class="flex items-center gap-2">
         <p class="text-xs text-base-content/50">
           <%= l(theme_comment.created_at, format: :short) rescue theme_comment.created_at.strftime("%Y-%m-%d %H:%M") %>
