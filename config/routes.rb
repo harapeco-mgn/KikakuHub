@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get "guidance", to: "static_pages#guidance"
+
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
