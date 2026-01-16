@@ -2,13 +2,15 @@ Rails.application.routes.draw do
   root "home#index"
   devise_for :users, controllers: { registrations: "users/registrations" }
 
-  resources :themes, only: %i[index show new create] do
-  scope module: :themes do
-    resource  :vote,           only: %i[create destroy]
-    resources :theme_comments, only: [ :create ]
-    resource :rsvp,            only: [ :update ]
+  resources :themes, only: %i[index show new create destroy] do
+    scope module: :themes do
+      resource  :vote,           only: %i[create destroy]
+      resources :theme_comments, only: %i[create destroy]
+      resource :rsvp,            only: [ :update ]
+    end
   end
-end
+
+  get "guidance", to: "static_pages#guidance"
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"

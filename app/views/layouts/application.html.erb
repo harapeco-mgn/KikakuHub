@@ -30,6 +30,9 @@
 
         <nav class="flex-none">
           <ul class="menu menu-horizontal gap-1 p-0">
+             <li>
+               <%= link_to "使い方", guidance_path, class: "btn btn-ghost btn-sm" %>
+             </li>
             <% if user_signed_in? %>
               <li>
                 <span class="text-sm opacity-70"><%= current_user.email %></span>

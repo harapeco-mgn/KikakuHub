@@ -1,0 +1,9 @@
+<% if flash.any? %>
+  <%= turbo_stream.update "flash" do %>
+    <%= render "shared/flash" %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@theme, :comments) do %>
+  <%= render "themes/comments_list", theme: @theme, theme_comments: @theme_comments %>
+<% end %>

@@ -1,0 +1,180 @@
+<div class="bg-base-200 min-h-screen">
+  <!-- Hero Section -->
+  <div class="hero bg-base-100 py-16">
+    <div class="hero-content text-center">
+      <div class="max-w-2xl">
+        <h1 class="text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-6">
+          KikakuHub
+        </h1>
+        <p class="text-2xl font-bold mb-4">
+          イベント開催の「テーマ」と「時間」を<br>もっと自由に、もっと簡単に。
+        </p>
+        <p class="py-6 text-lg opacity-80">
+          「何をやるか決められない」「日程調整が面倒」<br>
+          そんな主催者の悩みを解決し、開催前の意思決定をサポートするサービスです。
+        </p>
+        <%= link_to "テーマを見てみる", themes_path, class: "btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all duration-300" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12 max-w-5xl space-y-20">
+    
+    <!-- Problem & Solution -->
+    <section>
+      <h2 class="text-3xl font-bold text-center mb-10 flex items-center justify-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-error">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+        こんな悩みありませんか？
+      </h2>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card bg-base-100 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-base-content/5">
+          <div class="card-body items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center mb-4 text-3xl text-error">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+               </svg>
+            </div>
+            <h3 class="card-title">需要がわからない</h3>
+            <p class="text-sm opacity-70">「こんな企画、人集まるかな…」と不安で踏み出せない。</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-base-content/5">
+          <div class="card-body items-center text-center">
+             <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center mb-4 text-3xl text-error">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                 </svg>
+             </div>
+            <h3 class="card-title">テーマが決まらない</h3>
+            <p class="text-sm opacity-70">やりたいことはあるけど、具体的に何をすればいいか迷う。</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-base-content/5">
+          <div class="card-body items-center text-center">
+             <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center mb-4 text-3xl text-error">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                </svg>
+             </div>
+            <h3 class="card-title flex flex-wrap justify-center gap-2">日程調整が面倒 <span class="badge badge-sm badge-ghost font-normal align-middle">Coming Soon（気持ち的には）</span></h3>
+            <p class="text-sm opacity-70">参加者の予定を聞いて回るのが大変で、心が折れてしまう。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider my-10 text-primary font-bold">KikakuHubなら</div>
+
+      <div class="card bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div class="card-body">
+             <h3 class="text-2xl font-bold text-center mb-4">開催前の「意思決定」に特化</h3>
+             <ul class="list-disc list-inside space-y-2 text-lg opacity-80 max-w-2xl mx-auto">
+                <li>みんなの投票で<strong>需要を可視化</strong>できる</li>
+                <li>コメントでアイデアを募って内容をブラッシュアップ</li>
+                <li>「参加可能時間」の統計を見て、<strong>一番集まる時間帯</strong>を一発で決定</li>
+             </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Usage Steps -->
+    <section>
+       <h2 class="text-3xl font-bold text-center mb-10">使い方の流れ</h2>
+       <ul class="steps steps-vertical lg:steps-horizontal w-full">
+        <li class="step step-primary">
+            <div class="text-left py-4 px-2">
+                <strong class="block text-lg">1. 投票する</strong>
+                <span class="text-sm opacity-70">テーマ一覧から「いいな！」<br>と思うものに投票</span>
+            </div>
+        </li>
+        <li class="step step-primary">
+            <div class="text-left py-4 px-2">
+                <strong class="block text-lg">2. 時間を登録</strong>
+                <span class="text-sm opacity-70">プロフィールで自分の<br>参加しやすい時間を登録</span>
+            </div>
+        </li>
+        <li class="step step-primary">
+            <div class="text-left py-4 px-2">
+                <strong class="block text-lg">3. 開催決定</strong>
+                <span class="text-sm opacity-70">主催者が需要と<br>時間帯を見て開催を決定！</span>
+            </div>
+        </li>
+        <li class="step">
+            <div class="text-left py-4 px-2">
+                <strong class="block text-lg">4. イベント作成</strong>
+                <span class="text-sm opacity-70">詳細が決まったら<br>実際にイベント作成へ</span>
+            </div>
+        </li>
+      </ul>
+    </section>
+
+     <!-- Features -->
+    <section>
+      <h2 class="text-3xl font-bold text-center mb-10">主な機能</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="card bg-base-100 shadow-lg border-l-4 border-secondary hover:shadow-xl transition-all duration-300">
+          <div class="card-body">
+            <h3 class="card-title text-secondary">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+               </svg>
+               テーマ投稿・投票
+            </h3>
+            <p>思いついたアイデアを気軽に投稿。みんなの投票で需要が一目でわかります。</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-lg border-l-4 border-accent hover:shadow-xl transition-all duration-300">
+          <div class="card-body">
+            <h3 class="card-title text-accent flex flex-wrap items-center gap-2">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+               </svg>
+               <span>参加可能時間の集計</span>
+               <span class="badge badge-sm badge-accent font-normal align-middle">Coming Soon（気持ち的には）</span>
+            </h3>
+            <p>個人の予定は公開せず、コミュニティ全体の「暇な時間」だけをヒートマップのように可視化します。</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-lg border-l-4 border-primary hover:shadow-xl transition-all duration-300">
+           <div class="card-body">
+            <h3 class="card-title text-primary">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904M14.25 9h2.25M5.904 18.75c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.625Z" />
+               </svg>
+               第2ボタン（興味あり・手伝いたい）
+            </h3>
+            <p>「参加確定」だけでなく、「興味はある」「運営なら手伝える」といった意思表示も可能です。</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-lg border-l-4 border-warning hover:shadow-xl transition-all duration-300">
+           <div class="card-body">
+            <h3 class="card-title text-warning">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+               </svg>
+               合言葉で限定公開
+            </h3>
+            <p>現在はコミュニティ内限定運用のため、合言葉を知っている人だけが参加できます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+     <!-- CTA -->
+    <section class="my-20 text-center">
+        <div class="card bg-base-100 shadow-2xl overflow-hidden max-w-3xl mx-auto hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="card-body bg-neutral text-neutral-content p-12">
+                <h2 class="card-title text-3xl justify-center mb-4">さあ、企画を始めよう！</h2>
+                <p class="mb-8 text-lg">あなたのアイデアが、誰かの学びのきっかけになります。</p>
+                <div class="flex justify-center gap-4">
+                    <%= link_to "新規登録", new_user_registration_path, class: "btn btn-primary btn-lg hover:scale-105 transition-transform" %>
+                    <%= link_to "ログイン", new_user_session_path, class: "btn btn-outline btn-info btn-lg hover:scale-105 transition-transform" %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  </div>
+</div>

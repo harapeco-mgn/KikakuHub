@@ -1,13 +1,12 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_theme, only: [ :show ]
+  before_action :set_theme, only: %i[show destroy]
 
   def index
     @themes = Theme.order(created_at: :desc)
   end
 
   def show
-    @theme = Theme.find(params[:id])
     @theme_comment  = ThemeComment.new
     @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
     @rsvp = current_user.rsvps.find_by(theme: @theme) if user_signed_in?
@@ -33,6 +32,19 @@ def create
     render :new, status: :unprocessable_entity
   end
 end
+
+  def destroy
+    unless @theme.user == current_user
+      redirect_to theme_path(@theme), alert: "削除権限がありません。", status: :see_other
+      return
+    end
+
+    if @theme.destroy
+      redirect_to themes_path, notice: "テーマを削除しました。", status: :see_other
+    else
+      redirect_to theme_path(@theme), alert: "テーマの削除に失敗しました。", status: :see_other
+    end
+  end
 
   private
 
