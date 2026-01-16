@@ -1,0 +1,26 @@
+<%= turbo_frame_tag dom_id(theme, :comment_form) do %>
+  <% if theme_comment&.errors&.any? %>
+    <div role="alert" class="alert alert-error my-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <div>
+        <h3 class="font-bold">入力内容を確認してください</h3>
+        <ul class="list-inside list-disc text-sm">
+          <% theme_comment.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Comment Form -->
+  <div class="mt-4">
+    <%= form_with model: [theme, theme_comment], class: "space-y-3" do |f| %>
+      <%= f.text_area :body, rows: 4, placeholder: "このテーマに対する意見や補足情報を入力してください",
+            class: "textarea textarea-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+      <div class="flex justify-end">
+        <%= f.submit "コメントを投稿", class: "btn btn-neutral" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
