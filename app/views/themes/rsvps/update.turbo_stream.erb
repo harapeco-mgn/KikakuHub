@@ -1,0 +1,9 @@
+<% if flash.any? %>
+  <%= turbo_stream.update "flash" do %>
+    <%= render "shared/flash" %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@theme, :rsvp) do %>
+  <%= render "themes/rsvp_section", theme: @theme, rsvp: @rsvp, rsvp_counts: @rsvp_counts %>
+<% end %>

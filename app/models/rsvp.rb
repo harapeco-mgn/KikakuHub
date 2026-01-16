@@ -6,4 +6,12 @@ class Rsvp < ApplicationRecord
 
   validates :status, presence: true
   validates :user_id, uniqueness: { scope: :theme_id }
+
+  before_validation :set_default_status, on: :create
+
+  private
+
+  def set_default_status
+    self.status ||= :undecided
+  end
 end
