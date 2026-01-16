@@ -2,6 +2,7 @@ module Themes
   class ThemeCommentsController < ApplicationController
     before_action :authenticate_user!  # Devise: 未ログインならログイン画面へ
     before_action :set_theme           # /themes/:theme_id を使って対象テーマを取得
+    before_action :set_theme_comment, only: [ :destroy ]
 
     def create
       # テーマに紐づくコメントを作る（theme_id は自動で入る）
@@ -29,6 +30,26 @@ module Themes
       end
     end
 
+    def destroy
+      unless @theme_comment.user == current_user
+        redirect_to theme_path(@theme), alert: "削除権限がありません。", status: :see_other
+        return
+      end
+
+      if @theme_comment.destroy
+        load_theme_comments
+        respond_to do |format|
+          format.html { redirect_to theme_path(@theme), notice: "コメントを削除しました。", status: :see_other }
+          format.turbo_stream do
+            flash.now[:notice] = "コメントを削除しました。"
+            render :destroy
+          end
+        end
+      else
+        redirect_to theme_path(@theme), alert: "コメントの削除に失敗しました。", status: :see_other
+      end
+    end
+
     private
 
     def set_theme
@@ -37,6 +58,10 @@ module Themes
 
     def theme_comment_params
       params.require(:theme_comment).permit(:body)
+    end
+
+    def set_theme_comment
+      @theme_comment = @theme.theme_comments.find(params[:id])
     end
 
     def load_theme_comments

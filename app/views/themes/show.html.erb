@@ -17,7 +17,16 @@
         <h1 class="text-2xl font-bold"><%= @theme.title %></h1>
       </div>
 
-      <%= render "themes/vote_section", theme: @theme %>
+      <div class="flex flex-wrap items-start gap-2">
+        <%= render "themes/vote_section", theme: @theme %>
+        <% if user_signed_in? && current_user == @theme.user %>
+          <%= button_to "削除", theme_path(@theme),
+                        method: :delete,
+                        data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },
+                        form: { class: "inline" },
+                        class: "btn btn-error btn-sm" %>
+        <% end %>
+      </div>
     </header>
 
     <div class="divider"></div>

@@ -2,7 +2,10 @@
   <div class="divider">コメント一覧</div>
   <% if theme_comments.any? %>
     <div class="space-y-4">
-      <%= render partial: "theme_comments/theme_comment", collection: theme_comments, as: :theme_comment %>
+      <%= render partial: "theme_comments/theme_comment",
+                 collection: theme_comments,
+                 as: :theme_comment,
+                 locals: { theme: theme } %>
     </div>
   <% else %>
     <div class="py-8 text-center">
