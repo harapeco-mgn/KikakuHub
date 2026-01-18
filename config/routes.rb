@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   root "home#index"
   devise_for :users, controllers: { registrations: "users/registrations" }
 
+  resource :mypage, only: %i[show]
+
   resources :themes, only: %i[index show new create destroy] do
     scope module: :themes do
       resource  :vote,           only: %i[create destroy]

@@ -11,6 +11,23 @@
           <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
         </fieldset>
 
+        <fieldset class="fieldset mt-4">
+          <%= f.label :nickname, "ニックネーム", class: "fieldset-legend" %>
+          <%= f.text_field :nickname, autocomplete: "nickname",
+          class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+        </fieldset>
+
+        <fieldset class="fieldset mt-4">
+          <%= f.label :cohort, "期", class: "fieldset-legend" %>
+
+          <div class="flex items-center gap-2">
+            <%= f.number_field :cohort, min: 0, max: 999, step: 1, inputmode: "numeric",
+            class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+            <span class="text-sm text-base-content/70 whitespace-nowrap">期</span>
+  </div>
+
+          <span class="label-text-alt text-base-content/60">0 は未設定になります</span>
+        </fieldset>
         <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
           <div class="alert alert-info mt-4">
             <span>確認待ち: <%= resource.unconfirmed_email %></span>
