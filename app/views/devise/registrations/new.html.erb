@@ -11,6 +11,25 @@
           <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
         </fieldset>
 
+        <div class="form-control mt-4">
+          <%= f.label :nickname, "ニックネーム", class: "label" %>
+          <%= f.text_field :nickname, class: "input input-bordered w-full", autocomplete: "nickname" %>
+        </div>
+
+        <div class="form-control mt-4">
+          <%= f.label :cohort, "期", class: "label" %>
+
+            <div class="flex items-center gap-2">
+              <%= f.number_field :cohort,
+                class: "input input-bordered w-32",
+                min: 1,
+                step: 1,
+                inputmode: "numeric" %>
+              <span class="text-base-content/70">期</span>
+            </div>
+        </div>
+
+
         <fieldset class="fieldset mt-4">
           <div class="flex items-center gap-2">
             <%= f.label :password, class: "fieldset-legend" %>
@@ -20,6 +39,7 @@
           </div>
           <%= f.password_field :password, autocomplete: "new-password", class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
         </fieldset>
+
 
         <fieldset class="fieldset mt-4">
           <%= f.label :password_confirmation, "パスワード（確認）", class: "fieldset-legend" %>
