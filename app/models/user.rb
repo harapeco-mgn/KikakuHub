@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :theme_comments, dependent: :destroy
   has_many :rsvps, dependent: :destroy
   has_many :rsvp_themes, through: :rsvps, source: :theme
+  has_many :availability_slots, dependent: :destroy
 
   def cohort_label
     cohort.to_i > 0 ? "#{cohort}期" : "未設定"
