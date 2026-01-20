@@ -4,8 +4,8 @@ Rails.application.routes.draw do
 
   resource :mypage, only: %i[show]
   scope :profile, as: :profile, module: :profiles do
-    resources :availability_slots, path: "availability", only: %i[index new create destroy]
-  end
+  resources :availability_slots, path: "availability", only: %i[index new create edit update destroy]
+end
   resources :themes, only: %i[index show new create destroy] do
     scope module: :themes do
       resource  :vote,           only: %i[create destroy]

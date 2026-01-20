@@ -24,6 +24,7 @@
           <td><%= format("%02d:%02d", slot.start_minute / 60, slot.start_minute % 60) %></td>
           <td><%= format("%02d:%02d", slot.end_minute / 60, slot.end_minute % 60) %></td>
           <td class="text-right">
+            <%= link_to "編集", edit_profile_availability_slot_path(slot), class: "btn btn-sm" %>
             <%= button_to "削除", profile_availability_slot_path(slot), method: :delete,
                           data: { turbo_confirm: "削除しますか？" },
                           class: "btn btn-sm btn-outline" %>
