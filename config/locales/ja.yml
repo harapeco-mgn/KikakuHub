@@ -18,3 +18,7 @@ ja:
         community: "コミュニティ"
       theme_comment:
         body: "コメント"
+      availability_slot:
+        categories:
+          tech: 技術系
+          community: 交流系
