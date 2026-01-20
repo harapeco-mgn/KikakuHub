@@ -10,9 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_17_124319) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_20_035853) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "availability_slots", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "category", null: false
+    t.integer "wday", null: false
+    t.integer "start_minute", null: false
+    t.integer "end_minute", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "category", "wday", "start_minute", "end_minute"], name: "index_availability_slots_unique_range", unique: true
+    t.index ["user_id"], name: "index_availability_slots_on_user_id"
+    t.check_constraint "(end_minute % 30) = 0", name: "chk_availability_slots_end_step_30"
+    t.check_constraint "(start_minute % 30) = 0", name: "chk_availability_slots_start_step_30"
+    t.check_constraint "category = ANY (ARRAY[0, 1])", name: "chk_availability_slots_category"
+    t.check_constraint "end_minute > 0 AND end_minute <= 1440", name: "chk_availability_slots_end_range"
+    t.check_constraint "end_minute > start_minute", name: "chk_availability_slots_end_after_start"
+    t.check_constraint "start_minute >= 0 AND start_minute < 1440", name: "chk_availability_slots_start_range"
+    t.check_constraint "wday >= 0 AND wday <= 6", name: "chk_availability_slots_wday"
+  end
 
   create_table "communities", force: :cascade do |t|
     t.string "name"
@@ -81,6 +100,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_17_124319) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "availability_slots", "users"
   add_foreign_key "rsvps", "themes"
   add_foreign_key "rsvps", "users"
   add_foreign_key "theme_comments", "themes"
