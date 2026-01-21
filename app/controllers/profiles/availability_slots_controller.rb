@@ -6,17 +6,17 @@ module Profiles
       slots = current_user.availability_slots.order(:category, :wday, :start_minute)
 
       merged_hash =
-        slots.group_by { |s| [s.category, s.wday] }
+        slots.group_by { |s| [ s.category, s.wday ] }
              .transform_values do |group|
                ranges = group.map do |s|
-                 { start_minute: s.start_minute, end_minute: s.end_minute, ids: [s.id] }
+                 { start_minute: s.start_minute, end_minute: s.end_minute, ids: [ s.id ] }
                end
                Availability::RangeMerger.call(ranges)
              end
 
       # 表示順を安定させる（categoryのenum順 → wday順）
       @merged_availability_groups =
-        merged_hash.sort_by { |(category, wday), _| [AvailabilitySlot.categories[category], wday] }
+        merged_hash.sort_by { |(category, wday), _| [ AvailabilitySlot.categories[category], wday ] }
     end
 
     def new

@@ -26,7 +26,7 @@ module Availability
 
         # 重複 or 連続（next.start <= current.end）ならマージ
         if r[:start_minute] <= last[:end_minute]
-          last[:end_minute] = [last[:end_minute], r[:end_minute]].max
+          last[:end_minute] = [ last[:end_minute], r[:end_minute] ].max
           last[:ids] = (last[:ids] + r[:ids]).uniq
         else
           merged << r
