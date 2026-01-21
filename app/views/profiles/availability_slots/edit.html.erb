@@ -12,6 +12,10 @@
 <%= form_with model: @availability_slot, url: profile_availability_slot_path(@availability_slot), method: :patch do |f| %>
   <div class="space-y-3">
 
+    <% if params[:merged_ids].present? %>
+      <%= f.hidden_field :merged_ids, value: params[:merged_ids] %>
+    <% end %>
+
     <div>
       <%= f.label :category, "カテゴリ", class: "label" %>
       <%= f.select :category,

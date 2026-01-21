@@ -15,21 +15,43 @@
         <th></th>
       </tr>
     </thead>
+
     <tbody>
       <% wdays = %w[月 火 水 木 金 土 日] %>
-      <% @availability_slots.each do |slot| %>
-        <tr>
-          <td><%= slot.category %></td>
-          <td><%= wdays[slot.wday] %></td>
-          <td><%= format("%02d:%02d", slot.start_minute / 60, slot.start_minute % 60) %></td>
-          <td><%= format("%02d:%02d", slot.end_minute / 60, slot.end_minute % 60) %></td>
-          <td class="text-right">
-            <%= link_to "編集", edit_profile_availability_slot_path(slot), class: "btn btn-sm" %>
-            <%= button_to "削除", profile_availability_slot_path(slot), method: :delete,
-                          data: { turbo_confirm: "削除しますか？" },
-                          class: "btn btn-sm btn-outline" %>
-          </td>
-        </tr>
+
+      <% @merged_availability_groups.each do |(category, wday), ranges| %>
+        <% ranges.each do |range| %>
+          <% rep_id = range[:ids].first %>
+          <% merged_ids_str = range[:ids].join(",") %>
+
+          <tr>
+            <td>
+              <%= t("activerecord.attributes.availability_slot.categories.#{category}", default: category) %>
+            </td>
+
+            <td><%= wdays[wday] %></td>
+
+            <td><%= format("%02d:%02d", range[:start_minute] / 60, range[:start_minute] % 60) %></td>
+            <td><%= format("%02d:%02d", range[:end_minute] / 60, range[:end_minute] % 60) %></td>
+
+            <td class="text-right">
+              <%= link_to "編集",
+                          edit_profile_availability_slot_path(
+                            rep_id,
+                            merged_ids: merged_ids_str,
+                            merged_start: range[:start_minute],
+                            merged_end: range[:end_minute]
+                          ),
+                          class: "btn btn-sm" %>
+
+              <%= button_to "削除",
+                            profile_availability_slot_path(rep_id, merged_ids: merged_ids_str),
+                            method: :delete,
+                            data: { turbo_confirm: "削除しますか？" },
+                            class: "btn btn-sm btn-outline" %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
