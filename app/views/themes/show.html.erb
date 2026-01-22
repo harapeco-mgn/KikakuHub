@@ -43,8 +43,9 @@
     <h2 class="card-title">コメント</h2>
 
     <%= render "themes/comment_form", theme: @theme, theme_comment: @theme_comment %>
-    <% if @availability_supported %>
-      <div class="mt-4">
+
+    <div class="mt-4">
+      <% if @availability_supported %>
         <%= render "availability/aggregate_panel",
           url: theme_path(@theme),
           counts: @availability_counts,
@@ -53,13 +54,13 @@
           cohort_options: @cohort_options,
           show_category_select: false
         %>
-      </div>
-    <% else %>
-      <div class="mt-4 rounded-lg border bg-white p-4 shadow-sm">
-        <h2 class="text-lg font-bold">参加可能時間（同カテゴリ集計）</h2>
-        <p class="mt-1 text-sm text-gray-600">このカテゴリは集計対象外です。</p>
-      </div>
-    <% end %>
+      <% else %>
+        <div class="rounded-lg border border-base-300 bg-base-100 p-4">
+          <h2 class="text-lg font-bold">参加可能時間（同カテゴリ集計）</h2>
+          <p class="mt-1 text-sm text-base-content/60">このカテゴリは集計対象外です。</p>
+        </div>
+      <% end %>
+    </div>
 
     <%= render "themes/rsvp_section", theme: @theme, rsvp: @rsvp, rsvp_counts: @rsvp_counts %>
 

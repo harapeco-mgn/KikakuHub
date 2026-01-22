@@ -1,4 +1,3 @@
-<%# オプション：テーマ詳細では show_category_select: false を渡す %>
 <% show_category_select = local_assigns.fetch(:show_category_select, true) %>
 
 <% wday_labels = %w[日 月 火 水 木 金 土] %>
@@ -7,38 +6,47 @@
      format("%02d:%02d", m / 60, m % 60)
    end %>
 
-<div class="rounded-lg border bg-white p-4 shadow-sm">
+<% cohort_options = Array(cohort_options).compact %>
+<% selected_cohort = cohort.to_s %>
+<% selected_category = category.to_s %>
+
+<% safe_counts = counts.presence || Array.new(7) { Array.new(48, 0) } %>
+
+<div class="rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm">
   <div class="mb-3 flex items-center justify-between gap-3">
     <h2 class="text-lg font-bold">参加可能時間（集計）</h2>
 
     <%= form_with url: url, method: :get, local: true, class: "flex flex-wrap items-center gap-2" do %>
-      <label class="text-sm text-gray-600">期</label>
+      <label class="text-sm text-base-content/60">期</label>
+      <% cohort_select_options =
+           [["全員", "all"]] + cohort_options.map { |n| ["#{n}期", n.to_s] }
+      %>
       <%= select_tag :cohort,
-            options_for_select([["全員", "all"]] + cohort_options.map { |n| ["#{n}期", n] }, cohort),
+            options_for_select(cohort_select_options, selected_cohort),
             class: "select select-bordered select-sm" %>
 
       <% if show_category_select %>
-        <label class="text-sm text-gray-600">カテゴリ</label>
+        <label class="text-sm text-base-content/60">カテゴリ</label>
         <%= select_tag :category,
-              options_for_select([["Tech", "tech"], ["Community", "community"]], category),
+              options_for_select([["Tech", "tech"], ["Community", "community"]], selected_category),
               class: "select select-bordered select-sm" %>
       <% else %>
-        <%# テーマ詳細ではカテゴリ固定（表示だけ） %>
-        <span class="text-sm text-gray-600">カテゴリ</span>
-        <span class="text-sm font-medium"><%= category.to_s.capitalize %></span>
+        <%= hidden_field_tag :category, selected_category %>
+        <span class="text-sm text-base-content/60">カテゴリ</span>
+        <span class="text-sm font-medium"><%= selected_category.capitalize %></span>
       <% end %>
 
       <%= submit_tag "表示", class: "btn btn-sm" %>
     <% end %>
   </div>
 
-  <div class="overflow-auto max-h-[70vh] rounded border">
+  <div class="overflow-auto max-h-[70vh] rounded border border-base-300">
     <table class="min-w-full border-collapse text-sm">
-      <thead class="sticky top-0 bg-gray-50">
+      <thead class="sticky top-0 bg-base-200">
         <tr>
-          <th class="border px-2 py-1 text-left">時間</th>
+          <th class="border border-base-300 px-2 py-1 text-left">時間</th>
           <% 0.upto(6) do |wday| %>
-            <th class="border px-2 py-1 text-center"><%= wday_labels[wday] %></th>
+            <th class="border border-base-300 px-2 py-1 text-center"><%= wday_labels[wday] %></th>
           <% end %>
         </tr>
       </thead>
@@ -46,10 +54,10 @@
       <tbody>
         <% time_labels.each_with_index do |t, i| %>
           <tr>
-            <th class="border px-2 py-1 text-left bg-gray-50"><%= t %></th>
+            <th class="border border-base-300 px-2 py-1 text-left bg-base-200"><%= t %></th>
             <% 0.upto(6) do |wday| %>
-              <td class="border px-2 py-1 text-center">
-                <%= counts[wday][i] %>
+              <td class="border border-base-300 px-2 py-1 text-center">
+                <%= safe_counts[wday][i] %>
               </td>
             <% end %>
           </tr>
@@ -58,7 +66,7 @@
     </table>
   </div>
 
-  <p class="mt-2 text-xs text-gray-500">
+  <p class="mt-2 text-xs text-base-content/60">
     表示は「枠ごとの人数」です（個人は特定しません）。同一ユーザーは同一枠で1人としてカウントします。
   </p>
 </div>

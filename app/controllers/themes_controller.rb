@@ -58,11 +58,12 @@ class ThemesController < ApplicationController
     @theme = Theme.find(params[:id])
   end
 
-  # #49: テーマ詳細用の「同カテゴリ集計（期切替）」データを準備
+  # #49/#50: テーマ詳細用の「同カテゴリ集計（期切替）」データを準備
   def prepare_availability_aggregate
-    @cohort = params.fetch(:cohort, "all")
+    # ?cohort= が空のときも "all" 扱いにしてUI選択状態を安定させる
+    @cohort = params[:cohort].presence || "all"
 
-    @availability_category = @theme.category.to_s
+    @availability_category  = @theme.category.to_s
     @availability_supported = %w[tech community].include?(@availability_category)
 
     return unless @availability_supported
