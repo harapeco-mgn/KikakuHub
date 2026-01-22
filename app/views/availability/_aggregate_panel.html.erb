@@ -1,3 +1,6 @@
+<%# オプション：テーマ詳細では show_category_select: false を渡す %>
+<% show_category_select = local_assigns.fetch(:show_category_select, true) %>
+
 <% wday_labels = %w[日 月 火 水 木 金 土] %>
 <% time_labels = (0..47).map do |i|
      m = i * 30
@@ -14,10 +17,16 @@
             options_for_select([["全員", "all"]] + cohort_options.map { |n| ["#{n}期", n] }, cohort),
             class: "select select-bordered select-sm" %>
 
-      <label class="text-sm text-gray-600">カテゴリ</label>
-      <%= select_tag :category,
-            options_for_select([["Tech", "tech"], ["Community", "community"]], category),
-            class: "select select-bordered select-sm" %>
+      <% if show_category_select %>
+        <label class="text-sm text-gray-600">カテゴリ</label>
+        <%= select_tag :category,
+              options_for_select([["Tech", "tech"], ["Community", "community"]], category),
+              class: "select select-bordered select-sm" %>
+      <% else %>
+        <%# テーマ詳細ではカテゴリ固定（表示だけ） %>
+        <span class="text-sm text-gray-600">カテゴリ</span>
+        <span class="text-sm font-medium"><%= category.to_s.capitalize %></span>
+      <% end %>
 
       <%= submit_tag "表示", class: "btn btn-sm" %>
     <% end %>
