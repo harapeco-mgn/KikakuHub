@@ -11,27 +11,29 @@ class ThemesController < ApplicationController
     @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
     @rsvp = current_user.rsvps.find_by(theme: @theme) if user_signed_in?
     @rsvp_counts = @theme.rsvp_counts
+
+    prepare_availability_aggregate
   end
 
   def new
     @theme = Theme.new
   end
 
-def create
-  @theme = current_user.themes.build(theme_params)
-  @theme.community_id = 1
+  def create
+    @theme = current_user.themes.build(theme_params)
+    @theme.community_id = 1
 
-  if @theme.save
-    redirect_to @theme, notice: "テーマが作成されました。", status: :see_other
-  else
-    Rails.logger.info("[debug] env=#{Rails.env} db=#{ActiveRecord::Base.connection_db_config.database}")
-    Rails.logger.info("[debug] community_id=#{@theme.community_id.inspect} exists=#{Community.exists?(@theme.community_id)}")
-    Rails.logger.info("[debug] errors=#{@theme.errors.full_messages}")
+    if @theme.save
+      redirect_to @theme, notice: "テーマが作成されました。", status: :see_other
+    else
+      Rails.logger.info("[debug] env=#{Rails.env} db=#{ActiveRecord::Base.connection_db_config.database}")
+      Rails.logger.info("[debug] community_id=#{@theme.community_id.inspect} exists=#{Community.exists?(@theme.community_id)}")
+      Rails.logger.info("[debug] errors=#{@theme.errors.full_messages}")
 
-    flash.now[:alert] = "入力内容を確認してください"
-    render :new, status: :unprocessable_entity
+      flash.now[:alert] = "入力内容を確認してください"
+      render :new, status: :unprocessable_entity
+    end
   end
-end
 
   def destroy
     unless @theme.user == current_user
@@ -54,5 +56,22 @@ end
 
   def set_theme
     @theme = Theme.find(params[:id])
+  end
+
+  # #49: テーマ詳細用の「同カテゴリ集計（期切替）」データを準備
+  def prepare_availability_aggregate
+    @cohort = params.fetch(:cohort, "all")
+
+    @availability_category = @theme.category.to_s
+    @availability_supported = %w[tech community].include?(@availability_category)
+
+    return unless @availability_supported
+
+    @cohort_options = User.distinct.order(:cohort).pluck(:cohort).compact
+
+    @availability_counts = Availability::AggregateCounts.call(
+      cohort: @cohort,
+      category: @availability_category
+    )
   end
 end
