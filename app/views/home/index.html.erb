@@ -54,4 +54,12 @@
       <p class="text-sm text-base-content/70">需要と参加人数を見て、主催者が開催を決定します。</p>
     </div>
   </div>
+
+  <%= render "availability/aggregate_panel",
+  url: request.path,
+  counts: @availability_counts,
+  cohort: @cohort,
+  category: @category,
+  cohort_options: @cohort_options
+  %>
 </section>

@@ -1,0 +1,55 @@
+<% wday_labels = %w[日 月 火 水 木 金 土] %>
+<% time_labels = (0..47).map do |i|
+     m = i * 30
+     format("%02d:%02d", m / 60, m % 60)
+   end %>
+
+<div class="rounded-lg border bg-white p-4 shadow-sm">
+  <div class="mb-3 flex items-center justify-between gap-3">
+    <h2 class="text-lg font-bold">参加可能時間（集計）</h2>
+
+    <%= form_with url: url, method: :get, local: true, class: "flex flex-wrap items-center gap-2" do %>
+      <label class="text-sm text-gray-600">期</label>
+      <%= select_tag :cohort,
+            options_for_select([["全員", "all"]] + cohort_options.map { |n| ["#{n}期", n] }, cohort),
+            class: "select select-bordered select-sm" %>
+
+      <label class="text-sm text-gray-600">カテゴリ</label>
+      <%= select_tag :category,
+            options_for_select([["Tech", "tech"], ["Community", "community"]], category),
+            class: "select select-bordered select-sm" %>
+
+      <%= submit_tag "表示", class: "btn btn-sm" %>
+    <% end %>
+  </div>
+
+  <div class="overflow-auto max-h-[70vh] rounded border">
+    <table class="min-w-full border-collapse text-sm">
+      <thead class="sticky top-0 bg-gray-50">
+        <tr>
+          <th class="border px-2 py-1 text-left">時間</th>
+          <% 0.upto(6) do |wday| %>
+            <th class="border px-2 py-1 text-center"><%= wday_labels[wday] %></th>
+          <% end %>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% time_labels.each_with_index do |t, i| %>
+          <tr>
+            <th class="border px-2 py-1 text-left bg-gray-50"><%= t %></th>
+            <% 0.upto(6) do |wday| %>
+              <td class="border px-2 py-1 text-center">
+                <%= counts[wday][i] %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-2 text-xs text-gray-500">
+    表示は「枠ごとの人数」です（個人は特定しません）。同一ユーザーは同一枠で1人としてカウントします。
+  </p>
+</div>
