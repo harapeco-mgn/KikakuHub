@@ -1,0 +1,30 @@
+
+# トリガー設定
+on:
+  push:
+    branches:
+      - '**'  # すべてのブランチでプッシュ時に実行
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # リポジトリのコードをチェックアウト
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Rubyのセットアップ
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0  # プロジェクトのRubyバージョンに合わせる
+          bundler-cache: true  # Gemを自動でキャッシュ
+
+      # Rubocopの実行
+      - name: Run Rubocop
+        run: bundle exec rubocop
