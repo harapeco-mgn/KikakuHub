@@ -1,10 +1,6 @@
 <% show_category_select = local_assigns.fetch(:show_category_select, true) %>
 
-<% wday_labels = %w[日 月 火 水 木 金 土] %>
-<% time_labels = (0..47).map do |i|
-     m = i * 30
-     format("%02d:%02d", m / 60, m % 60)
-   end %>
+<% wday_labels = AvailabilityHelper::WDAY_LABELS %>
 
 <% cohort_options = Array(cohort_options).compact %>
 <% selected_cohort = cohort.to_s %>
@@ -13,7 +9,7 @@
 <% safe_counts = counts.presence || Array.new(7) { Array.new(48, 0) } %>
 
 <div class="rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm">
-  <div class="mb-3 flex items-center justify-between gap-3">
+  <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <h2 class="text-lg font-bold">参加可能時間（集計）</h2>
 
     <%= form_with url: url, method: :get, local: true, class: "flex flex-wrap items-center gap-2" do %>
@@ -40,33 +36,108 @@
     <% end %>
   </div>
 
-  <div class="overflow-auto max-h-[70vh] rounded border border-base-300">
-    <table class="min-w-full border-collapse text-sm">
-      <thead class="sticky top-0 bg-base-200">
-        <tr>
-          <th class="border border-base-300 px-2 py-1 text-left">時間</th>
-          <% 0.upto(6) do |wday| %>
-            <th class="border border-base-300 px-2 py-1 text-center"><%= wday_labels[wday] %></th>
+  <%# 凡例（レジェンド） %>
+  <div class="mb-3 flex flex-wrap items-center gap-3 text-xs">
+    <span class="text-base-content/60 font-medium">凡例:</span>
+    <span class="inline-flex items-center gap-1">
+      <span class="inline-block h-4 w-4 rounded border border-base-300 bg-base-100"></span>
+      <span class="text-base-content/60">0人</span>
+    </span>
+    <span class="inline-flex items-center gap-1">
+      <span class="inline-block h-4 w-4 rounded border border-sky-200 bg-sky-100"></span>
+      <span>1-2人</span>
+    </span>
+    <span class="inline-flex items-center gap-1">
+      <span class="inline-block h-4 w-4 rounded border border-sky-300 bg-sky-300"></span>
+      <span>3-5人</span>
+    </span>
+    <span class="inline-flex items-center gap-1">
+      <span class="inline-block h-4 w-4 rounded border border-sky-500 bg-sky-500"></span>
+      <span>6-8人</span>
+    </span>
+    <span class="inline-flex items-center gap-1">
+      <span class="inline-block h-4 w-4 rounded border border-sky-700 bg-sky-700"></span>
+      <span>9人+</span>
+    </span>
+  </div>
+
+  <%# ガントチャート風表示 %>
+  <div class="overflow-x-auto rounded-lg border-2 border-base-300">
+    <table class="w-full border-collapse" style="min-width: 900px;">
+      <%# ヘッダー（2時間単位、4列結合） %>
+      <thead>
+        <tr class="bg-base-200">
+          <th rowspan="2" class="border-r-2 border-b-2 border-base-300 px-2 py-2 text-sm font-bold text-center w-12">曜日</th>
+          <% 0.step(22, 2) do |hour| %>
+            <th colspan="4" class="border-r-2 border-b border-base-300 py-1 text-center text-xs font-bold <%= hour % 6 == 0 ? 'bg-base-300/50' : '' %>">
+              <%= hour %>〜<%= hour + 2 %>時
+            </th>
+          <% end %>
+        </tr>
+        <%# サブヘッダー（30分単位） %>
+        <tr class="bg-base-200/50">
+          <% 0.upto(47) do |slot| %>
+            <% hour = slot / 2 %>
+            <% minute = (slot % 2) * 30 %>
+            <% is_block_start = slot % 4 == 0 %>
+            <th class="<%= is_block_start ? 'border-l-2 border-l-base-300' : 'border-l border-l-base-300/30' %> border-b-2 border-r border-r-base-300/30 border-base-300 py-1 text-center text-[10px] font-normal text-base-content/60" style="min-width: 18px;">
+              <%= minute == 0 ? format("%d", hour) : '' %>
+            </th>
           <% end %>
         </tr>
       </thead>
 
+      <%# 各曜日の行 %>
       <tbody>
-        <% time_labels.each_with_index do |t, i| %>
-          <tr>
-            <th class="border border-base-300 px-2 py-1 text-left bg-base-200"><%= t %></th>
-            <% 0.upto(6) do |wday| %>
-              <td class="border border-base-300 px-2 py-1 text-center">
-                <%= safe_counts[wday][i] %>
+        <% 0.upto(6) do |wday| %>
+          <tr class="hover:bg-base-100/30 transition-colors">
+            <%# 曜日ラベル %>
+            <th class="border-r-2 border-b-2 border-base-300 px-2 py-2 text-sm font-bold bg-base-200 text-center <%= [0, 6].include?(wday) ? 'text-error' : '' %>">
+              <%= wday_labels[wday] %>
+            </th>
+
+            <%# 時間枠（30分単位） %>
+            <% 0.upto(47) do |slot| %>
+              <% count = safe_counts[wday][slot] %>
+              <% hour = slot / 2 %>
+              <% minute = (slot % 2) * 30 %>
+              <% time_label = format("%02d:%02d", hour, minute) %>
+              <% is_block_start = slot % 4 == 0 %>
+              <td class="<%= is_block_start ? 'border-l-2 border-l-base-300' : 'border-l border-l-base-300/30' %> border-b-2 border-base-300 p-0 text-center">
+                <div class="group relative h-10 w-full <%= aggregate_cell_class_for_count(count) %> flex items-center justify-center cursor-default transition-all hover:brightness-110 hover:z-10">
+                  <% if count > 0 %>
+                    <span class="font-bold text-xs"><%= count %></span>
+                  <% end %>
+
+                  <%# カスタムツールチップ（下に表示） %>
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-2 bg-neutral text-neutral-content text-xs rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] whitespace-nowrap pointer-events-none">
+                    <%# 上向き矢印 %>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-neutral"></div>
+                    <div class="font-bold text-sm"><%= wday_labels[wday] %>曜日 <%= time_label %></div>
+                    <div class="mt-1">参加可能: <span class="text-sky-400 font-bold"><%= count %>人</span></div>
+                  </div>
+                </div>
               </td>
             <% end %>
           </tr>
         <% end %>
       </tbody>
+
+      <%# フッター（2時間単位） %>
+      <tfoot>
+        <tr class="bg-base-200">
+          <th class="border-r-2 border-base-300 px-2 py-1 text-sm font-bold text-center">時間</th>
+          <% 0.step(22, 2) do |hour| %>
+            <th colspan="4" class="border-r-2 border-base-300 py-1 text-center text-xs font-bold <%= hour % 6 == 0 ? 'bg-base-300/50' : '' %>">
+              <%= hour %>〜<%= hour + 2 %>時
+            </th>
+          <% end %>
+        </tr>
+      </tfoot>
     </table>
   </div>
 
   <p class="mt-2 text-xs text-base-content/60">
-    表示は「枠ごとの人数」です（個人は特定しません）。同一ユーザーは同一枠で1人としてカウントします。
+    各セルは30分の枠を表示。マウスを乗せると詳細が確認できます。
   </p>
 </div>
