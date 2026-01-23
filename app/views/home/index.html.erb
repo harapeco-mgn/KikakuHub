@@ -1,8 +1,8 @@
 <!-- Hero Section -->
-<section class="hero min-h-[50vh] rounded-box bg-base-100 shadow-xl">
-  <div class="hero-content py-16 text-center">
+<section class="hero min-h-[40vh] rounded-box bg-gradient-to-br from-base-100 to-base-200 shadow-xl">
+  <div class="hero-content py-12 text-center">
     <div class="max-w-2xl">
-      <div class="badge badge-primary badge-outline mb-4">企画支援サービス</div>
+      <div class="badge badge-primary badge-lg mb-4 shadow">企画支援サービス</div>
       <h1 class="text-4xl font-extrabold leading-tight md:text-5xl">
         やりたいテーマを集めて、<br class="hidden md:inline">開催の意思決定を後押し
       </h1>
@@ -29,37 +29,48 @@
   </div>
 </section>
 
-<!-- Features Section -->
-<section class="mt-12 grid gap-6 md:grid-cols-3">
-  <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-shadow hover:shadow-xl">
-    <div class="card-body items-center text-center">
-      <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-content">1</div>
-      <h2 class="card-title">テーマ投稿</h2>
-      <p class="text-sm text-base-content/70">カテゴリ・タイトル・概要を投稿して、やりたい企画を提案します。</p>
+<!-- How It Works Section -->
+<section class="mt-12">
+  <h2 class="text-2xl font-bold text-center mb-6">
+    <span class="text-primary">KikakuHub</span>の使い方
+  </h2>
+  <div class="grid gap-6 md:grid-cols-3">
+    <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="card-body items-center text-center">
+        <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-content shadow-lg">1</div>
+        <h3 class="card-title">テーマ投稿</h3>
+        <p class="text-sm text-base-content/70">カテゴリ・タイトル・概要を投稿して、やりたい企画を提案します。</p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="card-body items-center text-center">
+        <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-2xl font-bold text-secondary-content shadow-lg">2</div>
+        <h3 class="card-title">投票・参加表明</h3>
+        <p class="text-sm text-base-content/70">気になるテーマに投票し、参加意思を表明して需要を可視化します。</p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="card-body items-center text-center">
+        <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl font-bold text-accent-content shadow-lg">3</div>
+        <h3 class="card-title">開催判断</h3>
+        <p class="text-sm text-base-content/70">需要と参加人数を見て、主催者が開催を決定します。</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-shadow hover:shadow-xl">
-    <div class="card-body items-center text-center">
-      <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-xl font-bold text-secondary-content">2</div>
-      <h2 class="card-title">投票・参加表明</h2>
-      <p class="text-sm text-base-content/70">気になるテーマに投票し、参加意思を表明して需要を可視化します。</p>
-    </div>
-  </div>
-
-  <div class="card bg-base-100 shadow-md ring-1 ring-base-300 transition-shadow hover:shadow-xl">
-    <div class="card-body items-center text-center">
-      <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-xl font-bold text-accent-content">3</div>
-      <h2 class="card-title">開催判断</h2>
-      <p class="text-sm text-base-content/70">需要と参加人数を見て、主催者が開催を決定します。</p>
-    </div>
-  </div>
-
+<!-- Availability Aggregate Section -->
+<section class="mt-12">
+  <h2 class="text-2xl font-bold text-center mb-6">
+    <span class="text-sky-600">参加可能時間</span>の集計
+  </h2>
   <%= render "availability/aggregate_panel",
-  url: request.path,
-  counts: @availability_counts,
-  cohort: @cohort,
-  category: @category,
-  cohort_options: @cohort_options
+      url: request.path,
+      counts: @availability_counts,
+      cohort: @cohort,
+      category: @category,
+      cohort_options: @cohort_options
   %>
 </section>
