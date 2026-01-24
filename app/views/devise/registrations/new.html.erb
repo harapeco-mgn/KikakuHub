@@ -46,12 +46,15 @@
           <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
         </fieldset>
 
-        <fieldset class="fieldset mt-4">
-          <%= f.label :invite_key, "合言葉", class: "fieldset-legend" %>
-          <%= f.password_field :invite_key, autocomplete: "off", class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
-          <span class="label-text-alt text-base-content/60">招待された際に共有された合言葉を入力してください</span>
-        </fieldset>
-
+       <% if Rails.configuration.x.invite_key_required %>
+         <fieldset class="fieldset mt-4">
+           <%= f.label :invite_key, "合言葉", class: "fieldset-legend" %>
+           <%= f.password_field :invite_key,
+             autocomplete: "off",
+             class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary"
+           %>
+         </fieldset>
+       <% end %>
         <div class="mt-6">
           <%= f.submit "登録する", class: "btn btn-primary btn-block" %>
         </div>

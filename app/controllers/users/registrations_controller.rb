@@ -1,5 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   def create
+    if Rails.configuration.x.invite_key_required
     # フォームから来た合言葉（DBに保存しない）
     input_key = params.dig(:user, :invite_key).to_s
 
@@ -14,6 +15,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_minimum_password_length
       render :new, status: :unprocessable_entity
       return
+    end
     end
 
     # OKならDeviseの通常フローへ
