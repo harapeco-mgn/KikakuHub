@@ -32,40 +32,60 @@ end %>
      data-availability-draft-category-value="<%= @category %>"
      data-availability-draft-clear-value="<%= flash[:notice].present? %>">
 
-  <%# ===== 上部：説明カード + 保存ボタン ===== %>
-  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
-    <div class="card-body">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div class="min-w-0">
-          <h1 class="text-3xl font-extrabold">Weekly Availability</h1>
-          <p class="mt-2 text-sm text-base-content/60">
-            毎週の参加可能時間（開始〜終了）を曜日ごとに登録・編集します。
-          </p>
+  <%# ===== 説明カード ===== %>
+  <div class="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg ring-1 ring-primary/20">
+    <div class="card-body py-4 sm:py-6">
+      <h1 class="text-xl font-bold sm:text-2xl">参加可能時間の登録</h1>
+      <p class="text-sm text-base-content/70 leading-relaxed">
+        毎週参加できる時間帯を曜日ごとに登録してください。
+        <span class="text-primary font-medium">登録した時間帯は人数集計としてのみ表示</span>され、個人の予定は公開されません。
+      </p>
+    </div>
+  </div>
 
-          <%# Tech / Community タブ %>
-          <div class="mt-4">
-            <div role="tablist" class="tabs tabs-boxed">
-              <%= link_to "Tech",
-                profile_availability_slots_path(category: "tech"),
-                role: "tab",
-                class: "tab #{@category == 'tech' ? 'tab-active' : ''}",
-                data: { action: "click->availability-draft#switch", category: "tech" } %>
+  <%# ===== カテゴリ切り替えタブ（説明カードの下に配置） ===== %>
+  <div class="flex flex-col gap-3">
+    <p class="text-sm font-semibold text-base-content/70 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+      カテゴリを選択してください
+    </p>
+    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+      <%= link_to profile_availability_slots_path(category: "tech"),
+        class: "group relative flex flex-col items-center justify-center gap-2 p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 #{@category == 'tech' ? 'bg-primary text-primary-content border-primary shadow-lg shadow-primary/25 scale-[1.02]' : 'bg-base-100 border-base-300 hover:border-primary/50 hover:bg-primary/5'}",
+        data: { action: "click->availability-draft#switch", category: "tech" } do %>
+        <% if @category == 'tech' %>
+          <span class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary-content text-primary text-xs font-bold shadow">
+            ✓
+          </span>
+        <% end %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 <%= @category == 'tech' ? '' : 'text-primary' %>" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        <span class="font-bold text-sm sm:text-base"><%= Theme.human_enum_name(:category, "tech") %></span>
+        <span class="text-xs <%= @category == 'tech' ? 'text-primary-content/80' : 'text-base-content/50' %>">技術勉強会向け</span>
+      <% end %>
 
-              <%= link_to "Community",
-                profile_availability_slots_path(category: "community"),
-                role: "tab",
-                class: "tab #{@category == 'community' ? 'tab-active' : ''}",
-                data: { action: "click->availability-draft#switch", category: "community" } %>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button type="submit" form="weekly-availability-form" class="btn btn-primary px-8">
-            Save Changes
-          </button>
-        </div>
-      </div>
+      <%= link_to profile_availability_slots_path(category: "community"),
+        class: "group relative flex flex-col items-center justify-center gap-2 p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 #{@category == 'community' ? 'bg-secondary text-secondary-content border-secondary shadow-lg shadow-secondary/25 scale-[1.02]' : 'bg-base-100 border-base-300 hover:border-secondary/50 hover:bg-secondary/5'}",
+        data: { action: "click->availability-draft#switch", category: "community" } do %>
+        <% if @category == 'community' %>
+          <span class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-secondary-content text-secondary text-xs font-bold shadow">
+            ✓
+          </span>
+        <% end %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 <%= @category == 'community' ? '' : 'text-secondary' %>" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span class="font-bold text-sm sm:text-base"><%= Theme.human_enum_name(:category, "community") %></span>
+        <span class="text-xs <%= @category == 'community' ? 'text-secondary-content/80' : 'text-base-content/50' %>">交流イベント向け</span>
+      <% end %>
     </div>
   </div>
 
@@ -90,10 +110,15 @@ end %>
           <h2 class="text-base font-bold"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></h2>
 
           <button type="button"
-                  class="btn btn-ghost btn-sm text-primary"
+                  class="btn btn-ghost btn-sm text-primary gap-1 hover:bg-primary/10"
                   data-action="click->availability-slots#add"
                   data-availability-slots-wday-param="<%= wday %>">
-            <span class="mr-1">+</span> Add Slot
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            時間を追加
           </button>
         </div>
 
@@ -107,7 +132,7 @@ end %>
                   <%= fields_for "slots[#{slot.id}]", slot do |sf| %>
                     <div>
                       <label class="label">
-                        <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">START TIME</span>
+                        <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">開始時刻</span>
                       </label>
                       <div class="relative">
                         <%= sf.select :start_time, time_options,
@@ -124,7 +149,7 @@ end %>
 
                     <div>
                       <label class="label">
-                        <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">END TIME</span>
+                        <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">終了時刻</span>
                       </label>
                       <div class="relative">
                         <%= sf.select :end_time, end_time_options,
@@ -158,7 +183,14 @@ end %>
               </div>
             <% end %>
           <% else %>
-            <p class="text-sm text-base-content/60">未登録です</p>
+            <p class="text-sm text-base-content/50 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              まだ時間が登録されていません
+            </p>
           <% end %>
         </div>
 
@@ -172,7 +204,7 @@ end %>
 
               <div>
                 <label class="label">
-                  <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">START TIME</span>
+                  <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">開始時刻</span>
                 </label>
                 <div class="relative">
                   <select name="slots[__KEY__][start_time]" class="select select-bordered w-full pr-10">
@@ -192,7 +224,7 @@ end %>
 
               <div>
                 <label class="label">
-                  <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">END TIME</span>
+                  <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">終了時刻</span>
                 </label>
                 <div class="relative">
                   <select name="slots[__KEY__][end_time]" class="select select-bordered w-full pr-10">
@@ -227,5 +259,17 @@ end %>
         </template>
       </div>
     <% end %>
+
+    <%# ===== 保存ボタン（フォーム最下部） ===== %>
+    <div class="sticky bottom-4 z-10 flex justify-center pt-4">
+      <button type="submit" class="btn btn-primary btn-lg px-10 gap-2 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        保存する
+      </button>
+    </div>
   <% end %>
 </div>

@@ -24,12 +24,19 @@
       <% if show_category_select %>
         <label class="text-sm text-base-content/60">カテゴリ</label>
         <%= select_tag :category,
-              options_for_select([["Tech", "tech"], ["Community", "community"]], selected_category),
+              options_for_select( 
+                Theme.categories.keys.map { |k| [Theme.human_enum_name(:category, k), k] },
+                selected_category
+              ),
               class: "select select-bordered select-sm" %>
       <% else %>
         <%= hidden_field_tag :category, selected_category %>
         <span class="text-sm text-base-content/60">カテゴリ</span>
-        <span class="text-sm font-medium"><%= selected_category.capitalize %></span>
+        <span class="text-sm font-medium">
+          <%= selected_category.present? ?
+                I18n.t("activerecord.attributes.theme.categories.#{selected_category}") :
+                "未選択" %>
+        </span>
       <% end %>
 
       <%= submit_tag "表示", class: "btn btn-sm" %>

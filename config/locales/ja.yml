@@ -3,8 +3,8 @@ ja:
     format: "%{attribute}%{message}"
     messages:
       blank: "を入力してください"
-      too_long: "は%{count}文字以内で入力してください"
       required: "を入力してください"
+      too_long: "は%{count}文字以内で入力してください"
   activerecord:
     models:
       theme: "テーマ"
@@ -16,7 +16,9 @@ ja:
         title: "タイトル"
         description: "説明"
         secondary_label: "第2ボタン名"
-        community: "コミュニティ"
+        categories:
+          tech: "技術系"
+          community: "交流系"
       theme_comment:
         body: "コメント"
       availability_slot:
