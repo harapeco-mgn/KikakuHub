@@ -18,7 +18,7 @@
   <fieldset class="fieldset">
     <%= f.label :category, "カテゴリ", class: "fieldset-legend" %>
     <%= f.select :category,
-                 Theme.categories.keys.map { |k| [k, k] },
+                 Theme.categories.keys.map { |k| [Theme.human_enum_name(:category, k), k] },
                  { include_blank: "選択してください" },
                  class: "select select-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
     <span class="label-text-alt text-base-content/60">tech / community から選択</span>

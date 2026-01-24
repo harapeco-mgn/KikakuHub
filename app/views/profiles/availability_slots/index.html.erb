@@ -45,13 +45,13 @@ end %>
           <%# Tech / Community タブ %>
           <div class="mt-4">
             <div role="tablist" class="tabs tabs-boxed">
-              <%= link_to "Tech",
+              <%= link_to Theme.human_enum_name(:category, "tech"),
                 profile_availability_slots_path(category: "tech"),
                 role: "tab",
                 class: "tab #{@category == 'tech' ? 'tab-active' : ''}",
                 data: { action: "click->availability-draft#switch", category: "tech" } %>
 
-              <%= link_to "Community",
+              <%= link_to Theme.human_enum_name(:category, "community"),
                 profile_availability_slots_path(category: "community"),
                 role: "tab",
                 class: "tab #{@category == 'community' ? 'tab-active' : ''}",
