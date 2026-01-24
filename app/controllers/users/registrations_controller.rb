@@ -16,7 +16,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       render :new, status: :unprocessable_entity
       return
     end
-  end
+    end
 
     # OKならDeviseの通常フローへ
     super
