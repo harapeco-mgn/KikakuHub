@@ -16,7 +16,7 @@ resources :themes, only: %i[index show new create destroy] do
   scope module: :themes do
     resource  :vote,           only: %i[create destroy]
     resources :theme_comments, only: %i[create destroy]
-    resource :rsvp,            only: [:update]
+    resource :rsvp,            only: [ :update ]
   end
 end
   get "guidance", to: "static_pages#guidance"

@@ -27,7 +27,7 @@ module Availability
 
         # overlap or adjacent (連続もまとめる)
         if slot.start_minute <= last[:end]
-          last[:end] = [last[:end], slot.end_minute].max
+          last[:end] = [ last[:end], slot.end_minute ].max
           last[:remove] << slot
         else
           merged << { keep: slot, start: slot.start_minute, end: slot.end_minute, remove: [] }
