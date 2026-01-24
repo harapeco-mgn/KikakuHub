@@ -9,6 +9,7 @@ ja:
     models:
       theme: "テーマ"
       theme_comment: "コメント"
+      availability_slot: "参加可能時間"
     attributes:
       theme:
         category: "カテゴリ"
@@ -19,6 +20,7 @@ ja:
       theme_comment:
         body: "コメント"
       availability_slot:
+        category: "カテゴリ"
         categories:
-          tech: 技術系
-          community: 交流系
+          tech: "技術系"
+          community: "交流系"

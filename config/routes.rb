@@ -1,19 +1,24 @@
 Rails.application.routes.draw do
-  root "home#index"
-  devise_for :users, controllers: { registrations: "users/registrations" }
+root "home#index"
+devise_for :users, controllers: { registrations: "users/registrations" }
 
-  resource :mypage, only: %i[show]
-  scope :profile, as: :profile, module: :profiles do
-  resources :availability_slots, path: "availability", only: %i[index new create edit update destroy]
-end
-  resources :themes, only: %i[index show new create destroy] do
-    scope module: :themes do
-      resource  :vote,           only: %i[create destroy]
-      resources :theme_comments, only: %i[create destroy]
-      resource :rsvp,            only: [ :update ]
+resource :mypage, only: %i[show]
+
+scope :profile, as: :profile, module: :profiles do
+  resources :availability_slots, path: "availability", only: %i[index destroy] do
+    collection do
+      patch :bulk_update
     end
   end
+end
 
+resources :themes, only: %i[index show new create destroy] do
+  scope module: :themes do
+    resource  :vote,           only: %i[create destroy]
+    resources :theme_comments, only: %i[create destroy]
+    resource :rsvp,            only: [:update]
+  end
+end
   get "guidance", to: "static_pages#guidance"
 
   if Rails.env.development?
