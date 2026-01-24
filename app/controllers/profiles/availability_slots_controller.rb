@@ -3,105 +3,51 @@ module Profiles
     before_action :authenticate_user!
 
     def index
-      slots = current_user.availability_slots.order(:category, :wday, :start_minute)
-
-      merged_hash =
-        slots.group_by { |s| [ s.category, s.wday ] }
-             .transform_values do |group|
-               ranges = group.map do |s|
-                 { start_minute: s.start_minute, end_minute: s.end_minute, ids: [ s.id ] }
-               end
-               Availability::RangeMerger.call(ranges)
-             end
-
-      # 表示順を安定させる（categoryのenum順 → wday順）
-      @merged_availability_groups =
-        merged_hash.sort_by { |(category, wday), _| [ AvailabilitySlot.categories[category], wday ] }
+      @category = params[:category].presence_in(%w[tech community]) || "tech"
+      slots = current_user.availability_slots.where(category: @category)
+      @slots_by_wday = slots.group_by(&:wday)
     end
 
-    def new
-      @availability_slot = current_user.availability_slots.new
-    end
+    def bulk_update
+      @category = params[:category].presence_in(%w[tech community]) || "tech"
 
-    def create
-      @availability_slot = current_user.availability_slots.new(availability_slot_params)
-      if @availability_slot.save
-        redirect_to profile_availability_slots_path, notice: "参加可能時間を登録しました。"
-      else
-        render :new, status: :unprocessable_entity
-      end
-    end
+      slots_hash = params.fetch(:slots, {})
+      slots_hash = slots_hash.to_unsafe_h if slots_hash.is_a?(ActionController::Parameters)
 
-    def edit
-      @availability_slot = current_user.availability_slots.find(params[:id])
+      ActiveRecord::Base.transaction do
+        slots_hash.each do |key, attrs|
+          attrs = attrs.to_unsafe_h if attrs.is_a?(ActionController::Parameters)
+          p = ActionController::Parameters.new(attrs).permit(:start_time, :end_time, :wday, :category)
 
-      # まとめ表示から来たときは結合後の時間を初期表示
-      if params[:merged_start].present? && params[:merged_end].present?
-        @availability_slot.start_time = hhmm(params[:merged_start].to_i)
-        @availability_slot.end_time   = hhmm(params[:merged_end].to_i)
-      else
-        # 通常の編集（単体レコード）
-        @availability_slot.start_time = hhmm(@availability_slot.start_minute)
-        @availability_slot.end_time   = hhmm(@availability_slot.end_minute)
-      end
-    end
+          if key.to_s.start_with?("new_")
+            next if p[:start_time].blank? || p[:end_time].blank?
 
-    def update
-      @availability_slot = current_user.availability_slots.find(params[:id])
-      merged_ids = parse_merged_ids
-
-      # まとめ更新（merged_idsがあるなら“まとめ”として扱う）
-      if merged_ids.any?
-        @availability_slot.assign_attributes(availability_slot_params)
-
-        # blankを選ばれた場合に、古いminuteが残ってvalidにならないようにする
-        @availability_slot.start_minute = nil if availability_slot_params[:start_time].blank?
-        @availability_slot.end_minute   = nil if availability_slot_params[:end_time].blank?
-
-        if @availability_slot.valid?
-          ActiveRecord::Base.transaction do
-            current_user.availability_slots.where(id: merged_ids).delete_all
-            current_user.availability_slots.create!(availability_slot_params)
+            current_user.availability_slots.create!(
+              wday: p[:wday],
+              category: p[:category].presence || @category,
+              start_time: p[:start_time],
+              end_time: p[:end_time]
+            )
+          else
+            slot = current_user.availability_slots.find(key)
+            slot.update!(start_time: p[:start_time], end_time: p[:end_time])
           end
-          redirect_to profile_availability_slots_path, notice: "参加可能時間を更新しました。"
-        else
-          render :edit, status: :unprocessable_entity
         end
-
-      # 単体更新（通常）
-      else
-        if @availability_slot.update(availability_slot_params)
-          redirect_to profile_availability_slots_path, notice: "参加可能時間を更新しました。"
-        else
-          render :edit, status: :unprocessable_entity
-        end
+        Availability::WeeklySlotNormalizer.call(user: current_user, category: @category)
       end
+
+      redirect_to profile_availability_slots_path(category: @category), notice: "保存しました"
+    rescue ActiveRecord::RecordInvalid => e
+      slots = current_user.availability_slots.where(category: @category)
+      @slots_by_wday = slots.group_by(&:wday)
+      flash.now[:alert] = "保存に失敗しました: #{e.record.errors.full_messages.first}"
+      render :index, status: :unprocessable_entity
     end
 
     def destroy
-      merged_ids = parse_merged_ids
-
-      if merged_ids.any?
-        current_user.availability_slots.where(id: merged_ids).destroy_all
-      else
-        current_user.availability_slots.find(params[:id]).destroy!
-      end
-
-      redirect_to profile_availability_slots_path, notice: "削除しました。"
-    end
-
-    private
-
-    def availability_slot_params
-      params.require(:availability_slot).permit(:category, :wday, :start_time, :end_time)
-    end
-
-    def parse_merged_ids
-      params[:merged_ids].to_s.split(",").map(&:to_i).uniq
-    end
-
-    def hhmm(min)
-      format("%02d:%02d", min / 60, min % 60)
+      slot = current_user.availability_slots.find(params[:id])
+      slot.destroy!
+      redirect_to profile_availability_slots_path(category: slot.category), notice: "削除しました"
     end
   end
 end

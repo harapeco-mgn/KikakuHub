@@ -1,58 +1,231 @@
-<h1 class="text-xl font-bold mb-4">参加可能時間</h1>
+<%# ========== 曜日（0=月, ... 6=日）に統一 ========== %>
+<% wday_en = %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday] %>
+<% wday_jp = %w[月曜日 火曜日 水曜日 木曜日 金曜日 土曜日 日曜日] %>
+<% wdays_order = (0..6).to_a %>
 
-<div class="mb-4">
-  <%= link_to "新規登録", new_profile_availability_slot_path, class: "btn btn-primary" %>
-</div>
+<%# ========== 時刻オプション（30分刻み） ========== %>
+<% time_options =
+  (0..47).map do |i|
+    m = i * 30
+    label = format("%02d:%02d", m / 60, m % 60)
+    [label, label]
+  end
+%>
+<% end_time_options = time_options + [["24:00", "24:00"]] %>
 
-<div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>カテゴリ</th>
-        <th>曜日</th>
-        <th>開始</th>
-        <th>終了</th>
-        <th></th>
-      </tr>
-    </thead>
+<%# ========== start_minute/end_minute を "HH:MM" に変換して selected を確実に当てる ========== %>
+<% minute_to_hhmm = ->(m) { format("%02d:%02d", m / 60, m % 60) } %>
+<% selected_hhmm = ->(obj, minute_attr, fallback_attr) do
+  if obj.respond_to?(minute_attr) && !obj.public_send(minute_attr).nil?
+    minute_to_hhmm.call(obj.public_send(minute_attr))
+  else
+    obj.public_send(fallback_attr).to_s
+  end
+end %>
 
-    <tbody>
-      <% wdays = %w[月 火 水 木 金 土 日] %>
+<%# controller でセットされる想定 %>
+<% @category ||= (params[:category].presence || "tech") %>
+<% @slots_by_wday ||= {} %>
 
-      <% @merged_availability_groups.each do |(category, wday), ranges| %>
-        <% ranges.each do |range| %>
-          <% rep_id = range[:ids].first %>
-          <% merged_ids_str = range[:ids].join(",") %>
+<div class="mx-auto max-w-4xl px-4 py-8 space-y-6"
+     data-controller="availability-draft availability-slots"
+     data-availability-draft-category-value="<%= @category %>"
+     data-availability-draft-clear-value="<%= flash[:notice].present? %>">
 
-          <tr>
-            <td>
-              <%= t("activerecord.attributes.availability_slot.categories.#{category}", default: category) %>
-            </td>
+  <%# ===== 上部：説明カード + 保存ボタン ===== %>
+  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+    <div class="card-body">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+          <h1 class="text-3xl font-extrabold">Weekly Availability</h1>
+          <p class="mt-2 text-sm text-base-content/60">
+            毎週の参加可能時間（開始〜終了）を曜日ごとに登録・編集します。
+          </p>
 
-            <td><%= wdays[wday] %></td>
+          <%# Tech / Community タブ %>
+          <div class="mt-4">
+            <div role="tablist" class="tabs tabs-boxed">
+              <%= link_to "Tech",
+                profile_availability_slots_path(category: "tech"),
+                role: "tab",
+                class: "tab #{@category == 'tech' ? 'tab-active' : ''}",
+                data: { action: "click->availability-draft#switch", category: "tech" } %>
 
-            <td><%= format("%02d:%02d", range[:start_minute] / 60, range[:start_minute] % 60) %></td>
-            <td><%= format("%02d:%02d", range[:end_minute] / 60, range[:end_minute] % 60) %></td>
+              <%= link_to "Community",
+                profile_availability_slots_path(category: "community"),
+                role: "tab",
+                class: "tab #{@category == 'community' ? 'tab-active' : ''}",
+                data: { action: "click->availability-draft#switch", category: "community" } %>
+            </div>
+          </div>
+        </div>
 
-            <td class="text-right">
-              <%= link_to "編集",
-                          edit_profile_availability_slot_path(
-                            rep_id,
-                            merged_ids: merged_ids_str,
-                            merged_start: range[:start_minute],
-                            merged_end: range[:end_minute]
-                          ),
-                          class: "btn btn-sm" %>
+        <div class="flex items-center gap-2">
+          <button type="submit" form="weekly-availability-form" class="btn btn-primary px-8">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-              <%= button_to "削除",
-                            profile_availability_slot_path(rep_id, merged_ids: merged_ids_str),
-                            method: :delete,
-                            data: { turbo_confirm: "削除しますか？" },
-                            class: "btn btn-sm btn-outline" %>
-            </td>
-          </tr>
-        <% end %>
-      <% end %>
-    </tbody>
-  </table>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-error"><div><%= flash[:alert] %></div></div>
+  <% end %>
+
+  <%# ===== 一括保存フォーム（Turbo無効で安定） ===== %>
+  <%= form_with url: bulk_update_profile_availability_slots_path,
+                method: :patch,
+                id: "weekly-availability-form",
+                local: true,
+                class: "space-y-6" do %>
+
+    <%= hidden_field_tag :category, @category %>
+
+    <% wdays_order.each do |wday| %>
+      <% slots = (@slots_by_wday[wday] || []) %>
+
+      <div class="rounded-2xl border border-base-300 bg-base-100 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between bg-base-200/50 px-6 py-4">
+          <h2 class="text-base font-bold"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></h2>
+
+          <button type="button"
+                  class="btn btn-ghost btn-sm text-primary"
+                  data-action="click->availability-slots#add"
+                  data-availability-slots-wday-param="<%= wday %>">
+            <span class="mr-1">+</span> Add Slot
+          </button>
+        </div>
+
+        <%# ★追加先：この div に行をappendする %>
+        <div class="px-6 py-6 space-y-4" data-slot-list="<%= wday %>">
+          <%# ===== 既存スロット（編集 + 削除） ===== %>
+          <% if slots.any? %>
+            <% slots.each do |slot| %>
+              <div class="flex items-end gap-3">
+                <div class="flex-1 grid gap-4 sm:grid-cols-2">
+                  <%= fields_for "slots[#{slot.id}]", slot do |sf| %>
+                    <div>
+                      <label class="label">
+                        <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">START TIME</span>
+                      </label>
+                      <div class="relative">
+                        <%= sf.select :start_time, time_options,
+                          { selected: selected_hhmm.call(sf.object, :start_minute, :start_time) },
+                          class: "select select-bordered w-full pr-10" %>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v5l3 2"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="label">
+                        <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">END TIME</span>
+                      </label>
+                      <div class="relative">
+                        <%= sf.select :end_time, end_time_options,
+                          { selected: selected_hhmm.call(sf.object, :end_minute, :end_time) },
+                          class: "select select-bordered w-full pr-10" %>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v5l3 2"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <%= sf.hidden_field :wday, value: wday %>
+                    <%= sf.hidden_field :category, value: @category %>
+                  <% end %>
+                </div>
+
+                <%= link_to profile_availability_slot_path(slot),
+                  data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+                  class: "btn btn-ghost btn-square" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18"></path>
+                    <path d="M8 6V4h8v2"></path>
+                    <path d="M19 6l-1 14H6L5 6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                  </svg>
+                <% end %>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-base-content/60">未登録です</p>
+          <% end %>
+        </div>
+
+        <%# ★選択2：初期の空行は廃止。Add Slotでのみ追加する。 %>
+        <%# ★テンプレート（曜日ごと）。JSが __KEY__ を new_... に置換して data-slot-list に append します。 %>
+        <template data-slot-template="<%= wday %>">
+          <div class="flex items-end gap-3 js-slot-row">
+            <div class="flex-1 grid gap-4 sm:grid-cols-2">
+              <input type="hidden" name="slots[__KEY__][wday]" value="<%= wday %>">
+              <input type="hidden" name="slots[__KEY__][category]" value="<%= @category %>">
+
+              <div>
+                <label class="label">
+                  <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">START TIME</span>
+                </label>
+                <div class="relative">
+                  <select name="slots[__KEY__][start_time]" class="select select-bordered w-full pr-10">
+                    <option value=""></option>
+                    <% time_options.each do |label, val| %>
+                      <option value="<%= val %>"><%= label %></option>
+                    <% end %>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v5l3 2"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="label">
+                  <span class="label-text text-xs font-semibold tracking-widest text-base-content/60">END TIME</span>
+                </label>
+                <div class="relative">
+                  <select name="slots[__KEY__][end_time]" class="select select-bordered w-full pr-10">
+                    <option value=""></option>
+                    <% end_time_options.each do |label, val| %>
+                      <option value="<%= val %>"><%= label %></option>
+                    <% end %>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v5l3 2"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <%# 未保存行なので、DB削除ではなくDOMから除去 %>
+            <button type="button"
+                    class="btn btn-ghost btn-square"
+                    data-action="click->availability-slots#remove">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4h8v2"></path>
+                <path d="M19 6l-1 14H6L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+        </template>
+      </div>
+    <% end %>
+  <% end %>
 </div>
