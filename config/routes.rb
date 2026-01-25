@@ -9,6 +9,8 @@ scope :profile, as: :profile, module: :profiles do
     collection do
       patch :bulk_update
       post  :bulk_create
+      patch :overwrite_copy_category
+      delete :destroy_all
     end
   end
 end
