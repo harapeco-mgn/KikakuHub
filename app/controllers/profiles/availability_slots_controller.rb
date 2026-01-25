@@ -22,22 +22,22 @@ module Profiles
       end
 
       result = Availability::BulkCreateSlots.call(
-  user: current_user,
-  category: @category,
-  wdays: wdays,
-  start_minute: start_minute,
-  end_minute: end_minute
-)
+        user: current_user,
+        category: @category,
+        wdays: wdays,
+        start_minute: start_minute,
+        end_minute: end_minute
+      )
 
-wday_labels = %w[日 月 火 水 木 金 土] # wday=0が日、6が土
+      wday_labels = %w[日 月 火 水 木 金 土] # wday=0が日、6が土
 
-unchanged_wdays = Array(result[:unchanged_wdays])
-unchanged_days  = unchanged_wdays.map { |i| wday_labels[i] }.join("、")
+      unchanged_wdays = Array(result[:unchanged_wdays])
+      unchanged_days  = unchanged_wdays.map { |i| wday_labels[i] }.join("、")
 
-msg = "一括追加しました（追加: #{result[:created]}日 / 統合: #{result[:merged]}日 / 変更なし: #{result[:unchanged]}日）"
-msg += " 変更なし: #{unchanged_days}（既存の時間に含まれる）" if result[:unchanged].to_i.positive?
+      msg = "一括追加しました（追加: #{result[:created]}日 / 統合: #{result[:merged]}日 / 変更なし: #{result[:unchanged]}日）"
+      msg += " 変更なし: #{unchanged_days}（既存の時間に含まれる）" if result[:unchanged].to_i.positive?
 
-redirect_to profile_availability_slots_path(category: @category), notice: msg
+      redirect_to profile_availability_slots_path(category: @category), notice: msg
     end
 
     def bulk_update
@@ -95,6 +95,27 @@ redirect_to profile_availability_slots_path(category: @category), notice: msg
       slot = current_user.availability_slots.find(params[:id])
       slot.destroy!
       redirect_to profile_availability_slots_path(category: slot.category), notice: "削除しました"
+    end
+
+    def overwrite_copy_category
+      from = params.require(:from_category)
+      to   = (from == "tech" ? "community" : "tech")
+
+      source = current_user.availability_slots.where(category: from)
+      if source.none?
+        redirect_to profile_availability_slots_path(category: from),
+                alert: "コピー元（#{Theme.human_enum_name(:category, from)}）に登録がないため実行できません。"
+        return
+      end
+
+      result = AvailabilitySlot.overwrite_copy_category!(
+        user: current_user,
+        from_category: from,
+        to_category: to
+      )
+
+      redirect_to profile_availability_slots_path(category: to),
+                  notice: "上書きコピー完了：#{Theme.human_enum_name(:category, to)}（既存#{result[:deleted]}件削除 / #{result[:created]}件コピー）"
     end
 
     private
