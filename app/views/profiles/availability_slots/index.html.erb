@@ -88,20 +88,20 @@ end %>
       <% end %>
     </div>
   </div>
-  <% other_category = (@category == "tech" ? "community" : "tech") %>
-
-<div class="flex items-center justify-end gap-2">
-  <%= button_to "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー",
-        overwrite_copy_category_profile_availability_slots_path,
-        method: :post,
-        params: { from_category: @category },
-        data: { turbo_confirm: "「#{Theme.human_enum_name(:category, other_category)}」を現在の内容で上書きします。よろしいですか？" },
-        class: "btn btn-outline btn-sm" %>
-</div>
+  
 
 <button type="button" class="btn btn-outline btn-sm" onclick="bulkAddModal.showModal()">
   まとめて追加
 </button>
+
+<div class="flex items-center justify-end gap-2">
+  <%= button_to "#{Theme.human_enum_name(:category, @category)}を全消し",
+        destroy_all_profile_availability_slots_path,
+        method: :delete,
+        params: { category: @category },
+        data: { turbo_confirm: "「#{Theme.human_enum_name(:category, @category)}」の参加可能時間をすべて削除します。よろしいですか？" },
+        class: "btn btn-error btn-sm" %>
+</div>
 
 <dialog id="bulkAddModal" class="modal">
   <div class="modal-box">
@@ -336,15 +336,27 @@ end %>
     <% end %>
 
     <%# ===== 保存ボタン（フォーム最下部） ===== %>
-    <div class="sticky bottom-4 z-10 flex justify-center pt-4">
-      <button type="submit" class="btn btn-primary btn-lg px-10 gap-2 shadow-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        保存する
-      </button>
-    </div>
+    <% other_category = (@category == "tech" ? "community" : "tech") %>
+<% confirm_msg = "「#{Theme.human_enum_name(:category, other_category)}」を現在の入力内容で上書きします。よろしいですか？" %>
+
+<div class="sticky bottom-4 z-10 flex justify-center gap-3 pt-4">
+  <button type="submit"
+          formaction="<%= overwrite_copy_category_profile_availability_slots_path %>"
+          name="from_category"
+          value="<%= @category %>"
+          class="btn btn-outline btn-lg px-10"
+          onclick="<%= "return confirm(#{confirm_msg.to_json})" %>">
+    <%= "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー" %>
+  </button>
+
+  <button type="submit" class="btn btn-primary btn-lg px-10 gap-2 shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      <polyline points="7 3 7 8 15 8"></polyline>
+    </svg>
+    保存する
+  </button>
+</div>
   <% end %>
 </div>
