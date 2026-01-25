@@ -8,6 +8,7 @@ scope :profile, as: :profile, module: :profiles do
   resources :availability_slots, path: "availability", only: %i[index destroy] do
     collection do
       patch :bulk_update
+      post  :bulk_create
     end
   end
 end

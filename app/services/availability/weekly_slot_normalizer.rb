@@ -1,7 +1,7 @@
 module Availability
   class WeeklySlotNormalizer
     # 重なり/連続をまとめて、DB上も1本にする
-    # category は "tech"/"community" を想定（enumでもOK）
+    # category は "tech"/"community" を想定
     def self.call(user:, category:)
       slots = user.availability_slots
                   .where(category: category)
@@ -14,7 +14,7 @@ module Availability
     end
 
     def self.merge_day!(day_slots)
-      sorted = day_slots.sort_by(&:start_minute)
+      sorted = day_slots.sort_by { |s| [ s.start_minute, -s.end_minute.to_i, s.id ] }
 
       merged = []
       sorted.each do |slot|
@@ -25,7 +25,7 @@ module Availability
 
         last = merged[-1]
 
-        # overlap or adjacent (連続もまとめる)
+        # overlap or adjacent（隣接も結合）
         if slot.start_minute <= last[:end]
           last[:end] = [ last[:end], slot.end_minute ].max
           last[:remove] << slot
@@ -37,13 +37,13 @@ module Availability
       merged.each do |m|
         keep = m[:keep]
 
-        # まとめた値を代表レコードに反映（start_minute/end_minute を直接更新）
+        # ★先に削除（unique競合を避ける）
+        m[:remove].each(&:destroy!)
+
+        # その後に更新
         if keep.start_minute != m[:start] || keep.end_minute != m[:end]
           keep.update!(start_minute: m[:start], end_minute: m[:end])
         end
-
-        # 代表以外は削除
-        m[:remove].each(&:destroy!)
       end
     end
     private_class_method :merge_day!
