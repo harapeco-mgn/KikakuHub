@@ -14,7 +14,7 @@ module Availability
     end
 
     def self.merge_day!(day_slots)
-      sorted = day_slots.sort_by { |s| [s.start_minute, -s.end_minute.to_i, s.id] }
+      sorted = day_slots.sort_by { |s| [ s.start_minute, -s.end_minute.to_i, s.id ] }
 
       merged = []
       sorted.each do |slot|
@@ -27,7 +27,7 @@ module Availability
 
         # overlap or adjacent（隣接も結合）
         if slot.start_minute <= last[:end]
-          last[:end] = [last[:end], slot.end_minute].max
+          last[:end] = [ last[:end], slot.end_minute ].max
           last[:remove] << slot
         else
           merged << { keep: slot, start: slot.start_minute, end: slot.end_minute, remove: [] }
