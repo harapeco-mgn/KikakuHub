@@ -1,6 +1,6 @@
-<%# ========== 曜日（0=月, ... 6=日）に統一 ========== %>
-<% wday_en = %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday] %>
-<% wday_jp = %w[月曜日 火曜日 水曜日 木曜日 金曜日 土曜日 日曜日] %>
+<%# ========== 曜日（0=日, ... 6=土）に統一（Date#wday） ========== %>
+<% wday_en = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday] %>
+<% wday_jp = %w[日曜日 月曜日 火曜日 水曜日 木曜日 金曜日 土曜日] %>
 <% wdays_order = (0..6).to_a %>
 
 <%# ========== 時刻オプション（30分刻み） ========== %>
@@ -88,6 +88,71 @@ end %>
       <% end %>
     </div>
   </div>
+
+<button type="button" class="btn btn-outline btn-sm" onclick="bulkAddModal.showModal()">
+  まとめて追加
+</button>
+
+<dialog id="bulkAddModal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg mb-3">まとめて追加</h3>
+
+    <%= form_with url: bulk_create_profile_availability_slots_path, method: :post do %>
+      <%= hidden_field_tag "bulk[category]", @category %>
+
+      <div class="space-y-4">
+        <div>
+          <div class="label"><span class="label-text">対象曜日（複数選択）</span></div>
+          <div class="flex flex-wrap gap-3">
+            <% %w[日 月 火 水 木 金 土].each_with_index do |label, i| %>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="checkbox" name="bulk[wdays][]" value="<%= i %>">
+                <span><%= label %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <% time_options =
+          (0..47).map do |i|
+            m = i * 30
+            label = format("%02d:%02d", m / 60, m % 60)
+            [label, label]
+          end
+        %>
+        <% end_time_options = time_options + [["24:00", "24:00"]] %>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <div class="label"><span class="label-text">開始時刻</span></div>
+            <%= select_tag "bulk[start_time]",
+                  options_for_select(time_options),
+                  include_blank: true,
+                  class: "select select-bordered w-full" %>
+          </div>
+
+          <div>
+            <div class="label"><span class="label-text">終了時刻</span></div>
+            <%= select_tag "bulk[end_time]",
+                  options_for_select(end_time_options),
+                  include_blank: true,
+                  class: "select select-bordered w-full" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn" onclick="bulkAddModal.close()">キャンセル</button>
+        <button type="submit" class="btn btn-primary">追加する</button>
+      </div>
+    <% end %>
+  </div>
+
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
 
   <% if flash[:alert].present? %>
     <div class="alert alert-error"><div><%= flash[:alert] %></div></div>
