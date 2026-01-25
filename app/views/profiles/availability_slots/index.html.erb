@@ -90,12 +90,12 @@ end %>
   </div>
   
 
-<button type="button" class="btn btn-outline btn-sm" onclick="bulkAddModal.showModal()">
-  まとめて追加
-</button>
+<div class="flex items-center justify-between gap-2">
+  <button type="button" class="btn btn-outline btn-sm" onclick="bulkAddModal.showModal()">
+    曜日を選択してまとめて追加
+  </button>
 
-<div class="flex items-center justify-end gap-2">
-  <%= button_to "#{Theme.human_enum_name(:category, @category)}を全消し",
+  <%= button_to "#{Theme.human_enum_name(:category, @category)}の登録をすべて削除",
         destroy_all_profile_availability_slots_path,
         method: :delete,
         params: { category: @category },
@@ -344,7 +344,7 @@ end %>
           formaction="<%= overwrite_copy_category_profile_availability_slots_path %>"
           name="from_category"
           value="<%= @category %>"
-          class="btn btn-outline btn-lg px-10"
+          class="btn btn-warning btn-lg px-10"
           onclick="<%= "return confirm(#{confirm_msg.to_json})" %>">
     <%= "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー" %>
   </button>
