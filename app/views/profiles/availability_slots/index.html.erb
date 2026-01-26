@@ -27,141 +27,153 @@ end %>
 <% @category ||= (params[:category].presence || "tech") %>
 <% @slots_by_wday ||= {} %>
 
-<div class="mx-auto max-w-4xl px-4 py-8 space-y-6"
+<div class="mx-auto max-w-4xl px-4 py-8 space-y-8"
      data-controller="availability-draft availability-slots"
      data-availability-draft-category-value="<%= @category %>"
      data-availability-draft-clear-value="<%= flash[:notice].present? %>">
 
   <%# ===== 説明カード ===== %>
-  <div class="card bg-gradient-to-br from-primary/5 to-secondary/5 shadow-lg ring-1 ring-primary/20">
-    <div class="card-body py-4 sm:py-6">
-      <h1 class="text-xl font-bold sm:text-2xl">参加可能時間の登録</h1>
-      <p class="text-sm text-base-content/70 leading-relaxed">
-        毎週参加できる時間帯を曜日ごとに登録してください。
-        <span class="text-primary font-medium">登録した時間帯は人数集計としてのみ表示</span>され、個人の予定は公開されません。
-      </p>
-    </div>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 bg-gradient-to-r from-purple-50/50 to-blue-50/50">
+    <h1 class="text-2xl font-bold text-gray-900 mb-3">参加可能時間の登録</h1>
+    <p class="text-gray-600 text-sm leading-relaxed">
+      毎週参加できる時間帯を曜日ごとに登録してください。<span class="text-primary font-medium cursor-pointer hover:underline">登録した時間帯は人数集計としてのみ表示</span>され、個人の予定は公開されません。
+    </p>
   </div>
 
-  <%# ===== カテゴリ切り替えタブ（説明カードの下に配置） ===== %>
-  <div class="flex flex-col gap-3">
-    <p class="text-sm font-semibold text-base-content/70 flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 6h16M4 12h16M4 18h16"></path>
-      </svg>
-      カテゴリを選択してください
-    </p>
-    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+  <%# ===== カテゴリ切り替えタブ ===== %>
+  <div class="space-y-4">
+    <div class="flex items-center gap-2 text-gray-700 font-medium">
+      <span class="material-icons-outlined text-lg">format_list_bulleted</span>
+      <h2>カテゴリを選択してください</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <%# 技術系カード %>
       <%= link_to profile_availability_slots_path(category: "tech"),
-        class: "group relative flex flex-col items-center justify-center gap-2 p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 #{@category == 'tech' ? 'bg-primary text-primary-content border-primary shadow-lg shadow-primary/25 scale-[1.02]' : 'bg-base-100 border-base-300 hover:border-primary/50 hover:bg-primary/5'}",
+        class: "relative group cursor-pointer",
         data: { action: "click->availability-draft#switch", category: "tech" } do %>
         <% if @category == 'tech' %>
-          <span class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary-content text-primary text-xs font-bold shadow">
-            ✓
-          </span>
+          <div class="absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md z-10">
+            <span class="material-icons-outlined text-primary text-xl bg-purple-100 rounded-full">check_circle</span>
+          </div>
         <% end %>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 <%= @category == 'tech' ? '' : 'text-primary' %>" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-        <span class="font-bold text-sm sm:text-base"><%= Theme.human_enum_name(:category, "tech") %></span>
-        <span class="text-xs <%= @category == 'tech' ? 'text-primary-content/80' : 'text-base-content/50' %>">技術勉強会向け</span>
+        <div class="<%= @category == 'tech' ? 'bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2' : 'bg-white border border-gray-200 hover:border-primary/50 hover:bg-primary/5' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all transform hover:scale-[1.01]">
+          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'tech' ? '' : 'text-primary' %>">monitor</span>
+          <h3 class="text-xl font-bold mb-1 <%= @category == 'tech' ? '' : 'text-gray-900' %>"><%= Theme.human_enum_name(:category, "tech") %></h3>
+          <p class="<%= @category == 'tech' ? 'text-indigo-100' : 'text-gray-500' %> text-sm">技術勉強会向け</p>
+        </div>
       <% end %>
 
+      <%# 交流系カード %>
       <%= link_to profile_availability_slots_path(category: "community"),
-        class: "group relative flex flex-col items-center justify-center gap-2 p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 #{@category == 'community' ? 'bg-secondary text-secondary-content border-secondary shadow-lg shadow-secondary/25 scale-[1.02]' : 'bg-base-100 border-base-300 hover:border-secondary/50 hover:bg-secondary/5'}",
+        class: "cursor-pointer group",
         data: { action: "click->availability-draft#switch", category: "community" } do %>
         <% if @category == 'community' %>
-          <span class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-secondary-content text-secondary text-xs font-bold shadow">
-            ✓
-          </span>
+          <div class="absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md z-10">
+            <span class="material-icons-outlined text-secondary text-xl bg-pink-100 rounded-full">check_circle</span>
+          </div>
         <% end %>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 <%= @category == 'community' ? '' : 'text-secondary' %>" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <span class="font-bold text-sm sm:text-base"><%= Theme.human_enum_name(:category, "community") %></span>
-        <span class="text-xs <%= @category == 'community' ? 'text-secondary-content/80' : 'text-base-content/50' %>">交流イベント向け</span>
+        <div class="<%= @category == 'community' ? 'bg-secondary text-white shadow-lg ring-2 ring-secondary ring-offset-2' : 'bg-white border border-gray-200 hover:border-pink-300 hover:bg-pink-50' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all">
+          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'community' ? '' : 'text-pink-500' %>">groups</span>
+          <h3 class="text-xl font-bold mb-1 <%= @category == 'community' ? '' : 'text-gray-900 group-hover:text-pink-600' %>"><%= Theme.human_enum_name(:category, "community") %></h3>
+          <p class="<%= @category == 'community' ? 'text-pink-100' : 'text-gray-500 group-hover:text-pink-500/80' %> text-sm">交流イベント向け</p>
+        </div>
       <% end %>
     </div>
   </div>
-  
 
-<div class="flex items-center justify-between gap-2">
-  <button type="button" class="btn btn-outline btn-sm" onclick="bulkAddModal.showModal()">
-    曜日を選択してまとめて追加
-  </button>
-
-  <%= button_to "#{Theme.human_enum_name(:category, @category)}の登録をすべて削除",
-        destroy_all_profile_availability_slots_path,
-        method: :delete,
-        params: { category: @category },
-        data: { turbo_confirm: "「#{Theme.human_enum_name(:category, @category)}」の参加可能時間をすべて削除します。よろしいですか？" },
-        class: "btn btn-error btn-sm" %>
-</div>
-
-<dialog id="bulkAddModal" class="modal">
-  <div class="modal-box">
-    <h3 class="font-bold text-lg mb-3">まとめて追加</h3>
-
-    <%= form_with url: bulk_create_profile_availability_slots_path, method: :post do %>
-      <%= hidden_field_tag "bulk[category]", @category %>
-
-      <div class="space-y-4">
-        <div>
-          <div class="label"><span class="label-text">対象曜日（複数選択）</span></div>
-          <div class="flex flex-wrap gap-3">
-            <% %w[日 月 火 水 木 金 土].each_with_index do |label, i| %>
-              <label class="flex items-center gap-2">
-                <input type="checkbox" class="checkbox" name="bulk[wdays][]" value="<%= i %>">
-                <span><%= label %></span>
-              </label>
-            <% end %>
-          </div>
-        </div>
-
-        <% time_options =
-          (0..47).map do |i|
-            m = i * 30
-            label = format("%02d:%02d", m / 60, m % 60)
-            [label, label]
-          end
-        %>
-        <% end_time_options = time_options + [["24:00", "24:00"]] %>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <div class="label"><span class="label-text">開始時刻</span></div>
-            <%= select_tag "bulk[start_time]",
-                  options_for_select(time_options),
-                  include_blank: true,
-                  class: "select select-bordered w-full" %>
-          </div>
-
-          <div>
-            <div class="label"><span class="label-text">終了時刻</span></div>
-            <%= select_tag "bulk[end_time]",
-                  options_for_select(end_time_options),
-                  include_blank: true,
-                  class: "select select-bordered w-full" %>
-          </div>
-        </div>
+  <%# ===== 一括登録ショートカット ===== %>
+  <div class="bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-dashed border-gray-300 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all hover:border-primary/50 group">
+    <div class="flex items-start gap-4">
+      <div class="p-3 bg-primary/10 rounded-full text-primary">
+        <span class="material-icons-outlined text-2xl">date_range</span>
       </div>
-
-      <div class="modal-action">
-        <button type="button" class="btn" onclick="bulkAddModal.close()">キャンセル</button>
-        <button type="submit" class="btn btn-primary">追加する</button>
+      <div>
+        <h3 class="font-bold text-lg text-gray-900">一括登録ショートカット</h3>
+        <p class="text-sm text-gray-500 mt-1">
+          複数の曜日をまとめて選択し、同じ時間帯を一気に登録できます。
+        </p>
       </div>
+    </div>
+    <button type="button"
+            class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-primary hover:border-primary transition-all shadow-sm flex items-center justify-center gap-2 group-hover:shadow-md whitespace-nowrap"
+            onclick="bulkAddModal.showModal()">
+      <span class="material-icons-outlined text-xl">playlist_add</span>
+      曜日を選択してまとめて追加
+    </button>
+  </div>
+
+  <%# ===== 削除ボタン ===== %>
+  <div class="flex justify-end">
+    <%= button_to destroy_all_profile_availability_slots_path,
+          method: :delete,
+          params: { category: @category },
+          data: { turbo_confirm: "「#{Theme.human_enum_name(:category, @category)}」の参加可能時間をすべて削除します。よろしいですか？" },
+          class: "text-sm text-white bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-1" do %>
+      <span class="material-icons-outlined text-base">delete_sweep</span>
+      <%= "#{Theme.human_enum_name(:category, @category)}の登録をすべて削除" %>
     <% end %>
   </div>
 
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+  <%# ===== 一括追加モーダル ===== %>
+  <dialog id="bulkAddModal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-3">まとめて追加</h3>
+
+      <%= form_with url: bulk_create_profile_availability_slots_path, method: :post do %>
+        <%= hidden_field_tag "bulk[category]", @category %>
+
+        <div class="space-y-4">
+          <div>
+            <div class="label"><span class="label-text">対象曜日（複数選択）</span></div>
+            <div class="flex flex-wrap gap-3">
+              <% %w[日 月 火 水 木 金 土].each_with_index do |label, i| %>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="checkbox" name="bulk[wdays][]" value="<%= i %>">
+                  <span><%= label %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+
+          <% modal_time_options =
+            (0..47).map do |i|
+              m = i * 30
+              label = format("%02d:%02d", m / 60, m % 60)
+              [label, label]
+            end
+          %>
+          <% modal_end_time_options = modal_time_options + [["24:00", "24:00"]] %>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <div class="label"><span class="label-text">開始時刻</span></div>
+              <%= select_tag "bulk[start_time]",
+                    options_for_select(modal_time_options),
+                    include_blank: true,
+                    class: "select select-bordered w-full" %>
+            </div>
+
+            <div>
+              <div class="label"><span class="label-text">終了時刻</span></div>
+              <%= select_tag "bulk[end_time]",
+                    options_for_select(modal_end_time_options),
+                    include_blank: true,
+                    class: "select select-bordered w-full" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-action">
+          <button type="button" class="btn" onclick="bulkAddModal.close()">キャンセル</button>
+          <button type="submit" class="btn btn-primary">追加する</button>
+        </div>
+      <% end %>
+    </div>
+
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
 
 
   <% if flash[:alert].present? %>
@@ -180,19 +192,17 @@ end %>
     <% wdays_order.each do |wday| %>
       <% slots = (@slots_by_wday[wday] || []) %>
 
-      <div class="rounded-2xl border border-base-300 bg-base-100 shadow-sm overflow-hidden">
-        <div class="flex items-center justify-between bg-base-200/50 px-6 py-4">
-          <h2 class="text-base font-bold"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></h2>
+      <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-gray-900 text-lg"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></span>
+          </div>
 
           <button type="button"
-                  class="btn btn-ghost btn-sm text-primary gap-1 hover:bg-primary/10"
+                  class="text-primary hover:text-primary/80 font-medium text-sm flex items-center gap-1 px-3 py-1.5 rounded-md hover:bg-primary/5 transition-colors"
                   data-action="click->availability-slots#add"
                   data-availability-slots-wday-param="<%= wday %>">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="16"></line>
-              <line x1="8" y1="12" x2="16" y2="12"></line>
-            </svg>
+            <span class="material-icons-outlined text-lg">add_circle_outline</span>
             時間を追加
           </button>
         </div>
@@ -207,34 +217,28 @@ end %>
                   <%= fields_for "slots[#{slot.id}]", slot do |sf| %>
                     <div>
                       <label class="label">
-                        <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">開始時刻</span>
+                        <span class="label-text text-xs font-semibold tracking-wide text-gray-500">開始時刻</span>
                       </label>
                       <div class="relative">
                         <%= sf.select :start_time, time_options,
                           { selected: selected_hhmm.call(sf.object, :start_minute, :start_time) },
                           class: "select select-bordered w-full pr-10" %>
-                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"></circle>
-                            <path d="M12 7v5l3 2"></path>
-                          </svg>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                          <span class="material-icons-outlined text-base">schedule</span>
                         </div>
                       </div>
                     </div>
 
                     <div>
                       <label class="label">
-                        <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">終了時刻</span>
+                        <span class="label-text text-xs font-semibold tracking-wide text-gray-500">終了時刻</span>
                       </label>
                       <div class="relative">
                         <%= sf.select :end_time, end_time_options,
                           { selected: selected_hhmm.call(sf.object, :end_minute, :end_time) },
                           class: "select select-bordered w-full pr-10" %>
-                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"></circle>
-                            <path d="M12 7v5l3 2"></path>
-                          </svg>
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                          <span class="material-icons-outlined text-base">schedule</span>
                         </div>
                       </div>
                     </div>
@@ -246,30 +250,19 @@ end %>
 
                 <%= link_to profile_availability_slot_path(slot),
                   data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
-                  class: "btn btn-ghost btn-square" do %>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18"></path>
-                    <path d="M8 6V4h8v2"></path>
-                    <path d="M19 6l-1 14H6L5 6"></path>
-                    <path d="M10 11v6"></path>
-                    <path d="M14 11v6"></path>
-                  </svg>
+                  class: "btn btn-ghost btn-square text-gray-400 hover:text-rose-500" do %>
+                  <span class="material-icons-outlined">delete</span>
                 <% end %>
               </div>
             <% end %>
           <% else %>
-            <p class="text-sm text-base-content/50 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              まだ時間が登録されていません
-            </p>
+            <div class="p-8 flex items-center justify-center text-gray-400 gap-2">
+              <span class="material-icons-outlined text-xl">schedule</span>
+              <span class="text-sm">まだ時間が登録されていません</span>
+            </div>
           <% end %>
         </div>
 
-        <%# ★選択2：初期の空行は廃止。Add Slotでのみ追加する。 %>
         <%# ★テンプレート（曜日ごと）。JSが __KEY__ を new_... に置換して data-slot-list に append します。 %>
         <template data-slot-template="<%= wday %>">
           <div class="flex items-end gap-3 js-slot-row">
@@ -279,7 +272,7 @@ end %>
 
               <div>
                 <label class="label">
-                  <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">開始時刻</span>
+                  <span class="label-text text-xs font-semibold tracking-wide text-gray-500">開始時刻</span>
                 </label>
                 <div class="relative">
                   <select name="slots[__KEY__][start_time]" class="select select-bordered w-full pr-10">
@@ -288,18 +281,15 @@ end %>
                       <option value="<%= val %>"><%= label %></option>
                     <% end %>
                   </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="9"></circle>
-                      <path d="M12 7v5l3 2"></path>
-                    </svg>
+                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                    <span class="material-icons-outlined text-base">schedule</span>
                   </div>
                 </div>
               </div>
 
               <div>
                 <label class="label">
-                  <span class="label-text text-xs font-semibold tracking-wide text-base-content/70">終了時刻</span>
+                  <span class="label-text text-xs font-semibold tracking-wide text-gray-500">終了時刻</span>
                 </label>
                 <div class="relative">
                   <select name="slots[__KEY__][end_time]" class="select select-bordered w-full pr-10">
@@ -308,11 +298,8 @@ end %>
                       <option value="<%= val %>"><%= label %></option>
                     <% end %>
                   </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-base-content/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="9"></circle>
-                      <path d="M12 7v5l3 2"></path>
-                    </svg>
+                  <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                    <span class="material-icons-outlined text-base">schedule</span>
                   </div>
                 </div>
               </div>
@@ -320,43 +307,43 @@ end %>
 
             <%# 未保存行なので、DB削除ではなくDOMから除去 %>
             <button type="button"
-                    class="btn btn-ghost btn-square"
+                    class="btn btn-ghost btn-square text-gray-400 hover:text-rose-500"
                     data-action="click->availability-slots#remove">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 6h18"></path>
-                <path d="M8 6V4h8v2"></path>
-                <path d="M19 6l-1 14H6L5 6"></path>
-                <path d="M10 11v6"></path>
-                <path d="M14 11v6"></path>
-              </svg>
+              <span class="material-icons-outlined">delete</span>
             </button>
           </div>
         </template>
       </div>
     <% end %>
 
-    <%# ===== 保存ボタン（フォーム最下部） ===== %>
+    <%# ===== 保存ボタン（スティッキーフッター） ===== %>
     <% other_category = (@category == "tech" ? "community" : "tech") %>
-<% confirm_msg = "「#{Theme.human_enum_name(:category, other_category)}」を現在の入力内容で上書きします。よろしいですか？" %>
+    <% confirm_msg = "「#{Theme.human_enum_name(:category, other_category)}」を現在の入力内容で上書きします。よろしいですか？" %>
 
-<div class="sticky bottom-4 z-10 flex justify-center gap-3 pt-4">
-  <button type="submit"
-          formaction="<%= overwrite_copy_category_profile_availability_slots_path %>"
-          name="from_category"
-          value="<%= @category %>"
-          class="btn btn-warning btn-lg px-10"
-          onclick="<%= "return confirm(#{confirm_msg.to_json})" %>">
-    <%= "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー" %>
-  </button>
-
-  <button type="submit" class="btn btn-primary btn-lg px-10 gap-2 shadow-lg">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-      <polyline points="17 21 17 13 7 13 7 21"></polyline>
-      <polyline points="7 3 7 8 15 8"></polyline>
-    </svg>
-    保存する
-  </button>
-</div>
   <% end %>
+</div>
+
+<%# ===== スティッキー保存ボタン（フォーム外） ===== %>
+<div class="sticky bottom-0 bg-white border-t border-gray-200 p-4 z-40">
+  <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-center items-center gap-4">
+    <% other_category = (@category == "tech" ? "community" : "tech") %>
+    <% confirm_msg = "「#{Theme.human_enum_name(:category, other_category)}」を現在の入力内容で上書きします。よろしいですか？" %>
+
+    <button type="submit"
+            form="weekly-availability-form"
+            formaction="<%= overwrite_copy_category_profile_availability_slots_path %>"
+            name="from_category"
+            value="<%= @category %>"
+            class="w-full sm:w-auto px-8 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+            onclick="<%= "return confirm(#{confirm_msg.to_json})" %>">
+      <%= "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー" %>
+    </button>
+
+    <button type="submit"
+            form="weekly-availability-form"
+            class="w-full sm:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+      <span class="material-icons-outlined">save</span>
+      保存する
+    </button>
+  </div>
 </div>
