@@ -6,7 +6,7 @@ class Theme < ApplicationRecord
 
   validates :category, presence: true
   validates :title, presence: true
-  validates :description, presence: true, length: { maximum: 255 }
+  validates :description, presence: true, length: { maximum: 1000 }
   validates :secondary_label, presence: true, if: :secondary_enabled?
 
   has_many :theme_votes, dependent: :destroy
