@@ -43,7 +43,7 @@ module Profiles
       @category = params[:category].presence_in(%w[tech community]) || "tech"
       apply_bulk_update!(category: @category, slots_param: params[:slots])
 
-      redirect_to profile_availability_slots_path(category: @category), notice: "保存しました"
+      redirect_to after_save_path(category: @category), notice: "保存しました"
     rescue ActiveRecord::RecordInvalid => e
       render_index_with_error("保存に失敗しました: #{e.record.errors.full_messages.first}")
     rescue ActiveRecord::RecordNotUnique
@@ -106,6 +106,11 @@ module Profiles
 
     def bulk_params
       params.require(:bulk).permit(:category, :start_time, :end_time, wdays: [])
+    end
+
+    def after_save_path(category:)
+      return themes_path if params[:after_save] == "themes"
+      profile_availability_slots_path(category: category)
     end
 
     def validate_bulk_inputs(wdays, start_minute, end_minute)
