@@ -48,7 +48,7 @@
 
     <div class="mt-4">
       <% if @availability_supported %>
-        <%= render "availability/aggregate_panel",
+        <%= render "availability/aggregate_frame",
           url: theme_path(@theme),
           counts: @availability_counts,
           cohort: @cohort,
