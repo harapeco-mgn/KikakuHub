@@ -58,13 +58,13 @@ end %>
         data: { action: "click->availability-draft#switch", category: "tech" } do %>
         <% if @category == 'tech' %>
           <div class="absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md z-10">
-            <span class="material-icons-outlined text-primary text-xl bg-purple-100 rounded-full">check_circle</span>
+            <span class="material-icons-outlined text-indigo-600 text-xl bg-indigo-100 rounded-full">check_circle</span>
           </div>
         <% end %>
-        <div class="<%= @category == 'tech' ? 'bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2' : 'bg-white border border-gray-200 hover:border-primary/50 hover:bg-primary/5' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all transform hover:scale-[1.01]">
-          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'tech' ? '' : 'text-primary' %>">monitor</span>
+        <div class="<%= @category == 'tech' ? 'bg-indigo-600 text-white shadow-lg ring-2 ring-indigo-600 ring-offset-2' : 'bg-white border border-gray-200 hover:border-indigo-400 hover:bg-indigo-50' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all transform hover:scale-[1.01]">
+          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'tech' ? '' : 'text-indigo-600' %>">monitor</span>
           <h3 class="text-xl font-bold mb-1 <%= @category == 'tech' ? '' : 'text-gray-900' %>"><%= Theme.human_enum_name(:category, "tech") %></h3>
-          <p class="<%= @category == 'tech' ? 'text-indigo-100' : 'text-gray-500' %> text-sm">技術勉強会向け</p>
+          <p class="<%= @category == 'tech' ? 'text-indigo-200' : 'text-gray-500' %> text-sm">技術勉強会向け</p>
         </div>
       <% end %>
 
@@ -74,13 +74,13 @@ end %>
         data: { action: "click->availability-draft#switch", category: "community" } do %>
         <% if @category == 'community' %>
           <div class="absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-md z-10">
-            <span class="material-icons-outlined text-secondary text-xl bg-pink-100 rounded-full">check_circle</span>
+            <span class="material-icons-outlined text-emerald-600 text-xl bg-emerald-100 rounded-full">check_circle</span>
           </div>
         <% end %>
-        <div class="<%= @category == 'community' ? 'bg-secondary text-white shadow-lg ring-2 ring-secondary ring-offset-2' : 'bg-white border border-gray-200 hover:border-pink-300 hover:bg-pink-50' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all">
-          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'community' ? '' : 'text-pink-500' %>">groups</span>
-          <h3 class="text-xl font-bold mb-1 <%= @category == 'community' ? '' : 'text-gray-900 group-hover:text-pink-600' %>"><%= Theme.human_enum_name(:category, "community") %></h3>
-          <p class="<%= @category == 'community' ? 'text-pink-100' : 'text-gray-500 group-hover:text-pink-500/80' %> text-sm">交流イベント向け</p>
+        <div class="<%= @category == 'community' ? 'bg-emerald-600 text-white shadow-lg ring-2 ring-emerald-600 ring-offset-2' : 'bg-white border border-gray-200 hover:border-emerald-400 hover:bg-emerald-50' %> rounded-xl p-6 flex flex-col items-center justify-center text-center h-40 transition-all">
+          <span class="material-icons-outlined text-5xl mb-3 <%= @category == 'community' ? '' : 'text-emerald-600' %>">groups</span>
+          <h3 class="text-xl font-bold mb-1 <%= @category == 'community' ? '' : 'text-gray-900 group-hover:text-emerald-600' %>"><%= Theme.human_enum_name(:category, "community") %></h3>
+          <p class="<%= @category == 'community' ? 'text-emerald-100' : 'text-gray-500 group-hover:text-emerald-500' %> text-sm">交流イベント向け</p>
         </div>
       <% end %>
     </div>
@@ -113,7 +113,7 @@ end %>
           method: :delete,
           params: { category: @category },
           data: { turbo_confirm: "「#{Theme.human_enum_name(:category, @category)}」の参加可能時間をすべて削除します。よろしいですか？" },
-          class: "text-sm text-white bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-1" do %>
+          class: "text-sm text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-1" do %>
       <span class="material-icons-outlined text-base">delete_sweep</span>
       <%= "#{Theme.human_enum_name(:category, @category)}の登録をすべて削除" %>
     <% end %>
@@ -339,16 +339,26 @@ end %>
             formaction="<%= overwrite_copy_category_profile_availability_slots_path %>"
             name="from_category"
             value="<%= @category %>"
-            class="w-full sm:w-auto px-8 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+            class="w-full sm:w-auto px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
             onclick="<%= "return confirm(#{confirm_msg.to_json})" %>">
       <%= "#{Theme.human_enum_name(:category, other_category)}へ上書きコピー" %>
     </button>
-
+  
     <button type="submit"
             form="weekly-availability-form"
-            class="w-full sm:w-auto px-12 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            class="w-full sm:w-auto px-12 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-lg shadow-indigo-600/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
       <span class="material-icons-outlined">save</span>
       保存する
     </button>
+    
+    <button type="submit"
+        form="weekly-availability-form"
+        name="after_save"
+        value="themes"
+        class="w-full sm:w-auto px-12 py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-lg shadow-lg shadow-violet-600/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+      <span class="material-icons-outlined">save</span>
+      保存して掲示板一覧へ
+    </button>
+    
   </div>
 </div>
