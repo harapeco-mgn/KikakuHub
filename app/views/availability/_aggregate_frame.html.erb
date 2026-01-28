@@ -1,0 +1,11 @@
+<% show_category_select = local_assigns.fetch(:show_category_select, true) %>
+
+<%= turbo_frame_tag "availability_aggregate", data: { turbo_action: "advance" } do %>
+  <%= render "availability/aggregate_panel",
+        url: url,
+        counts: counts,
+        cohort: cohort,
+        category: category,
+        cohort_options: cohort_options,
+        show_category_select: show_category_select %>
+<% end %>
