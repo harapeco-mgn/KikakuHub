@@ -1,8 +1,9 @@
+<%= render_breadcrumbs([
+  bc("ホーム", root_path),
+  bc("テーマ一覧", themes_path),
+  bc("テーマを作成")
+]) %>
 <div class="mx-auto max-w-2xl">
-  <div class="mb-6">
-    <%= link_to "← テーマ一覧へ戻る", themes_path, class: "btn btn-ghost btn-sm gap-1 pl-0" %>
-  </div>
-
   <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
     <div class="card-body">
       <h1 class="card-title text-2xl font-bold">テーマを投稿</h1>

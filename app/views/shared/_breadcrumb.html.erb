@@ -1,0 +1,19 @@
+<nav aria-label="Breadcrumb" class="mb-4">
+  <div class="text-sm breadcrumbs">
+    <ul>
+      <% items.each_with_index do |item, idx| %>
+        <% last = (idx == items.length - 1) %>
+
+        <li>
+          <% if last || item[:url].blank? %>
+            <span aria-current="page" class="font-semibold">
+              <%= item[:label] %>
+            </span>
+          <% else %>
+            <%= link_to item[:label], item[:url], class: "link link-hover" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
