@@ -4,15 +4,15 @@ module Availability
       new(user:, category:, wdays:, start_minute:, end_minute:).call
     end
 
-    # "HH:MM" -> minutes
     def self.time_to_minutes(value)
-      return nil if value.blank?
-      return value if value.is_a?(Integer)
+      Availability::TimeConverter.time_to_minutes(value)
+    end
 
-      m = value.to_s.match(/(\d{1,2}):(\d{2})/)
-      return nil unless m
-
-      m[1].to_i * 60 + m[2].to_i
+    def self.validate_inputs(wdays:, start_minute:, end_minute:)
+      return "曜日を選択してください" if wdays.blank?
+      return "開始時刻/終了時刻を選択してください" if start_minute.nil? || end_minute.nil?
+      return "開始時刻は終了時刻より前にしてください" if start_minute >= end_minute
+      nil
     end
 
     def initialize(user:, category:, wdays:, start_minute:, end_minute:)
