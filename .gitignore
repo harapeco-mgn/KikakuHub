@@ -4,6 +4,7 @@
 # belong in git's global ignore instead:
 # `$XDG_CONFIG_HOME/git/ignore` or `~/.config/git/ignore`
 
+
 # Ignore bundler config.
 /.bundle
 
@@ -40,6 +41,14 @@
 
 
 # AI helper files (local only)
-.github/instructions/
-.github/copilot-instructions.md
-docs/ai/
+**CLAUDE.md
+/.github/instructions/
+/.github/copilot-instructions.md
+/docs/ai/
+
+
+# Development workflow files (local only)
+/CONTRIBUTING.md
+/docs/contributing
+/.github/PULL_REQUEST_TEMPLATE.md
+/.github/ISSUE_TEMPLATE
