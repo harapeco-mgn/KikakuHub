@@ -1,0 +1,20 @@
+<%# ===== 一括登録ショートカット ===== %>
+<div class="bg-gradient-to-r from-gray-50 to-white rounded-2xl border-2 border-dashed border-gray-300 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all hover:border-primary/50 group">
+  <div class="flex items-start gap-4">
+    <div class="p-3 bg-primary/10 rounded-full text-primary">
+      <span class="material-icons-outlined text-2xl">date_range</span>
+    </div>
+    <div>
+      <h3 class="font-bold text-lg text-gray-900">一括登録ショートカット</h3>
+      <p class="text-sm text-gray-500 mt-1">
+        複数の曜日をまとめて選択し、同じ時間帯を一気に登録できます。
+      </p>
+    </div>
+  </div>
+  <button type="button"
+          class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:text-primary hover:border-primary transition-all shadow-sm flex items-center justify-center gap-2 group-hover:shadow-md whitespace-nowrap"
+          onclick="bulkAddModal.showModal()">
+    <span class="material-icons-outlined text-xl">playlist_add</span>
+    曜日を選択してまとめて追加
+  </button>
+</div>

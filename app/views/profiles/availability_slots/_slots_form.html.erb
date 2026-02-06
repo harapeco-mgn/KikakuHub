@@ -1,0 +1,141 @@
+<%# ===== 一括保存フォーム（Turbo無効で安定） ===== %>
+<%= form_with url: bulk_update_profile_availability_slots_path,
+              method: :patch,
+              id: "weekly-availability-form",
+              local: true,
+              class: "space-y-6" do %>
+
+  <%= hidden_field_tag :category, @category %>
+
+  <% wdays_order.each do |wday| %>
+    <% slots = (@slots_by_wday[wday] || []) %>
+
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-900 text-lg"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></span>
+        </div>
+
+        <button type="button"
+                class="text-primary hover:text-primary/80 font-medium text-sm flex items-center gap-1 px-3 py-1.5 rounded-md hover:bg-primary/5 transition-colors"
+                data-action="click->availability-slots#add"
+                data-availability-slots-wday-param="<%= wday %>">
+          <span class="material-icons-outlined text-lg">add_circle_outline</span>
+          時間を追加
+        </button>
+      </div>
+
+      <%# ★追加先：この div に行をappendする %>
+      <div class="px-6 py-6 space-y-4" data-slot-list="<%= wday %>">
+        <%# ===== 既存スロット（編集 + 削除） ===== %>
+        <% if slots.any? %>
+          <% slots.each do |slot| %>
+            <div class="flex items-end gap-3">
+              <div class="flex-1 grid gap-4 sm:grid-cols-2">
+                <%= fields_for "slots[#{slot.id}]", slot do |sf| %>
+                  <div>
+                    <label class="label">
+                      <span class="label-text text-xs font-semibold tracking-wide text-gray-500">開始時刻</span>
+                    </label>
+                    <div class="relative">
+                      <%= sf.select :start_time, time_options,
+                        { selected: selected_hhmm.call(sf.object, :start_minute, :start_time) },
+                        class: "select select-bordered w-full pr-10" %>
+                      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                        <span class="material-icons-outlined text-base">schedule</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="label">
+                      <span class="label-text text-xs font-semibold tracking-wide text-gray-500">終了時刻</span>
+                    </label>
+                    <div class="relative">
+                      <%= sf.select :end_time, end_time_options,
+                        { selected: selected_hhmm.call(sf.object, :end_minute, :end_time) },
+                        class: "select select-bordered w-full pr-10" %>
+                      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                        <span class="material-icons-outlined text-base">schedule</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <%= sf.hidden_field :wday, value: wday %>
+                  <%= sf.hidden_field :category, value: @category %>
+                <% end %>
+              </div>
+
+              <%= link_to profile_availability_slot_path(slot),
+                data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" },
+                class: "btn btn-ghost btn-square text-gray-400 hover:text-rose-500" do %>
+                <span class="material-icons-outlined">delete</span>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="p-8 flex items-center justify-center text-gray-400 gap-2">
+            <span class="material-icons-outlined text-xl">schedule</span>
+            <span class="text-sm">まだ時間が登録されていません</span>
+          </div>
+        <% end %>
+      </div>
+
+      <%# ★テンプレート（曜日ごと）。JSが __KEY__ を new_... に置換して data-slot-list に append します。 %>
+      <template data-slot-template="<%= wday %>">
+        <div class="flex items-end gap-3 js-slot-row">
+          <div class="flex-1 grid gap-4 sm:grid-cols-2">
+            <input type="hidden" name="slots[__KEY__][wday]" value="<%= wday %>">
+            <input type="hidden" name="slots[__KEY__][category]" value="<%= @category %>">
+
+            <div>
+              <label class="label">
+                <span class="label-text text-xs font-semibold tracking-wide text-gray-500">開始時刻</span>
+              </label>
+              <div class="relative">
+                <select name="slots[__KEY__][start_time]" class="select select-bordered w-full pr-10">
+                  <option value=""></option>
+                  <% time_options.each do |label, val| %>
+                    <option value="<%= val %>"><%= label %></option>
+                  <% end %>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                  <span class="material-icons-outlined text-base">schedule</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="label">
+                <span class="label-text text-xs font-semibold tracking-wide text-gray-500">終了時刻</span>
+              </label>
+              <div class="relative">
+                <select name="slots[__KEY__][end_time]" class="select select-bordered w-full pr-10">
+                  <option value=""></option>
+                  <% end_time_options.each do |label, val| %>
+                    <option value="<%= val %>"><%= label %></option>
+                  <% end %>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                  <span class="material-icons-outlined text-base">schedule</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%# 未保存行なので、DB削除ではなくDOMから除去 %>
+          <button type="button"
+                  class="btn btn-ghost btn-square text-gray-400 hover:text-rose-500"
+                  data-action="click->availability-slots#remove">
+            <span class="material-icons-outlined">delete</span>
+          </button>
+        </div>
+      </template>
+    </div>
+  <% end %>
+
+  <%# ===== 保存ボタン（スティッキーフッター） ===== %>
+  <% other_category = (@category == "tech" ? "community" : "tech") %>
+  <% confirm_msg = "「#{Theme.human_enum_name(:category, other_category)}」を現在の入力内容で上書きします。よろしいですか？" %>
+
+<% end %>
