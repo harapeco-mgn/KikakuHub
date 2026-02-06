@@ -70,7 +70,7 @@ module Profiles
         return
       end
 
-      result = AvailabilitySlot.overwrite_copy_category!(
+      result = Availability::OverwriteCopyCategory.call(
         user: current_user,
         from_category: from,
         to_category: to
