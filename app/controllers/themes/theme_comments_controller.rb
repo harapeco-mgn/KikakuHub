@@ -1,7 +1,5 @@
 module Themes
-  class ThemeCommentsController < ApplicationController
-    before_action :authenticate_user!  # Devise: 未ログインならログイン画面へ
-    before_action :set_theme           # /themes/:theme_id を使って対象テーマを取得
+  class ThemeCommentsController < BaseController
     before_action :set_theme_comment, only: [ :destroy ]
 
     def create
@@ -51,10 +49,6 @@ module Themes
     end
 
     private
-
-    def set_theme
-      @theme = Theme.find(params[:theme_id])
-    end
 
     def theme_comment_params
       params.require(:theme_comment).permit(:body)

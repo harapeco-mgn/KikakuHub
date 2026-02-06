@@ -1,8 +1,5 @@
 module Themes
-  class VotesController < ApplicationController
-    before_action :authenticate_user!
-    before_action :set_theme
-
+  class VotesController < BaseController
     def create
       begin
         current_user.theme_votes.create!(theme: @theme)
@@ -23,12 +20,6 @@ module Themes
         # 既に取消済み（連打など）でもOK
         redirect_to @theme, notice: "既に取り消し済みです"
       end
-    end
-
-    private
-
-    def set_theme
-      @theme = Theme.find(params[:theme_id])
     end
   end
 end
