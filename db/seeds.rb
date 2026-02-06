@@ -7,6 +7,6 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-Community.find_or_create_by!(id: 1) do |c|
+Community.find_or_create_by!(id: Community::DEFAULT_ID) do |c|
   c.name = "RUNTEQ"
 end

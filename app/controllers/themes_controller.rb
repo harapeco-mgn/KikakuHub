@@ -21,7 +21,7 @@ class ThemesController < ApplicationController
 
   def create
     @theme = current_user.themes.build(theme_params)
-    @theme.community_id = 1
+    @theme.community_id = Community::DEFAULT_ID
 
     if @theme.save
       redirect_to @theme, notice: "テーマが作成されました。", status: :see_other
