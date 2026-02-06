@@ -60,7 +60,7 @@ class ThemesController < ApplicationController
     @cohort = params[:cohort].presence || "all"
 
     @availability_category  = @theme.category.to_s
-    @availability_supported = %w[tech community].include?(@availability_category)
+    @availability_supported = Theme::CATEGORY_KEYS.include?(@availability_category)
 
     return unless @availability_supported
 
