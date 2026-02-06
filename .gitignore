@@ -43,3 +43,6 @@
 .github/instructions/
 .github/copilot-instructions.md
 docs/ai/
+.claude/
+CLAUDE.md
+*.claude.md

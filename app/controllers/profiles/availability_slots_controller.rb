@@ -3,13 +3,13 @@ module Profiles
     before_action :authenticate_user!
 
     def index
-      @category = params[:category].presence_in(%w[tech community]) || "tech"
+      @category = params[:category].presence_in(Theme::CATEGORY_KEYS) || "tech"
       slots = current_user.availability_slots.where(category: @category)
       @slots_by_wday = slots.group_by(&:wday)
     end
 
     def bulk_create
-      @category = bulk_params[:category].presence_in(%w[tech community]) || "tech"
+      @category = bulk_params[:category].presence_in(Theme::CATEGORY_KEYS) || "tech"
 
       wdays = Array(bulk_params[:wdays]).reject(&:blank?).map(&:to_i).uniq
       start_minute = Availability::TimeConverter.time_to_minutes(bulk_params[:start_time])
@@ -36,7 +36,7 @@ module Profiles
     end
 
     def bulk_update
-      @category = params[:category].presence_in(%w[tech community]) || "tech"
+      @category = params[:category].presence_in(Theme::CATEGORY_KEYS) || "tech"
 
       Availability::BulkUpdateSlots.call(
         user: current_user, category: @category, slots_param: params[:slots]
@@ -56,7 +56,7 @@ module Profiles
     end
 
     def overwrite_copy_category
-      from = params.require(:from_category).presence_in(%w[tech community]) || "tech"
+      from = params.require(:from_category).presence_in(Theme::CATEGORY_KEYS) || "tech"
       to   = (from == "tech" ? "community" : "tech")
 
       @category = from
@@ -87,7 +87,7 @@ module Profiles
     end
 
     def destroy_all
-      category = params.require(:category).presence_in(%w[tech community]) || "tech"
+      category = params.require(:category).presence_in(Theme::CATEGORY_KEYS) || "tech"
 
       deleted = current_user.availability_slots.where(category: category).delete_all
 

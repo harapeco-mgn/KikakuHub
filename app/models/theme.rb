@@ -1,4 +1,6 @@
 class Theme < ApplicationRecord
+  CATEGORY_KEYS = %w[tech community].freeze
+
   belongs_to :community
   belongs_to :user
 

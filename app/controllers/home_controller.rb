@@ -3,7 +3,7 @@ class HomeController < ApplicationController
     # パラメータ（無ければデフォルト）
     @cohort   = params.fetch(:cohort, "all")
     @category = params.fetch(:category, "tech")
-    @category = "tech" unless %w[tech community].include?(@category)
+    @category = "tech" unless Theme::CATEGORY_KEYS.include?(@category)
 
     # セレクト用（存在する期だけ出す）
     @cohort_options = User.distinct.order(:cohort).pluck(:cohort).compact
