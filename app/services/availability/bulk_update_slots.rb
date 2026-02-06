@@ -11,23 +11,23 @@ module Availability
     end
 
     def call
-      slots_hash = normalize_slots_hash(@slots_param)
+      slots_hash = @slots_param || {}
 
       ActiveRecord::Base.transaction do
         slots_hash.each do |key, attrs|
-          attrs = attrs.to_unsafe_h if attrs.is_a?(ActionController::Parameters)
-          p = ActionController::Parameters.new(attrs).permit(:start_time, :end_time, :wday, :category)
-
-          start_minute = Availability::TimeConverter.time_to_minutes(p[:start_time])
-          end_minute   = Availability::TimeConverter.time_to_minutes(p[:end_time])
+          start_minute = Availability::TimeConverter.time_to_minutes(attrs[:start_time] || attrs["start_time"])
+          end_minute   = Availability::TimeConverter.time_to_minutes(attrs[:end_time] || attrs["end_time"])
 
           if key.to_s.start_with?("new_")
             next if start_minute.nil? || end_minute.nil?
             next if start_minute >= end_minute
 
+            wday = (attrs[:wday] || attrs["wday"]).to_i
+            category = (attrs[:category] || attrs["category"]).presence || @category
+
             @user.availability_slots.create!(
-              wday: p[:wday].to_i,
-              category: (p[:category].presence || @category),
+              wday: wday,
+              category: category,
               start_minute: start_minute,
               end_minute: end_minute
             )
@@ -40,14 +40,6 @@ module Availability
 
         Availability::WeeklySlotNormalizer.call(user: @user, category: @category)
       end
-    end
-
-    private
-
-    def normalize_slots_hash(slots_param)
-      h = slots_param || {}
-      h = h.to_unsafe_h if h.is_a?(ActionController::Parameters)
-      h
     end
   end
 end

@@ -39,7 +39,7 @@ module Profiles
       @category = params[:category].presence_in(Theme::CATEGORY_KEYS) || "tech"
 
       Availability::BulkUpdateSlots.call(
-        user: current_user, category: @category, slots_param: params[:slots]
+        user: current_user, category: @category, slots_param: params[:slots].to_unsafe_h
       )
 
       redirect_to after_save_path(category: @category), notice: "保存しました"
@@ -61,7 +61,7 @@ module Profiles
 
       @category = from
       Availability::BulkUpdateSlots.call(
-        user: current_user, category: from, slots_param: params[:slots]
+        user: current_user, category: from, slots_param: params[:slots].to_unsafe_h
       )
 
       if current_user.availability_slots.where(category: from).none?
