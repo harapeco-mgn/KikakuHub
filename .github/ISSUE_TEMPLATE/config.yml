@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "Issue の書き方ガイドライン"
+    url: "https://github.com/harapeco-mgn/KikakuHub/blob/main/docs/contributing/issue-guide.md"
+    about: "issue を作成する前にガイドラインを確認してください"

@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-    def index
+  def index
     # パラメータ（無ければデフォルト）
     @cohort   = params.fetch(:cohort, "all")
     @category = params.fetch(:category, "tech")

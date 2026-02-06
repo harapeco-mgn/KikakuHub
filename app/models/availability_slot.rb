@@ -17,8 +17,8 @@ class AvailabilitySlot < ApplicationRecord
   private
 
   def convert_time_strings_to_minutes
-    self.start_minute = hhmm_to_minutes(start_time) if start_time.present?
-    self.end_minute   = hhmm_to_minutes(end_time)   if end_time.present?
+    self.start_minute = Availability::TimeConverter.time_to_minutes(start_time) if start_time.present?
+    self.end_minute   = Availability::TimeConverter.time_to_minutes(end_time)   if end_time.present?
   end
 
   def end_after_start
@@ -30,12 +30,6 @@ class AvailabilitySlot < ApplicationRecord
     return if start_minute.blank? || end_minute.blank?
     errors.add(:start_minute, "は30分単位で入力してください") unless (start_minute % 30).zero?
     errors.add(:end_minute, "は30分単位で入力してください") unless (end_minute % 30).zero?
-  end
-
-  def hhmm_to_minutes(str)
-    return nil unless str.match?(/\A\d{2}:\d{2}\z/)
-    h, m = str.split(":").map(&:to_i)
-    h * 60 + m
   end
 
   def self.overwrite_copy_category!(user:, from_category:, to_category:)

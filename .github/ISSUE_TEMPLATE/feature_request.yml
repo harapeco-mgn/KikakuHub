@@ -1,0 +1,50 @@
+name: "機能要望"
+description: "新機能の追加や既存機能の拡張を提案する"
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        [issue の書き方ガイドライン](https://github.com/harapeco-mgn/KikakuHub/blob/main/docs/contributing/issue-guide.md) も参考にしてください。
+        タイトルは `[カテゴリ名] 概要説明` の形式で記載してください。
+
+  - type: textarea
+    id: background
+    attributes:
+      label: "背景 / 目的（Why）"
+      description: "なぜこの機能が必要なのか"
+      placeholder: |
+        - 現状の課題: ...
+        - ユーザーストーリー: ...として...したい。なぜなら...
+    validations:
+      required: true
+
+  - type: textarea
+    id: spec
+    attributes:
+      label: "仕様（What）"
+      description: "具体的に何を実装するか"
+      placeholder: |
+        - 画面: ...
+        - 挙動: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "受け入れ条件（Acceptance Criteria）"
+      description: "完了と判断する基準をチェックリスト形式で"
+      placeholder: |
+        - [ ] ...が表示される
+        - [ ] ...をクリックすると...になる
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_notes
+    attributes:
+      label: "実装メモ（方針）"
+      description: "技術的なアプローチや参考実装のメモ（任意）"
+    validations:
+      required: false

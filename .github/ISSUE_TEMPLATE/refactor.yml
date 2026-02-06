@@ -1,0 +1,42 @@
+name: "リファクタリング"
+description: "コードのリファクタリングや技術的改善を提案する"
+labels: ["type:refactor"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        タイトルは `[リファクタ] 概要説明` の形式で記載してください。
+
+  - type: textarea
+    id: background
+    attributes:
+      label: "背景（Why）"
+      description: "なぜリファクタリングが必要か"
+      placeholder: |
+        - 現状のコードの問題点: ...
+        - 保守性・可読性の課題: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "改善案（What）"
+      description: "どのように改善するか"
+      placeholder: |
+        - 対象ファイル: ...
+        - 方針: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "受け入れ条件"
+      description: "リファクタリング後に満たすべき条件"
+      placeholder: |
+        - [ ] 既存の動作が変わらない
+        - [ ] Rubocop が通る
+        - [ ] ...
+    validations:
+      required: true

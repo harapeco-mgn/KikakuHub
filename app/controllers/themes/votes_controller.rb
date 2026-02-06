@@ -4,13 +4,11 @@ module Themes
     before_action :set_theme
 
     def create
-      begin
-        current_user.theme_votes.create!(theme: @theme)
-        redirect_to @theme, notice: "投票しました"
-      rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-        # 既に投票済み（連打や競合）でもOKにする
-        redirect_to @theme, notice: "既に投票済みです"
-      end
+      current_user.theme_votes.create!(theme: @theme)
+      redirect_to @theme, notice: "投票しました"
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      # 既に投票済み（連打や競合）でもOKにする
+      redirect_to @theme, notice: "既に投票済みです"
     end
 
     def destroy
