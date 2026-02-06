@@ -9,7 +9,6 @@ gem "sprockets-rails"
 gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
-gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 
@@ -31,8 +30,6 @@ group :development, :test do
 
   # デバッグツール
   gem "pry-byebug"
-  gem "better_errors"
-  gem "binding_of_caller"
 
   # テスト関連
   gem "rspec-rails"
@@ -48,4 +45,8 @@ group :development do
   gem "bullet"
 
   gem "letter_opener_web"
+
+  # ブラウザベースデバッグツール
+  gem "better_errors"
+  gem "binding_of_caller"
 end
