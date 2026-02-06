@@ -13,4 +13,11 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: %i[nickname cohort])
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[nickname cohort])
   end
+
+  def authorize_owner!(resource, redirect_path = root_path)
+    unless resource.user == current_user
+      redirect_to redirect_path, alert: "削除権限がありません。", status: :see_other
+      nil
+    end
+  end
 end
