@@ -43,3 +43,8 @@
 .github/instructions/
 .github/copilot-instructions.md
 docs/ai/
+**/CLAUDE.md
+.github/ISSUE_TEMPLATE/
+.github/PULL_REQUEST_TEMPLATE.md
+CONTRIBUTING.md
+docs/
