@@ -29,10 +29,7 @@ module Themes
     end
 
     def destroy
-      unless @theme_comment.user == current_user
-        redirect_to theme_path(@theme), alert: "削除権限がありません。", status: :see_other
-        return
-      end
+      authorize_owner!(@theme_comment, theme_path(@theme))
 
       if @theme_comment.destroy
         load_theme_comments

@@ -32,10 +32,7 @@ class ThemesController < ApplicationController
   end
 
   def destroy
-    unless @theme.user == current_user
-      redirect_to theme_path(@theme), alert: "削除権限がありません。", status: :see_other
-      return
-    end
+    authorize_owner!(@theme, theme_path(@theme))
 
     if @theme.destroy
       redirect_to themes_path, notice: "テーマを削除しました。", status: :see_other
