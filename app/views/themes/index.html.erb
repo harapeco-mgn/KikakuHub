@@ -25,7 +25,7 @@
             <div class="mb-2 flex flex-wrap items-center gap-2">
               <span class="badge badge-primary"><%= Theme.human_enum_name(:category, theme.category) %></span>
               <span class="text-xs text-base-content/60">
-                <%= l(theme.created_at, format: :short) rescue theme.created_at.to_s %>
+                <%= l(theme.created_at, format: :short) %>
               </span>
             </div>
 

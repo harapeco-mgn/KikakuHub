@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <p class="text-xs text-base-content/50">
-          <%= l(theme_comment.created_at, format: :short) rescue theme_comment.created_at.strftime("%Y-%m-%d %H:%M") %>
+          <%= l(theme_comment.created_at, format: :short) %>
         </p>
         <% if user_signed_in? && current_user == theme_comment.user %>
           <%= button_to "削除", theme_theme_comment_path(theme, theme_comment),
