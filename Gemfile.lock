@@ -148,9 +148,6 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    jbuilder (2.14.1)
-      actionview (>= 7.0.0)
-      activesupport (>= 7.0.0)
     json (2.18.0)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
@@ -379,7 +376,6 @@ DEPENDENCIES
   factory_bot_rails
   faker
   importmap-rails
-  jbuilder
   letter_opener_web
   pg (~> 1.1)
   pry-byebug
