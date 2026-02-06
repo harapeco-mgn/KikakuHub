@@ -40,7 +40,7 @@
 
           <div class="flex shrink-0 flex-col items-end gap-2">
             <div class="rounded-lg bg-primary/10 px-3 py-1 text-center">
-              <span class="text-lg font-bold text-primary"><%= theme.theme_votes.count rescue 0 %></span>
+              <span class="text-lg font-bold text-primary"><%= theme.theme_votes_count %></span>
               <span class="block text-xs text-base-content/60">投票</span>
             </div>
             <%= link_to "詳細を見る", theme_path(theme),
