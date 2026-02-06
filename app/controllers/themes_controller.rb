@@ -26,10 +26,6 @@ class ThemesController < ApplicationController
     if @theme.save
       redirect_to @theme, notice: "テーマが作成されました。", status: :see_other
     else
-      Rails.logger.info("[debug] env=#{Rails.env} db=#{ActiveRecord::Base.connection_db_config.database}")
-      Rails.logger.info("[debug] community_id=#{@theme.community_id.inspect} exists=#{Community.exists?(@theme.community_id)}")
-      Rails.logger.info("[debug] errors=#{@theme.errors.full_messages}")
-
       flash.now[:alert] = "入力内容を確認してください"
       render :new, status: :unprocessable_entity
     end
