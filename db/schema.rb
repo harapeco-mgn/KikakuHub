@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_20_035853) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_06_152112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_20_035853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["theme_id"], name: "index_rsvps_on_theme_id"
+    t.index ["user_id", "theme_id"], name: "index_rsvps_on_user_id_and_theme_id", unique: true
     t.index ["user_id"], name: "index_rsvps_on_user_id"
   end
 
@@ -80,6 +81,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_20_035853) do
     t.datetime "updated_at", null: false
     t.boolean "secondary_enabled", default: false, null: false
     t.string "secondary_label"
+    t.integer "theme_votes_count", default: 0, null: false
     t.index ["community_id"], name: "index_themes_on_community_id"
     t.index ["user_id"], name: "index_themes_on_user_id"
   end

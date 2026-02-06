@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :rsvp do
-    user { nil }
-    theme { nil }
-    status { 1 }
+    association :user
+    association :theme
+    status { :undecided }
     secondary_interest { false }
   end
 end

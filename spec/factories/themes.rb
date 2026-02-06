@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :theme do
-    community { nil }
-    user { nil }
-    category { 1 }
-    title { "MyString" }
-    description { "MyText" }
+    association :community
+    association :user
+    category { :tech }
+    sequence(:title) { |n| "テーマ#{n}" }
+    description { "テーマの説明文" }
   end
 end
