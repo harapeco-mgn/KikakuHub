@@ -20,6 +20,9 @@ gem "resend"
 # tailwindcss
 gem "tailwindcss-rails"
 
+# ページネーション
+gem "kaminari"
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
 
