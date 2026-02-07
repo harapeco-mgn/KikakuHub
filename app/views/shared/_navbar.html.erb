@@ -1,0 +1,65 @@
+<header class="navbar sticky top-0 z-50 border-b border-white/20 bg-white/70 shadow-sm backdrop-blur-xl transition-all duration-300">
+  <div class="mx-auto flex w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex-1">
+      <%= link_to root_path, class: "group flex items-center gap-2 transition-transform hover:scale-105" do %>
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary text-white shadow-lg shadow-primary/30">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-6 w-6">
+             <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+          </svg>
+        </div>
+        <span class="font-heading text-xl font-bold tracking-tight text-slate-800 group-hover:text-primary">Kikaku Hub</span>
+      <% end %>
+    </div>
+
+    <nav class="flex-none">
+      <ul class="menu menu-horizontal items-center gap-2 p-0">
+         <li>
+           <%= link_to "使い方", guidance_path, class: "btn btn-ghost btn-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-primary" %>
+         </li>
+        <% if user_signed_in? %>
+          <li>
+            <%= link_to "マイページ", mypage_path, class: "btn btn-ghost btn-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-primary" %>
+          </li>
+          <li>
+            <%= link_to "参加可能時間", profile_availability_slots_path, class: "btn btn-ghost btn-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-primary" %>
+          </li>
+          <li class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar placeholder border border-slate-200 bg-white shadow-sm ring-offset-2 hover:ring-2 hover:ring-primary/20">
+              <div class="w-9 rounded-full bg-slate-100 text-slate-500">
+                <span class="font-heading text-sm font-bold"><%= current_user.nickname.present? ? current_user.nickname[0].upcase : current_user.email[0].upcase %></span>
+              </div>
+            </div>
+            <ul tabindex="0" class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl ring-1 ring-slate-900/5">
+              <li class="menu-title px-4 py-2 font-heading text-xs font-bold uppercase tracking-wider text-slate-400">アカウント</li>
+              <li>
+                <div class="flex flex-col items-start gap-0.5 px-4 py-2 hover:bg-transparent">
+                  <span class="text-xs font-medium text-slate-900"><%= current_user.nickname.presence || "No Name" %></span>
+                  <span class="text-[10px] text-slate-500"><%= current_user.email %></span>
+                </div>
+              </li>
+              <div class="my-1 h-px bg-slate-100"></div>
+              <li><%= link_to "アカウント編集", edit_user_registration_path, class: "hover:bg-slate-50 hover:text-primary" %></li>
+              <li>
+                <%= link_to "ログアウト",
+                destroy_user_session_path,
+                data: { turbo_method: :delete },
+                class: "text-error hover:bg-error/10 hover:text-error" %>
+              </li>
+            </ul>
+          </li>
+          <% else %>
+          <li>
+            <%= link_to "ログイン",
+                        new_user_session_path,
+                        class: "btn btn-ghost btn-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-primary" %>
+          </li>
+          <li>
+            <%= link_to "新規登録",
+                        new_user_registration_path,
+                        class: "btn btn-primary btn-sm shadow-md shadow-primary/20 transition-transform hover:scale-105 active:scale-95" %>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>
