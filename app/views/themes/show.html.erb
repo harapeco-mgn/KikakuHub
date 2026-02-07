@@ -22,6 +22,7 @@
       <div class="flex flex-wrap items-start gap-2">
         <%= render "themes/vote_section", theme: @theme %>
         <% if user_signed_in? && current_user == @theme.user %>
+          <%= link_to "編集", edit_theme_path(@theme), class: "btn btn-ghost btn-sm" %>
           <%= button_to "削除", theme_path(@theme),
                         method: :delete,
                         data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },

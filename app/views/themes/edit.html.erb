@@ -1,0 +1,18 @@
+<%= render_breadcrumbs([
+  bc("ホーム", root_path),
+  bc("テーマ一覧", themes_path),
+  bc(@theme.title, theme_path(@theme)),
+  bc("編集")
+]) %>
+<div class="mx-auto max-w-2xl">
+  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+    <div class="card-body">
+      <h1 class="card-title text-2xl font-bold">テーマを編集</h1>
+      <p class="text-sm text-base-content/60">投稿したテーマの内容を修正できます。</p>
+
+      <div class="divider"></div>
+
+      <%= render "form", theme: @theme %>
+    </div>
+  </div>
+</div>
