@@ -1,6 +1,6 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_theme, only: %i[show destroy]
+  before_action :set_theme, only: %i[show edit update destroy]
 
   def index
     @themes = Theme.recent.page(params[:page]).per(20)
@@ -28,6 +28,21 @@ class ThemesController < ApplicationController
     else
       flash.now[:alert] = "入力内容を確認してください"
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    authorize_owner!(@theme)
+  end
+
+  def update
+    authorize_owner!(@theme)
+
+    if @theme.update(theme_params)
+      redirect_to @theme, notice: "テーマを更新しました。", status: :see_other
+    else
+      flash.now[:alert] = "入力内容を確認してください"
+      render :edit, status: :unprocessable_entity
     end
   end
 
