@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     @category = "tech" unless Theme::CATEGORY_KEYS.include?(@category)
 
     # セレクト用（存在する期だけ出す）
-    @cohort_options = User.distinct.order(:cohort).pluck(:cohort).compact
+    @cohort_options = User.cohort_options
 
     # 集計（共通基盤を呼ぶ）
     @availability_counts = Availability::AggregateCounts.call(

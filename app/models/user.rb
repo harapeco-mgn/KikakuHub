@@ -16,4 +16,8 @@ class User < ApplicationRecord
   def cohort_label
     cohort.to_i > 0 ? "#{cohort}期" : "未設定"
   end
+
+  def self.cohort_options
+    distinct.order(:cohort).pluck(:cohort).compact
+  end
 end
