@@ -7,9 +7,13 @@ class Theme < ApplicationRecord
   enum :category, { tech: 0, community: 1 }
 
   validates :category, presence: true
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: 100 }
   validates :description, presence: true, length: { maximum: 1000 }
   validates :secondary_label, presence: true, if: :secondary_enabled?
+
+  scope :recent, -> { order(created_at: :desc) }
+  scope :by_category, ->(category) { where(category: category) }
+  scope :popular, -> { order(theme_votes_count: :desc) }
 
   has_many :theme_votes, dependent: :destroy
   has_many :voters, through: :theme_votes, source: :user
