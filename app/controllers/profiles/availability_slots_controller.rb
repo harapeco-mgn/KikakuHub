@@ -39,7 +39,7 @@ module Profiles
       @category = params[:category].presence_in(Theme::CATEGORY_KEYS) || "tech"
 
       Availability::BulkUpdateSlots.call(
-        user: current_user, category: @category, slots_param: params[:slots].to_unsafe_h
+        user: current_user, category: @category, slots_param: slots_params
       )
 
       redirect_to after_save_path(category: @category), notice: "保存しました"
@@ -61,7 +61,7 @@ module Profiles
 
       @category = from
       Availability::BulkUpdateSlots.call(
-        user: current_user, category: from, slots_param: params[:slots].to_unsafe_h
+        user: current_user, category: from, slots_param: slots_params
       )
 
       if current_user.availability_slots.where(category: from).none?
@@ -99,6 +99,16 @@ module Profiles
 
     def bulk_params
       params.require(:bulk).permit(:category, :start_time, :end_time, wdays: [])
+    end
+
+    def slots_params
+      return {} unless params[:slots]
+
+      # 動的なキー（IDまたは"new_*"）を持つハッシュを処理
+      # キー自体は制限せず、各値の属性のみをpermit
+      params[:slots].to_unsafe_h.transform_values do |attrs|
+        ActionController::Parameters.new(attrs).permit(:start_time, :end_time, :wday, :category).to_h
+      end
     end
 
     def after_save_path(category:)
