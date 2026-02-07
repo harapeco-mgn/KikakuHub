@@ -3,7 +3,7 @@ class ThemesController < ApplicationController
   before_action :set_theme, only: %i[show destroy]
 
   def index
-    @themes = Theme.order(created_at: :desc).page(params[:page]).per(20)
+    @themes = Theme.recent.page(params[:page]).per(20)
   end
 
   def show
