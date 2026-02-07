@@ -203,6 +203,7 @@ erDiagram
     string category "tech/community/youtube"
     string title
     text description
+    int theme_votes_count "counter_cache, default: 0"
     datetime created_at
     datetime updated_at
   }
@@ -287,6 +288,7 @@ erDiagram
     string category "tech/community"
     string title
     text description
+    int theme_votes_count "counter_cache, default: 0"
     boolean accepting_registrations
     string primary_label_on
     string primary_label_off
@@ -324,6 +326,7 @@ erDiagram
     boolean secondary_interest
     datetime created_at
     datetime updated_at
+    unique_index "user_id, theme_id"
   }
 
   AVAILABILITY_SLOTS {
@@ -378,6 +381,7 @@ erDiagram
 - user_id（作成者）
 - category（**tech / community**）
 - title / description
+- theme_votes_count（投票数のカウンターキャッシュ、デフォルト: 0）
 - accepting_registrations（主ボタン表示制御）
 - primary_label_on / primary_label_off（主ボタン文言）
 - secondary_enabled / secondary_label（第2ボタン）
@@ -392,8 +396,8 @@ erDiagram
 - user_id, theme_id
 - body
 
-### registrations
-- user_id, theme_id（組み合わせ一意）
+### rsvps (registrations)
+- user_id, theme_id（組み合わせ一意、ユニークインデックスで制約）
 - status（attending/declined/maybe 等）
 - secondary_interest（boolean）
 
