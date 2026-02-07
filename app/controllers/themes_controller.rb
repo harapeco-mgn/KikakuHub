@@ -61,7 +61,7 @@ class ThemesController < ApplicationController
 
     return unless @availability_supported
 
-    @cohort_options = User.distinct.order(:cohort).pluck(:cohort).compact
+    @cohort_options = User.cohort_options
 
     @availability_counts = Availability::AggregateCounts.call(
       cohort: @cohort,
