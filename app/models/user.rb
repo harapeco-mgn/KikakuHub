@@ -5,6 +5,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  validates :nickname, presence: true, length: { maximum: 50 }
+  validates :cohort, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+
   has_many :themes, dependent: :destroy
   has_many :theme_votes, dependent: :destroy
   has_many :voted_themes, through: :theme_votes, source: :theme
