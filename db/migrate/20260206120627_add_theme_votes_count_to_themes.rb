@@ -1,4 +1,4 @@
-class AddThemeVotesCountToThemes < ActiveRecord::Migration[8.0]
+class AddThemeVotesCountToThemes < ActiveRecord::Migration[7.2]
   def change
     add_column :themes, :theme_votes_count, :integer, default: 0, null: false
 
