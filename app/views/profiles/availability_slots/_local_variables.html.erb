@@ -1,27 +1,8 @@
-<%# ========== 曜日（0=日, ... 6=土）に統一（Date#wday） ========== %>
-<% wday_en = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday] %>
-<% wday_jp = %w[日曜日 月曜日 火曜日 水曜日 木曜日 金曜日 土曜日] %>
-<% wdays_order = (0..6).to_a %>
-
-<%# ========== 時刻オプション（30分刻み） ========== %>
-<% time_options =
-  (0..47).map do |i|
-    m = i * 30
-    label = format("%02d:%02d", m / 60, m % 60)
-    [label, label]
-  end
-%>
-<% end_time_options = time_options + [["24:00", "24:00"]] %>
-
-<%# ========== start_minute/end_minute を "HH:MM" に変換して selected を確実に当てる ========== %>
-<% minute_to_hhmm = ->(m) { format("%02d:%02d", m / 60, m % 60) } %>
-<% selected_hhmm = ->(obj, minute_attr, fallback_attr) do
-  if obj.respond_to?(minute_attr) && !obj.public_send(minute_attr).nil?
-    minute_to_hhmm.call(obj.public_send(minute_attr))
-  else
-    obj.public_send(fallback_attr).to_s
-  end
-end %>
+<%# ヘルパーから変数を取得 %>
+<% wday_data = wday_options %>
+<% wday_en = wday_data[:en] %>
+<% wday_jp = wday_data[:jp] %>
+<% wdays_order = wday_data[:order] %>
 
 <%# controller でセットされる想定 %>
 <% @category ||= (params[:category].presence || "tech") %>
