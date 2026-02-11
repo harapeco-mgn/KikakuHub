@@ -3,7 +3,10 @@ class ThemesController < ApplicationController
   before_action :set_theme, only: %i[show edit update destroy]
 
   def index
-    @themes = Theme.active_themes.recent.page(params[:page]).per(20)
+    @themes = Theme.active_themes
+    @themes = @themes.search_by_keyword(params[:keyword]) if params[:keyword].present?
+    @themes = @themes.by_category(params[:category]) if params[:category].present?
+    @themes = @themes.recent.page(params[:page]).per(20)
   end
 
   def archived

@@ -18,6 +18,10 @@ class Theme < ApplicationRecord
   scope :popular, -> { order(theme_votes_count: :desc) }
   scope :active_themes, -> { where(status: :active) }
   scope :archived_themes, -> { where(status: :archived) }
+  scope :search_by_keyword, ->(keyword) {
+    return all if keyword.blank?
+    where("title ILIKE :q OR description ILIKE :q", q: "%#{sanitize_sql_like(keyword)}%")
+  }
 
   has_many :theme_votes, dependent: :destroy
   has_many :voters, through: :theme_votes, source: :user
