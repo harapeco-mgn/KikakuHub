@@ -37,4 +37,65 @@ RSpec.describe Rsvp, type: :model do
       expect(rsvp.status).to eq('undecided')
     end
   end
+
+  describe 'secondary_interest auto-clearing' do
+    let(:user) { create(:user) }
+    let(:theme) { create(:theme) }
+
+    context 'when changing from attending to not_attending' do
+      it 'clears secondary_interest' do
+        rsvp = create(:rsvp, user: user, theme: theme, status: :attending, secondary_interest: true)
+
+        rsvp.update(status: :not_attending)
+
+        expect(rsvp.reload.secondary_interest).to be false
+      end
+    end
+
+    context 'when changing from attending to undecided' do
+      it 'clears secondary_interest' do
+        rsvp = create(:rsvp, user: user, theme: theme, status: :attending, secondary_interest: true)
+
+        rsvp.update(status: :undecided)
+
+        expect(rsvp.reload.secondary_interest).to be false
+      end
+    end
+
+    context 'when staying on attending' do
+      it 'keeps secondary_interest' do
+        rsvp = create(:rsvp, user: user, theme: theme, status: :attending, secondary_interest: true)
+
+        rsvp.update(status: :attending)
+
+        expect(rsvp.reload.secondary_interest).to be true
+      end
+    end
+
+    context 'when creating with non-attending status' do
+      it 'forces secondary_interest to false' do
+        rsvp = create(:rsvp, user: user, theme: theme, status: :undecided, secondary_interest: true)
+
+        expect(rsvp.reload.secondary_interest).to be false
+      end
+    end
+
+    context 'when updating other attributes on non-attending status' do
+      it 'clears secondary_interest if it was true' do
+        rsvp = create(:rsvp, user: user, theme: theme, status: :undecided, secondary_interest: false)
+
+        # 直接DBを変更して secondary_interest を true にする（不整合状態を作る）
+        ActiveRecord::Base.connection.execute(
+          "UPDATE rsvps SET secondary_interest = true WHERE id = #{rsvp.id}"
+        )
+
+        # 他の属性を更新すると、secondary_interest が自動的に false に戻る
+        rsvp.reload
+        expect(rsvp.secondary_interest).to be true # 確認
+
+        rsvp.update(status: :undecided) # 同じstatusで更新
+        expect(rsvp.reload.secondary_interest).to be false
+      end
+    end
+  end
 end
