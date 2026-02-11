@@ -1,0 +1,43 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-3xl font-bold">アーカイブされたテーマ</h1>
+    <%= link_to "テーマ一覧に戻る", themes_path, class: "btn btn-outline btn-sm" %>
+  </div>
+
+  <% if @themes.any? %>
+    <div class="grid gap-4">
+      <% @themes.each do |theme| %>
+        <%= link_to theme_path(theme), class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <h2 class="card-title">
+                  <%= theme.title %>
+                  <div class="badge badge-ghost badge-sm">アーカイブ</div>
+                </h2>
+                <p class="text-sm text-base-content/60"><%= truncate(theme.description, length: 100) %></p>
+              </div>
+              <div class="flex flex-col gap-2 text-right">
+                <span class="text-xs text-base-content/60"><%= theme.created_at.strftime('%Y/%m/%d') %></span>
+                <div class="badge badge-outline badge-sm"><%= Theme.human_enum_name(:category, theme.category) %></div>
+              </div>
+            </div>
+            <div class="card-actions justify-end">
+              <div class="stat-value text-primary text-2xl"><%= theme.theme_votes_count %></div>
+              <span class="text-xs text-base-content/60">投票</span>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="mt-8">
+      <%= paginate @themes %>
+    </div>
+  <% else %>
+    <div role="alert" class="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-6 w-6 shrink-0 stroke-info"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span>アーカイブされたテーマはありません。</span>
+    </div>
+  <% end %>
+</div>
