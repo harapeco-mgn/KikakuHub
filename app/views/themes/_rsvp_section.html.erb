@@ -30,12 +30,17 @@
     <% if theme.secondary_enabled? %>
       <% secondary_label = theme.secondary_label.presence || "第2ボタン" %>
       <% next_secondary = !secondary_on %>
+      <% can_use_secondary = current_status == 'attending' %>
       <div class="mt-4">
         <%= button_to "#{secondary_label}（#{secondary_on ? 'ON' : 'OFF'}）",
               theme_rsvp_path(theme), method: :patch,
               params: { rsvp: { secondary_interest: next_secondary } },
               class: "btn #{secondary_on ? 'btn-accent' : 'btn-outline btn-accent'}",
+              disabled: !can_use_secondary,
               form: { data: { turbo_stream: true } } %>
+        <% unless can_use_secondary %>
+          <p class="mt-1 text-xs text-base-content/60">※「参加」を選択すると押せるようになります</p>
+        <% end %>
       </div>
     <% end %>
   <% else %>
