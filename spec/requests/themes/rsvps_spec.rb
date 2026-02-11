@@ -105,26 +105,26 @@ RSpec.describe "Themes::Rsvps", type: :request do
         expect(rsvp.secondary_interest).to be true
       end
 
-      it "rejects secondary_interest when status is not attending" do
+      it "changes status and auto-clears secondary_interest" do
         rsvp = create(:rsvp, user: user, theme: theme, status: :attending, secondary_interest: true)
 
         patch_rsvp({ rsvp: { status: :undecided, secondary_interest: true } })
 
         rsvp.reload
         expect(rsvp.status).to eq("undecided")
-        expect(rsvp.secondary_interest).to be true # 変更されない
+        expect(rsvp.secondary_interest).to be false # 自動的にクリア
       end
     end
 
     context "when changing from attending to not_attending" do
       let!(:rsvp) { create(:rsvp, user: user, theme: theme, status: :attending, secondary_interest: true) }
 
-      it "allows status change but keeps secondary_interest unchanged" do
+      it "changes status and auto-clears secondary_interest" do
         patch_rsvp({ rsvp: { status: :not_attending } })
 
         rsvp.reload
         expect(rsvp.status).to eq("not_attending")
-        expect(rsvp.secondary_interest).to be true # そのまま
+        expect(rsvp.secondary_interest).to be false # 自動的にクリア
       end
     end
   end
