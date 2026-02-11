@@ -5,18 +5,22 @@ class Theme < ApplicationRecord
   belongs_to :user
 
   enum :category, { tech: 0, community: 1 }
-  enum :status, { active: 0, archived: 1 }
+  enum :status, { considering: 0, archived: 1, confirmed: 2, done: 3 }
 
   validates :category, presence: true
   validates :status, presence: true
   validates :title, presence: true, length: { maximum: 100 }
   validates :description, presence: true, length: { maximum: 1000 }
   validates :secondary_label, presence: true, if: :secondary_enabled?
+  validates :converted_event_url,
+            format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]),
+                      message: "は有効なURLを入力してください" },
+            allow_blank: true
 
   scope :recent, -> { order(created_at: :desc) }
   scope :by_category, ->(category) { where(category: category) }
   scope :popular, -> { order(theme_votes_count: :desc) }
-  scope :active_themes, -> { where(status: :active) }
+  scope :active_themes, -> { where.not(status: :archived) }
   scope :archived_themes, -> { where(status: :archived) }
   scope :search_by_keyword, ->(keyword) {
     return all if keyword.blank?

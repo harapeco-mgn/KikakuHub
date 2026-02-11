@@ -6,8 +6,8 @@ RSpec.describe "Themes Search", type: :request do
   before { sign_in user }
 
   describe "GET /themes with search parameters" do
-    let!(:tech_theme) { create(:theme, title: "Rails勉強会", description: "Railsを学ぶ", category: :tech, status: :active) }
-    let!(:community_theme) { create(:theme, title: "コミュニティイベント", description: "交流会", category: :community, status: :active) }
+    let!(:tech_theme) { create(:theme, title: "Rails勉強会", description: "Railsを学ぶ", category: :tech, status: :considering) }
+    let!(:community_theme) { create(:theme, title: "コミュニティイベント", description: "交流会", category: :community, status: :considering) }
     let!(:archived_theme) { create(:theme, title: "過去のイベント", description: "Rails", category: :tech, status: :archived) }
 
     context "without search parameters" do

@@ -1,0 +1,38 @@
+<% if current_user == theme.user %>
+  <% case theme.status %>
+  <% when "considering" %>
+    <%# 「確定にする」ボタン（モーダルでURL入力）%>
+    <button class="btn btn-success btn-sm" onclick="document.getElementById('confirm-modal').showModal()">
+      確定にする
+    </button>
+    <dialog id="confirm-modal" class="modal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">テーマを確定にする</h3>
+        <%= form_with url: transition_theme_path(theme), method: :patch, local: true do |f| %>
+          <%= f.hidden_field :status, name: "theme[status]", value: "confirmed" %>
+          <fieldset class="fieldset mt-4">
+            <label class="fieldset-legend">イベントURL（任意）</label>
+            <%= f.url_field :converted_event_url,
+                name: "theme[converted_event_url]",
+                value: theme.converted_event_url,
+                placeholder: "https://connpass.com/event/...",
+                class: "input input-bordered w-full" %>
+          </fieldset>
+          <div class="modal-action">
+            <button type="button" class="btn btn-ghost" onclick="this.closest('dialog').close()">キャンセル</button>
+            <%= f.submit "確定にする", class: "btn btn-success" %>
+          </div>
+        <% end %>
+      </div>
+      <form method="dialog" class="modal-backdrop"><button>close</button></form>
+    </dialog>
+
+  <% when "confirmed" %>
+    <%# 「開催済にする」ボタン %>
+    <%= button_to "開催済にする", transition_theme_path(theme),
+          method: :patch,
+          params: { theme: { status: "done" } },
+          class: "btn btn-ghost btn-sm",
+          data: { turbo_confirm: "開催済に変更しますか？" } %>
+  <% end %>
+<% end %>

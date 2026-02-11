@@ -1,6 +1,6 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_theme, only: %i[show edit update destroy]
+  before_action :set_theme, only: %i[show edit update destroy transition]
 
   def index
     @themes = Theme.active_themes
@@ -63,10 +63,54 @@ class ThemesController < ApplicationController
     end
   end
 
+  def transition
+    authorize_owner!(@theme)
+    return if performed?
+
+    new_status = transition_params[:status]
+
+    unless valid_transition?(new_status)
+      redirect_to @theme, alert: "この状態遷移は許可されていません。", status: :see_other
+      return
+    end
+
+    attrs = { status: new_status }
+    attrs[:converted_event_url] = transition_params[:converted_event_url] if new_status == "confirmed"
+
+    if @theme.update(attrs)
+      redirect_to @theme, notice: status_change_message(new_status), status: :see_other
+    else
+      redirect_to @theme, alert: "状態の変更に失敗しました。", status: :see_other
+    end
+  end
+
   private
 
   def theme_params
-    params.require(:theme).permit(:category, :title, :description, :secondary_enabled, :secondary_label)
+    params.require(:theme).permit(:category, :title, :description, :secondary_enabled, :secondary_label, :converted_event_url)
+  end
+
+  def transition_params
+    params.require(:theme).permit(:status, :converted_event_url)
+  end
+
+  def valid_transition?(new_status)
+    allowed = {
+      "considering" => %w[confirmed archived],
+      "confirmed"   => %w[done archived],
+      "done"        => [],
+      "archived"    => []
+    }
+    allowed.fetch(@theme.status, []).include?(new_status)
+  end
+
+  def status_change_message(new_status)
+    case new_status
+    when "confirmed" then "テーマを「確定」に変更しました。"
+    when "done"      then "テーマを「開催済」に変更しました。"
+    when "archived"  then "テーマをアーカイブしました。"
+    else "状態を変更しました。"
+    end
   end
 
   def set_theme
