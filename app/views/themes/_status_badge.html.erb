@@ -1,0 +1,11 @@
+<%# theme のステータスに応じたバッジを表示 %>
+<% case theme.status %>
+<% when "considering" %>
+  <%# considering は通常表示なのでバッジなし %>
+<% when "confirmed" %>
+  <span class="badge badge-success">確定</span>
+<% when "done" %>
+  <span class="badge badge-ghost">開催済</span>
+<% when "archived" %>
+  <span class="badge badge-ghost">アーカイブ</span>
+<% end %>

@@ -19,6 +19,9 @@ end
   collection do
     get :archived
   end
+  member do
+    patch :transition
+  end
   scope module: :themes do
     resource  :vote,           only: %i[create destroy]
     resources :theme_comments, only: %i[create destroy]

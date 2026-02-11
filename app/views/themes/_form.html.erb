@@ -54,6 +54,16 @@
     <%= f.text_area :description, rows: 6, maxlength: 1000, class: "textarea textarea-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary", placeholder: "テーマの概要や目的を記載してください（最大1000文字）" %>
   </fieldset>
 
+  <% if theme.confirmed? || theme.done? %>
+    <fieldset class="fieldset">
+      <%= f.label :converted_event_url, "イベントURL", class: "fieldset-legend" %>
+      <%= f.url_field :converted_event_url,
+            class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary",
+            placeholder: "https://connpass.com/event/..." %>
+      <span class="label-text-alt text-base-content/60">確定したイベントのURLを入力してください</span>
+    </fieldset>
+  <% end %>
+
   <div class="flex items-center gap-3 pt-2">
     <%= f.submit class: "btn btn-primary" %>
     <%= link_to "キャンセル", themes_path, class: "btn btn-ghost" %>

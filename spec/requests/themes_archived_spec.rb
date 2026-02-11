@@ -6,7 +6,7 @@ RSpec.describe "Themes Archived", type: :request do
   before { sign_in user }
 
   describe "GET /themes/archived" do
-    let!(:active_theme) { create(:theme, status: :active) }
+    let!(:active_theme) { create(:theme, status: :considering) }
     let!(:archived_theme) { create(:theme, status: :archived) }
 
     it "returns http success" do

@@ -19,9 +19,15 @@ ja:
         title: "タイトル"
         description: "説明"
         secondary_label: "第2ボタン名"
+        converted_event_url: "イベントURL"
         categories:
           tech: "技術系"
           community: "交流系"
+        statuses:
+          considering: "検討中"
+          archived: "アーカイブ"
+          confirmed: "確定"
+          done: "開催済"
       theme_comment:
         body: "コメント"
       availability_slot:

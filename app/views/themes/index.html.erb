@@ -44,6 +44,7 @@
           <div class="min-w-0 flex-1">
             <div class="mb-2 flex flex-wrap items-center gap-2">
               <span class="badge badge-primary"><%= Theme.human_enum_name(:category, theme.category) %></span>
+              <%= render "themes/status_badge", theme: theme %>
               <span class="text-xs text-base-content/60">
                 <%= l(theme.created_at, format: :short) %>
               </span>

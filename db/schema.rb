@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_11_164650) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_11_232143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,6 +83,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_11_164650) do
     t.string "secondary_label"
     t.integer "theme_votes_count", default: 0, null: false
     t.integer "status", default: 0, null: false
+    t.string "converted_event_url"
     t.index ["community_id"], name: "index_themes_on_community_id"
     t.index ["user_id"], name: "index_themes_on_user_id"
   end
