@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 end
 
   resources :themes, only: %i[index show new create edit update destroy] do
+  collection do
+    get :archived
+  end
   scope module: :themes do
     resource  :vote,           only: %i[create destroy]
     resources :theme_comments, only: %i[create destroy]
