@@ -41,4 +41,8 @@ class Theme < ApplicationRecord
     undecided:     grouped.fetch(:undecided, 0)
     }
   end
+
+  def hosting_ease_score
+    Themes::HostingEaseCalculator.call(self)
+  end
 end
