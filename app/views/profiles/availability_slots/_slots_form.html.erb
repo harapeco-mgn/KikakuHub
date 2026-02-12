@@ -7,13 +7,16 @@
 
   <%= hidden_field_tag :category, @category %>
 
-  <% wdays_order.each do |wday| %>
+  <% wday_data = wday_options %>
+  <% time_opts = time_options %>
+  <% end_time_opts = end_time_options %>
+  <% wday_data[:order].each do |wday| %>
     <% slots = (@slots_by_wday[wday] || []) %>
 
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
         <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-900 text-lg"><%= "#{wday_en[wday]} / #{wday_jp[wday]}" %></span>
+          <span class="font-bold text-gray-900 text-lg"><%= "#{wday_data[:en][wday]} / #{wday_data[:jp][wday]}" %></span>
         </div>
 
         <button type="button"
@@ -38,8 +41,8 @@
                       <span class="label-text text-xs font-semibold tracking-wide text-gray-500">開始時刻</span>
                     </label>
                     <div class="relative">
-                      <%= sf.select :start_time, time_options,
-                        { selected: selected_hhmm.call(sf.object, :start_minute, :start_time) },
+                      <%= sf.select :start_time, time_opts,
+                        { selected: selected_time(sf.object, :start_minute, :start_time) },
                         class: "select select-bordered w-full pr-10" %>
                       <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
                         <span class="material-icons-outlined text-base">schedule</span>
@@ -52,8 +55,8 @@
                       <span class="label-text text-xs font-semibold tracking-wide text-gray-500">終了時刻</span>
                     </label>
                     <div class="relative">
-                      <%= sf.select :end_time, end_time_options,
-                        { selected: selected_hhmm.call(sf.object, :end_minute, :end_time) },
+                      <%= sf.select :end_time, end_time_opts,
+                        { selected: selected_time(sf.object, :end_minute, :end_time) },
                         class: "select select-bordered w-full pr-10" %>
                       <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
                         <span class="material-icons-outlined text-base">schedule</span>
@@ -95,7 +98,7 @@
               <div class="relative">
                 <select name="slots[__KEY__][start_time]" class="select select-bordered w-full pr-10">
                   <option value=""></option>
-                  <% time_options.each do |label, val| %>
+                  <% time_opts.each do |label, val| %>
                     <option value="<%= val %>"><%= label %></option>
                   <% end %>
                 </select>
@@ -112,7 +115,7 @@
               <div class="relative">
                 <select name="slots[__KEY__][end_time]" class="select select-bordered w-full pr-10">
                   <option value=""></option>
-                  <% end_time_options.each do |label, val| %>
+                  <% end_time_opts.each do |label, val| %>
                     <option value="<%= val %>"><%= label %></option>
                   <% end %>
                 </select>
