@@ -1,6 +1,12 @@
 <div class="card bg-base-200 mt-4">
   <div class="card-body p-4">
-    <h3 class="card-title text-base">開催しやすさスコア</h3>
+    <div class="flex items-center justify-between">
+      <h3 class="card-title text-base">開催しやすさスコア</h3>
+    </div>
+
+    <p class="text-xs text-base-content/60 mt-1">
+      投票数・参加意欲・参加可能時間から算出した開催の実現可能性を示します（100点満点）
+    </p>
 
     <% if hosting_ease %>
       <div class="flex items-center gap-4">
@@ -41,6 +47,43 @@
             参加率: <%= (hosting_ease[:raw_data][:rsvp_rate] * 100).round(1) %>% |
             参加可能: <%= hosting_ease[:raw_data][:availability_count].round(1) %>人
           </div>
+        </div>
+      </div>
+
+      <!-- 満点条件の説明 -->
+      <div class="collapse collapse-arrow bg-base-100 mt-3">
+        <input type="checkbox" />
+        <div class="collapse-title text-xs font-medium">スコアの計算方法を見る</div>
+        <div class="collapse-content">
+          <table class="table table-xs">
+            <thead>
+              <tr>
+                <th>要素</th>
+                <th>最大点</th>
+                <th>満点になる条件</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>投票人気度</td>
+                <td>30点</td>
+                <td>投票数が10件以上</td>
+              </tr>
+              <tr>
+                <td>参加意欲</td>
+                <td>30点</td>
+                <td>参加表明率が100%</td>
+              </tr>
+              <tr>
+                <td>参加可能性</td>
+                <td>40点</td>
+                <td>参加可能人数が10人以上</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="text-xs text-base-content/60 mt-2">
+            ※ 各要素は上限値を超えても満点として扱われます
+          </p>
         </div>
       </div>
     <% else %>
