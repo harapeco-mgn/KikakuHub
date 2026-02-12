@@ -1,0 +1,50 @@
+<div class="card bg-base-200 mt-4">
+  <div class="card-body p-4">
+    <h3 class="card-title text-base">開催しやすさスコア</h3>
+
+    <% if hosting_ease %>
+      <div class="flex items-center gap-4">
+        <!-- スコア表示 -->
+        <div class="radial-progress text-primary" style="--value:<%= hosting_ease[:score] %>; --size:5rem; --thickness: 0.5rem;" role="progressbar">
+          <span class="text-2xl font-bold"><%= hosting_ease[:score] %></span>
+        </div>
+
+        <!-- 内訳 -->
+        <div class="flex-1">
+          <div class="grid grid-cols-1 gap-2 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-base-content/70">投票人気度</span>
+              <div class="flex items-center gap-2">
+                <progress class="progress progress-primary w-24" value="<%= hosting_ease[:breakdown][:votes] %>" max="30"></progress>
+                <span class="font-mono text-xs"><%= hosting_ease[:breakdown][:votes].round(1) %></span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-base-content/70">参加意欲</span>
+              <div class="flex items-center gap-2">
+                <progress class="progress progress-secondary w-24" value="<%= hosting_ease[:breakdown][:rsvp] %>" max="30"></progress>
+                <span class="font-mono text-xs"><%= hosting_ease[:breakdown][:rsvp].round(1) %></span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-base-content/70">参加可能性</span>
+              <div class="flex items-center gap-2">
+                <progress class="progress progress-accent w-24" value="<%= hosting_ease[:breakdown][:availability] %>" max="40"></progress>
+                <span class="font-mono text-xs"><%= hosting_ease[:breakdown][:availability].round(1) %></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 生データ -->
+          <div class="mt-3 text-xs text-base-content/60">
+            投票数: <%= hosting_ease[:raw_data][:votes_count] %>件 |
+            参加率: <%= (hosting_ease[:raw_data][:rsvp_rate] * 100).round(1) %>% |
+            参加可能: <%= hosting_ease[:raw_data][:availability_count].round(1) %>人
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <p class="text-sm text-base-content/60">データが不足しているため、スコアを算出できません。</p>
+    <% end %>
+  </div>
+</div>
