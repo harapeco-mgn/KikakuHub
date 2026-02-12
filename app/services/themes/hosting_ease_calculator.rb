@@ -10,7 +10,7 @@ module Themes
     WEIGHT_AVAILABILITY = 0.4 # 参加可能時間の重み
 
     # 正規化の上限値
-    MAX_VOTES = 20            # 投票数の上限（これ以上は1.0として扱う）
+    MAX_VOTES = 10            # 投票数の上限（これ以上は1.0として扱う）
     MAX_RSVP_RATE = 1.0       # 参加表明率の上限（100%）
     MAX_AVAILABILITY = 10     # 参加可能人数の上限（これ以上は1.0として扱う）
 
