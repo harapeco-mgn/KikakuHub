@@ -4,5 +4,6 @@ RSpec.configure do |config|
   # allow_browserチェックをスキップするヘルパー
   config.before(:each, type: :request) do
     allow_any_instance_of(ApplicationController).to receive(:allow_browser).and_return(true)
+    host! "localhost"
   end
 end
