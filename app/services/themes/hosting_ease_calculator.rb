@@ -62,21 +62,21 @@ module Themes
     def normalized_votes
       return 0 if votes_count.zero?
 
-      [votes_count.to_f / MAX_VOTES, 1.0].min
+      [ votes_count.to_f / MAX_VOTES, 1.0 ].min
     end
 
     # 参加表明率を0-1に正規化
     def normalized_rsvp
       return 0 if total_rsvps.zero?
 
-      [rsvp_rate, MAX_RSVP_RATE].min
+      [ rsvp_rate, MAX_RSVP_RATE ].min
     end
 
     # 参加可能人数を0-1に正規化
     def normalized_availability
       return 0 if availability_count.zero?
 
-      [availability_count.to_f / MAX_AVAILABILITY, 1.0].min
+      [ availability_count.to_f / MAX_AVAILABILITY, 1.0 ].min
     end
 
     def votes_count

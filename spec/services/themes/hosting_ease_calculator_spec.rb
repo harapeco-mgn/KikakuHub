@@ -79,7 +79,7 @@ RSpec.describe Themes::HostingEaseCalculator, type: :service do
         end
 
         # 参加可能時間データ
-        [user, *other_users].each do |u|
+        [ user, *other_users ].each do |u|
           create(:availability_slot, user: u, category: :tech, wday: 2, start_minute: 540, end_minute: 600)
         end
       end
