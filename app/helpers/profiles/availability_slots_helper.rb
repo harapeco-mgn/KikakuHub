@@ -12,12 +12,12 @@ module Profiles
       (0..47).map do |i|
         m = i * 30
         label = format("%02d:%02d", m / 60, m % 60)
-        [label, label]
+        [ label, label ]
       end
     end
 
     def end_time_options
-      time_options + [["24:00", "24:00"]]
+      time_options + [ [ "24:00", "24:00" ] ]
     end
 
     def minute_to_hhmm(minutes)

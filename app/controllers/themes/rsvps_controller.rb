@@ -14,7 +14,7 @@ module Themes
       # secondary_interest を更新しようとしている場合、参加表明が attending でなければ拒否
       if params_to_update.key?(:secondary_interest) && !@rsvp.attending?
         # secondary_interest のみの更新の場合はエラー
-        if params_to_update.keys.sort == [:secondary_interest]
+        if params_to_update.keys.sort == [ :secondary_interest ]
           @rsvp_counts = @theme.rsvp_counts
           flash.now[:alert] = "参加表明が必要です。"
           render :update, status: :unprocessable_entity
