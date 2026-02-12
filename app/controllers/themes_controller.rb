@@ -133,5 +133,7 @@ class ThemesController < ApplicationController
       cohort: @cohort,
       category: @availability_category
     )
+
+    @suggested_slots = Availability::SuggestSlots.call(@availability_counts)
   end
 end

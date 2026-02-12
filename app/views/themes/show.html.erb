@@ -51,6 +51,12 @@
 
     <%= render "themes/comment_form", theme: @theme, theme_comment: @theme_comment %>
 
+    <% if @availability_supported %>
+      <div class="mt-4">
+        <%= render "availability/suggested_slots", suggested_slots: @suggested_slots || [] %>
+      </div>
+    <% end %>
+
     <div class="mt-4">
       <% if @availability_supported %>
         <%= render "availability/aggregate_frame",

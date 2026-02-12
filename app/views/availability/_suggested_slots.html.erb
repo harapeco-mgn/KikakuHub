@@ -1,0 +1,29 @@
+<div class="rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm">
+  <h3 class="mb-3 text-lg font-bold">開催候補枠（Top <%= suggested_slots.size %>）</h3>
+
+  <% if suggested_slots.present? %>
+    <div class="grid gap-3 sm:grid-cols-3">
+      <% suggested_slots.each_with_index do |slot, i| %>
+        <div class="flex items-start gap-3 rounded-lg border border-base-300 bg-base-200/50 p-3">
+          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-content font-bold text-sm">
+            <%= i + 1 %>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold">
+              <%= AvailabilityHelper::WDAY_LABELS[slot[:wday]] %>曜日
+            </div>
+            <div class="text-sm">
+              <%= minutes_to_hhmm(slot[:start_minute]) %>〜<%= minutes_to_hhmm(slot[:end_minute]) %>
+              <span class="text-base-content/60">（<%= slot[:slots] / 2 %>時間<%= slot[:slots].odd? ? "30分" : "" %>）</span>
+            </div>
+            <div class="mt-1 text-sm">
+              <span class="badge badge-info badge-sm">最低 <%= slot[:min_count] %>人 参加可能</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-base-content/60">参加可能データが不足しているため、候補を表示できません。</p>
+  <% end %>
+</div>
