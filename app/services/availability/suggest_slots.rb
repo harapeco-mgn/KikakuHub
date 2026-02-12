@@ -18,7 +18,7 @@ module Availability
 
       candidates
         .select { |b| b[:slots] >= MIN_DURATION_SLOTS }
-        .sort_by { |b| [-b[:min_count], -b[:slots]] }
+        .sort_by { |b| [ -b[:min_count], -b[:slots] ] }
         .first(TOP_N)
     end
 
@@ -33,7 +33,7 @@ module Availability
             current_start = slot
             current_min = count
           else
-            current_min = [current_min, count].min
+            current_min = [ current_min, count ].min
           end
         else
           if current_start

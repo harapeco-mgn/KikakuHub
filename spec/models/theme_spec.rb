@@ -62,7 +62,7 @@ RSpec.describe Theme, type: :model do
 
     describe '.recent' do
       it 'returns themes ordered by created_at desc' do
-        expect(Theme.recent.where(id: [considering_theme.id, confirmed_theme.id, done_theme.id])).to eq([done_theme, confirmed_theme, considering_theme])
+        expect(Theme.recent.where(id: [ considering_theme.id, confirmed_theme.id, done_theme.id ])).to eq([ done_theme, confirmed_theme, considering_theme ])
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe Theme, type: :model do
 
     describe '.popular' do
       it 'returns themes ordered by theme_votes_count desc' do
-        expect(Theme.popular.where(id: [considering_theme.id, confirmed_theme.id])).to eq([confirmed_theme, considering_theme])
+        expect(Theme.popular.where(id: [ considering_theme.id, confirmed_theme.id ])).to eq([ confirmed_theme, considering_theme ])
       end
     end
 

@@ -87,7 +87,7 @@ RSpec.describe Availability::SuggestSlots do
       it "最大3件まで返す" do
         counts = empty_counts
         # 4つの候補を作成
-        [0, 1, 2, 3].each do |wday|
+        [ 0, 1, 2, 3 ].each do |wday|
           counts[wday][18] = 3
           counts[wday][19] = 3
         end
