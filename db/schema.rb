@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_11_232143) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_12_025837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_11_232143) do
     t.integer "end_minute", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category", "wday"], name: "index_availability_slots_on_category_and_wday"
+    t.index ["category"], name: "index_availability_slots_on_category"
     t.index ["user_id", "category", "wday", "start_minute", "end_minute"], name: "index_availability_slots_unique_range", unique: true
     t.index ["user_id"], name: "index_availability_slots_on_user_id"
     t.check_constraint "(end_minute % 30) = 0", name: "chk_availability_slots_end_step_30"
@@ -84,7 +86,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_11_232143) do
     t.integer "theme_votes_count", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.string "converted_event_url"
+    t.index ["category"], name: "index_themes_on_category"
     t.index ["community_id"], name: "index_themes_on_community_id"
+    t.index ["created_at"], name: "index_themes_on_created_at"
     t.index ["user_id"], name: "index_themes_on_user_id"
   end
 
