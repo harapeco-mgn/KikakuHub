@@ -1,9 +1,0 @@
-<%# ヘルパーから変数を取得 %>
-<% wday_data = wday_options %>
-<% wday_en = wday_data[:en] %>
-<% wday_jp = wday_data[:jp] %>
-<% wdays_order = wday_data[:order] %>
-
-<%# controller でセットされる想定 %>
-<% @category ||= (params[:category].presence || "tech") %>
-<% @slots_by_wday ||= {} %>
