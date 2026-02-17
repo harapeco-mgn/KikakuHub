@@ -1,253 +1,149 @@
-# KikakuHub（README）
+# KikakuHub
+
+> イベント主催者の「**何をやるか（テーマ）**」と「**いつやるか（時間帯）**」を決める企画支援サービス
+
+[![Ruby](https://img.shields.io/badge/Ruby-3.3.0-red)](https://www.ruby-lang.org/)
+[![Rails](https://img.shields.io/badge/Rails-7.2-red)](https://rubyonrails.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
+
+---
 
 ## サービス概要
-KikakuHub は、イベント主催者が「何をやるか（テーマ）」と「いつやるか（時間帯）」を決めるための企画支援サービスです。
-参加者の「やりたいテーマ」と「参加できる時間帯」を集めて可視化し、開催の意思決定を後押しします。
 
-- MVP: RUNTEQ コミュニティ内限定（UIはシングルコミュニティ運用）
-- DB設計: 将来の一般公開を見据え、最初からマルチコミュニティ前提
+KikakuHub は、イベント開催の「**企画段階**」に特化した支援ツールです。
 
----
+既存のイベント管理サービスが「日時・参加登録・通知」など開催後の工程に寄りがちなのに対し、KikakuHub は開催前の意思決定に絞ってアプローチします。参加者が「やりたいテーマ」に投票し、参加可能な時間帯を登録することで、主催者候補はテーマの需要と開催しやすい時間帯を一目で把握できます。
 
-## 解決したい課題
-イベント開催で詰まりやすいポイントは、当日の運営より前の「テーマ決め」と「時間決め」です。
-
-- 需要があるか分からない
-- 何をやればいいか決めきれない
-- 日程調整が面倒
-
-KikakuHub はイベント管理をフルで作るのではなく、**開催前の意思決定（企画）** に絞って主催のハードルを下げます。
+- **MVP**: RUNTEQ コミュニティ内限定（シングルコミュニティ運用）
+- **DB設計**: 将来の一般公開を見据え、最初からマルチコミュニティ前提
 
 ---
 
-## 想定ユーザー
-- 主催者候補（イベントを開きたいがテーマ/日程で止まる学習者）
-- 参加者（欲しいテーマを投票・コメントで表明したい学習者）
-- コミュニティオーナー（将来: 招待/モデレーション等の運用権限）
+## 解決する課題
 
-用語:
-- コミュニティ: サークル、会社、Discord/Slackグループ等の「場」の単位
-- オーナー: そのコミュニティの運用責任者（最小権限の管理者）
+イベント開催で詰まりやすいのは、当日の運営より前の「テーマ決め」と「時間決め」です。
 
----
-
-## 利用イメージ（MVP）
-1. 参加者がテーマ一覧から投票する（需要の可視化）
-2. 参加者がプロフィールで参加可能時間を登録する（週次の時間枠）
-3. 主催者候補がテーマ詳細で需要と時間帯の偏りを見て開催判断する
-4. 決まったら RUNTEQ公式イベント作成ページへ移動して開催を確定する（MVP）
+| 課題 | KikakuHub のアプローチ |
+|------|----------------------|
+| 需要があるか分からない | テーマへの投票数・参加表明数を可視化 |
+| 何をやればいいか決めきれない | 投票・コメントでコミュニティの声を集約 |
+| 日程調整が面倒 | 参加可能時間を集計し、候補日時を自動提案 |
 
 ---
 
-## 差別化ポイント
-既存のイベント管理サービスが「日時・参加登録・通知」など開催後工程に寄りがちなのに対し、KikakuHub は **開催前の意思決定** に特化します。
+## 主な機能
 
-- 投票 + コメントでテーマ需要を集める
-- 参加可能時間は個人予定を表示せず、人数集計のみ表示（心理的安全性）
-- 集計スコープを分離  
-  - トップ: コミュニティ全体の傾向  
-  - テーマ詳細: そのテーマで「参加表明」した人だけの傾向
+### テーマ（企画）管理
+- テーマの投稿・一覧・詳細・アーカイブ
+- 投票（ユーザー×テーマで1票、counter_cache で集計）
+- コメント（Turbo Stream でページリロードなし）
+- 参加表明・第2ボタン（テーマ側でラベルを設定可）
 
----
+### 参加可能時間の集計
+- プロフィールで週次の参加可能時間帯を登録
+- ホーム: コミュニティ全体の時間帯の偏りを表示
+- テーマ詳細: 参加表明したユーザーだけを対象に集計
 
-## MVPの機能（確定）
+### 開催しやすさスコア
+- テーマごとに 0〜100 のスコアを算出
+- 投票数（30%）・参加表明率（30%）・参加可能時間（40%）の加重平均
+- スコアをもとに候補日時（TOP3）を自動提案
 
 ### 認証・参加制限
-- ユーザー登録/ログイン: **Devise（メールアドレスでログイン）**
-- パスワード再設定: Devise標準（recoverable）
-- 合言葉による参加制限（MVP）
-  - 環境変数 `INVITE_KEY` と照合（DBに保存しない）
-  - 将来: 招待リンク（invitations）に置き換え
-- 将来: **Google認証**（Devise + OmniAuth などで追加想定）
-
-### テーマ（企画）
-- テーマ投稿（カテゴリ、タイトル、概要）
-- テーマ一覧/詳細
-- 投票（ユーザー×テーマで一意）
-- コメント（ユーザー×テーマで複数投稿可）
-
-### 参加表明（主ボタン）+ 第2ボタン（可変）
-- 参加状態の切り替え（例: 参加 / 不参加 / 未定）
-- 第2ボタン（例: 登壇してみたい / 興味あり / 運営を手伝いたい）
-  - テーマ側でラベルを持たせ、出す/出さないを制御
-  - registrations 側では `secondary_interest`（ON/OFF）として保持
-
-### 参加可能時間（集計）
-- プロフィールで参加可能時間を登録（週次の時間枠）
-- 集計表示
-  - トップ: コミュニティ全体の偏り
-  - テーマ詳細: そのテーマで参加表明したユーザーだけを集計
-- カテゴリは **tech / community の2種のみ**（other は採用しない）
-
-### 運用
-- テーマのアーカイブ（一定期間で退避し一覧の見通しを保つ）
+- Devise によるメール認証
+- 合言葉（環境変数 `INVITE_KEY`）によるコミュニティ参加制限
 
 ---
 
-## 画面一覧（MVP）
-- トップ：`/`
-- ユーザー登録（Devise）：`/users/sign_up`
-- ログイン（Devise）：`/users/sign_in`
-- ログアウト（Devise）：`DELETE /users/sign_out`
-- パスワード再設定（Devise）：`/users/password/new`（申請） / `/users/password/edit`（再設定）
+## 技術スタック
 
-- テーマ一覧：`/themes`
-- テーマ作成：`/themes/new`
-- テーマ詳細：`/themes/:id`
-- アーカイブ一覧：`/themes/archived`
-
-- プロフィール：`/profile`
-- 参加可能時間編集：`/profile/availability`
-
-補足:
-- MVPはRUNTEQ内限定のため、コミュニティ選択画面は出さない（シングルコミュニティ運用）
-- ただしDBはマルチコミュニティ前提で `community_id` を保持する
+| カテゴリ | 技術 |
+|---------|------|
+| バックエンド | Ruby 3.3.0 / Rails 7.2 |
+| データベース | PostgreSQL 16 |
+| フロントエンド | Tailwind CSS / daisyUI |
+| リアクティブ | Hotwire（Turbo / Stimulus） |
+| 認証 | Devise |
+| メール | Resend API |
+| テスト | RSpec / FactoryBot / Faker |
+| コード品質 | RuboCop（omakase）|
+| インフラ | Docker / Docker Compose |
 
 ---
 
-## 画面遷移図
+## 技術的なこだわり
 
-### ユーザー画面（MVP）
+### サービス層による責務の分離
+
+コントローラーの肥大化を防ぐため、ビジネスロジックをサービス層に切り出しています。
+
 ```
-/ (トップ)
-  ├─ /users/sign_up (ユーザー登録)
-  │     └─ 登録成功 → / (トップ)
-  ├─ /users/sign_in (ログイン)
-  │     └─ 成功 → / (トップ)
-  ├─ /themes (テーマ一覧)
-  │     ├─ /themes/new (テーマ作成)
-  │     │     └─ 作成成功 → /themes/:id (テーマ詳細)
-  │     ├─ /themes/:id (テーマ詳細)
-  │     │     ├─ 投票
-  │     │     ├─ コメント
-  │     │     ├─ 参加状態切替（主ボタン）
-  │     │     ├─ 第2ボタン（secondary_enabled のときのみ）
-  │     │     └─ RUNTEQ公式イベント作成ページへ誘導（MVP）
-  │     └─ /themes/archived (アーカイブ一覧)
-  └─ /profile (プロフィール)
-        └─ /profile/availability (参加可能時間登録)
+app/services/
+├── availability/
+│   ├── aggregate_counts.rb       # 参加可能時間の集計（7日×48スロット）
+│   ├── suggest_slots.rb          # 候補日時の自動提案（スライディングウィンドウ）
+│   ├── bulk_create_slots.rb      # 複数スロットの一括登録
+│   ├── bulk_update_slots.rb      # 複数スロットの一括更新
+│   ├── range_merger.rb           # 時間帯の重複マージ
+│   ├── weekly_slot_normalizer.rb # 週次スロットの正規化
+│   ├── overwrite_copy_category.rb # カテゴリ間コピー
+│   └── time_converter.rb         # 分⇔HH:MM 変換
+└── themes/
+    └── hosting_ease_calculator.rb # 開催しやすさスコア算出
 ```
 
-### 管理画面（admin / editor）
+各クラスは `.call` クラスメソッドで呼び出す統一インターフェースを採用しています。
 
+### 開催しやすさスコアの算出
 
-### users.role（enum）の追加
+3つの指標を正規化・加重平均してスコア（0〜100）を算出します。
 
-※ここではコード掲載は省略します（`users.role` は `general / editor / admin` のenumを想定）。
-既に `users` に `role` が追加されている前提で、Punditのポリシーにより編集者の権限を制御します。
+```ruby
+WEIGHT_VOTES        = 0.3   # 投票数の重み
+WEIGHT_RSVP         = 0.3   # 参加表明率の重み
+WEIGHT_AVAILABILITY = 0.4   # 参加可能時間の重み（最重要）
 
----
-
-## DB設計（確定方針）
-
-MVPはRUNTEQコミュニティ内運用だが、DBは本リリース（複数コミュニティ）を見据え、マルチコミュニティ前提にする。
-
-### 主要テーブル
-- users：ユーザー（Devise + アプリ独自）
-- communities：コミュニティ
-- memberships：所属（ユーザー×コミュニティ）
-- invitations：招待リンク（将来）
-- themes：テーマ（企画）
-- theme_votes：投票（賛同）
-- theme_comments：コメント
-- registrations：参加状態 + 第2ボタン状態（ユーザー×テーマ）
-- availability_slots：参加可能時間（週次の時間枠）
-
----
-
-
-## MVP用 ER図（Mermaid）
+score = (normalized_votes * 30) + (normalized_rsvp * 30) + (normalized_availability * 40)
 ```
+
+| 指標 | 算出方法 | 正規化の上限 |
+|------|---------|------------|
+| 投票数 | counter_cache の値 | 10票 = 1.0 |
+| 参加表明率 | 参加 / 全 RSVP 数 | 100% = 1.0 |
+| 参加可能人数 | 自動提案 TOP1 の平均参加人数 | 10人 = 1.0 |
+
+### 候補日時の自動提案（スライディングウィンドウ）
+
+参加可能時間の集計結果（7日×48スロットの2次元配列）から、最もメンバーが集まりやすい時間帯をTOP3で提案します。
+
+- **連続スロット検出**: 最低1時間（2スロット）以上の連続スロットを候補とする
+- **スライディングウィンドウ**: 4時間（8スロット）を超えるブロックは、`avg_count` が最大となるウィンドウを選択
+- **ソート順**: `avg_count → min_count → スロット数` の優先度で並び替え
+
+### Hotwire によるインタラクション
+
+Turbo と Stimulus を活用し、ページリロードなしの操作性を実現しています。
+
+- **コメント投稿/削除**: Turbo Stream でリストを差分更新
+- **投票・RSVP**: Turbo Stream でボタン状態を即時反映
+- **参加可能時間の下書き**: sessionStorage に保存し、タブ切替時のデータ消失を防止
+- **フラッシュメッセージ**: `AutoDismissController` で5秒後に自動消去
+
+---
+
+## DB設計
+
+```mermaid
 erDiagram
-  USERS ||--o{ MEMBERSHIPS : "has"
-  COMMUNITIES ||--o{ MEMBERSHIPS : "has"
-
-  COMMUNITIES ||--o{ THEMES : "has"
   USERS ||--o{ THEMES : "creates"
-
-  THEMES ||--o{ THEME_VOTES : "has"
   USERS ||--o{ THEME_VOTES : "casts"
-
-  USERS ||--o{ AVAILABILITY_SLOTS : "defines"
-
-  USERS {
-    bigint id PK
-    string nickname "unique"
-    string cohort
-    string email "unique, downcased"
-    string encrypted_password
-    datetime created_at
-    datetime updated_at
-  }
-
-  COMMUNITIES {
-    bigint id PK
-    string key "unique (e.g. runteq)"
-    string name
-    datetime created_at
-    datetime updated_at
-  }
-
-  MEMBERSHIPS {
-    bigint id PK
-    bigint user_id FK
-    bigint community_id FK
-    datetime created_at
-    datetime updated_at
-  }
-
-  THEMES {
-    bigint id PK
-    bigint community_id FK
-    bigint user_id FK "creator"
-    string category "tech/community/youtube"
-    string title
-    text description
-    int theme_votes_count "counter_cache, default: 0"
-    datetime created_at
-    datetime updated_at
-  }
-
-  THEME_VOTES {
-    bigint id PK
-    bigint user_id FK
-    bigint theme_id FK
-    datetime created_at
-    datetime updated_at
-  }
-
-  AVAILABILITY_SLOTS {
-    bigint id PK
-    bigint user_id FK
-    string category "tech/community"
-    int wday "0-6"
-    time start_time
-    time end_time
-    datetime created_at
-    datetime updated_at
-  }
-```
-<img width="1666" height="1060" alt="Image" src="https://github.com/user-attachments/assets/be368741-89b9-4279-9155-42c0a138aa70" />
-
-
-
-## ER図（Mermaid）全体構想
-```
-erDiagram
-  USERS ||--o{ COMMUNITIES : "owns (owner_id)"
-  USERS ||--o{ COMMUNITY_MEMBERSHIPS : "has"
-  COMMUNITIES ||--o{ COMMUNITY_MEMBERSHIPS : "has"
-  COMMUNITIES ||--o{ THEMES : "has"
-  USERS ||--o{ THEMES : "creates"
-  THEMES ||--o{ THEME_VOTES : "has"
-  USERS ||--o{ THEME_VOTES : "casts"
-  THEMES ||--o{ THEME_COMMENTS : "has"
   USERS ||--o{ THEME_COMMENTS : "writes"
-  THEMES ||--o{ RSVPS : "has"
   USERS ||--o{ RSVPS : "makes"
   USERS ||--o{ AVAILABILITY_SLOTS : "defines"
-  COMMUNITIES ||--o{ INVITATIONS : "issues"
-  USERS o|--o{ INVITATIONS : "invites (optional)"
+  COMMUNITIES ||--o{ THEMES : "has"
+  THEMES ||--o{ THEME_VOTES : "has"
+  THEMES ||--o{ THEME_COMMENTS : "has"
+  THEMES ||--o{ RSVPS : "has"
 
   USERS {
     bigint id PK
@@ -256,8 +152,6 @@ erDiagram
     string email "unique, downcased"
     string encrypted_password
     int role "general/editor/admin"
-    string provider "future"
-    string uid "future"
     datetime created_at
     datetime updated_at
   }
@@ -265,18 +159,6 @@ erDiagram
   COMMUNITIES {
     bigint id PK
     string name
-    bigint owner_id FK
-    string visibility "public/private"
-    string timezone
-    datetime created_at
-    datetime updated_at
-  }
-
-  COMMUNITY_MEMBERSHIPS {
-    bigint id PK
-    bigint user_id FK
-    bigint community_id FK
-    int role "future: owner/member"
     datetime created_at
     datetime updated_at
   }
@@ -285,18 +167,14 @@ erDiagram
     bigint id PK
     bigint community_id FK
     bigint user_id FK
-    string category "tech/community"
+    int category "tech/community (enum)"
     string title
     text description
     int theme_votes_count "counter_cache, default: 0"
-    boolean accepting_registrations
-    string primary_label_on
-    string primary_label_off
     boolean secondary_enabled
     string secondary_label
-    int status "open/archived/converted"
-    datetime expires_at
-    text converted_event_url
+    int status "considering/archived/confirmed/done"
+    string converted_event_url
     datetime created_at
     datetime updated_at
   }
@@ -322,102 +200,91 @@ erDiagram
     bigint id PK
     bigint user_id FK
     bigint theme_id FK
-    string status "attending/declined/maybe"
+    int status "attending/not_attending/undecided"
     boolean secondary_interest
     datetime created_at
     datetime updated_at
-    unique_index "user_id, theme_id"
   }
 
   AVAILABILITY_SLOTS {
     bigint id PK
     bigint user_id FK
-    string category "tech/community"
+    int category "tech/community (enum)"
     int wday "0-6"
-    time start_time
-    time end_time
-    datetime created_at
-    datetime updated_at
-  }
-
-  INVITATIONS {
-    bigint id PK
-    bigint community_id FK
-    bigint inviter_id FK "optional"
-    string token "unique"
-    datetime expires_at
+    int start_minute "0-1440"
+    int end_minute "0-1440"
     datetime created_at
     datetime updated_at
   }
 ```
-<img width="1659" height="1056" alt="Image" src="https://github.com/user-attachments/assets/1c807a25-5721-4c94-97cd-33c728eb725c" />
 
+### 設計のポイント
 
----
-
-## カラム例（抜粋）
-
-### users（例）
-- nickname（表示名、ユニーク）
-- cohort（期、MVPでは必須）
-- email（ユニーク、保存時は小文字化）
-- encrypted_password（Devise）
-- reset_password_token / reset_password_sent_at（Devise recoverable）
-- （将来: provider / uid など Google認証用のカラム追加を想定）
-
-### communities（例）
-- name
-- owner_id（users参照）
-- visibility（public/private）
-- timezone
-
-### memberships（例）
-- user_id
-- community_id
-- role（owner/member などは将来拡張。MVPは最小でOK）
-
-### themes（例）
-- community_id（必須）
-- user_id（作成者）
-- category（**tech / community**）
-- title / description
-- theme_votes_count（投票数のカウンターキャッシュ、デフォルト: 0）
-- accepting_registrations（主ボタン表示制御）
-- primary_label_on / primary_label_off（主ボタン文言）
-- secondary_enabled / secondary_label（第2ボタン）
-- status（open/archived/converted）
-- expires_at（退避基準）
-- converted_event_url（任意）
-
-### theme_votes
-- user_id, theme_id（組み合わせ一意）
-
-### theme_comments
-- user_id, theme_id
-- body
-
-### rsvps (registrations)
-- user_id, theme_id（組み合わせ一意、ユニークインデックスで制約）
-- status（attending/declined/maybe 等）
-- secondary_interest（boolean）
-
-### availability_slots
-- user_id
-- category（**tech / community**）
-- wday（0-6）
-- start_time / end_time（start < end）
+- **マルチコミュニティ前提**: MVPはシングル運用だが、`community_id` を保持しスキーマは複数コミュニティに対応
+- **時間帯の整数管理**: `start_time/end_time` を分単位の整数で保持し、集計を配列演算で高速化
+- **counter_cache**: `themes.theme_votes_count` に集約し投票数取得のN+1を回避
+- **ユニーク制約**: `theme_votes`・`rsvps` はDBレベルとモデルの両方で重複を防止
 
 ---
 
-## 環境変数
-- `INVITE_KEY`: MVPでの合言葉
-- `RUNTEQ_EVENT_CREATE_URL`（任意）: RUNTEQ公式イベント作成ページURL（誘導先を固定したい場合）
+## 画面構成
+
+| 画面 | パス | 説明 |
+|------|------|------|
+| ホーム | `/` | コミュニティ全体の参加可能時間集計・候補日時 |
+| テーマ一覧 | `/themes` | 投票数順・カテゴリ・キーワード検索 |
+| テーマ詳細 | `/themes/:id` | 投票・コメント・RSVP・開催しやすさスコア |
+| テーマ作成 | `/themes/new` | カテゴリ・タイトル・概要・第2ボタン設定 |
+| アーカイブ | `/themes/archived` | 終了・確定済みテーマ一覧 |
+| プロフィール | `/profile` | ニックネーム・期の確認 |
+| 参加可能時間 | `/profile/availability` | 週次の時間帯登録（カテゴリ別・一括更新） |
+| マイページ | `/mypage` | 自分のテーマ・投票・RSVP一覧 |
 
 ---
 
-## 開発メモ
-- email は小文字化して重複防止
-- 参加可能時間は人数集計のみ表示し、個人予定は表示しない
-- 参加表明・投票・登録系は「ユーザー×テーマで一意」を基本にして多重登録を防ぐ
-- アーカイブで一覧の見通しを保つ
+## 環境構築
 
+### 必要な環境
+- Docker / Docker Compose
+
+### 手順
+
+```bash
+# 1. リポジトリのクローン
+git clone <repository_url>
+cd KikakuHub
+
+# 2. 環境変数の設定
+cp .env.example .env
+# .env を編集して INVITE_KEY 等を設定
+
+# 3. コンテナの起動
+docker compose up -d
+
+# 4. DB の作成・マイグレーション・シードデータ投入
+docker compose exec web rails db:setup
+
+# 5. ブラウザで確認
+# http://localhost:3000
+```
+
+### 主な環境変数
+
+| 変数名 | 説明 |
+|--------|------|
+| `INVITE_KEY` | コミュニティ参加時の合言葉 |
+| `INVITE_KEY_REQUIRED` | 合言葉チェックの有効化 (`true` / `false`) |
+| `RESEND_API_KEY` | メール送信用 API キー（Resend） |
+| `MAILER_FROM` | 送信元メールアドレス |
+
+---
+
+## テスト
+
+```bash
+# 全テスト実行
+docker compose exec web bundle exec rspec
+
+# 特定ファイルのみ
+docker compose exec web bundle exec rspec spec/services/themes/hosting_ease_calculator_spec.rb
+```
