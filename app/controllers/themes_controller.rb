@@ -2,11 +2,17 @@ class ThemesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_theme, only: %i[show edit update destroy transition]
 
+  SORT_OPTIONS = {
+    "recent"       => :recent,
+    "popular"      => :popular,
+    "hosting_ease" => :by_hosting_ease
+  }.freeze
+
   def index
     @themes = Theme.active_themes
     @themes = @themes.search_by_keyword(params[:keyword]) if params[:keyword].present?
     @themes = @themes.by_category(params[:category]) if params[:category].present?
-    @themes = @themes.recent.page(params[:page]).per(20)
+    @themes = apply_sort(@themes).page(params[:page]).per(20)
   end
 
   def archived
@@ -116,6 +122,11 @@ class ThemesController < ApplicationController
 
   def set_theme
     @theme = Theme.find(params[:id])
+  end
+
+  def apply_sort(themes)
+    scope_name = SORT_OPTIONS[params[:sort]] || :recent
+    themes.public_send(scope_name)
   end
 
   # #49/#50: テーマ詳細用の「同カテゴリ集計（期切替）」データを準備

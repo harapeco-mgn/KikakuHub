@@ -9,6 +9,7 @@ class Rsvp < ApplicationRecord
 
   before_validation :set_default_status, on: :create
   before_save :clear_secondary_interest_unless_attending
+  after_commit :recalculate_theme_hosting_ease
 
   private
 
@@ -18,5 +19,9 @@ class Rsvp < ApplicationRecord
 
   def clear_secondary_interest_unless_attending
     self.secondary_interest = false unless attending?
+  end
+
+  def recalculate_theme_hosting_ease
+    theme.recalculate_hosting_ease_score!
   end
 end
