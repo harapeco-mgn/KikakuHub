@@ -1,6 +1,11 @@
 module Themes
   class VotesController < BaseController
     def create
+      if @theme.expired?
+        redirect_to @theme, alert: "募集期限が終了しているため、投票できません。"
+        return
+      end
+
       current_user.theme_votes.create!(theme: @theme)
       redirect_to @theme, notice: "投票しました"
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid

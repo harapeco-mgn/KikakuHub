@@ -5,5 +5,6 @@ RSpec.configure do |config|
   config.before(:each, type: :request) do
     allow_any_instance_of(ApplicationController).to receive(:allow_browser).and_return(true)
     host! "localhost"
+    ActionController::Base.allow_forgery_protection = false
   end
 end

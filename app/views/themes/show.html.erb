@@ -13,6 +13,7 @@
         <div class="mb-2 flex flex-wrap items-center gap-2">
           <span class="badge badge-primary badge-lg"><%= Theme.human_enum_name(:category, @theme.category) %></span>
           <%= render "themes/status_badge", theme: @theme %>
+          <%= render "themes/expires_at", theme: @theme %>
           <span class="text-sm text-base-content/60">
             <%= l(@theme.created_at, format: :short) %>
           </span>
