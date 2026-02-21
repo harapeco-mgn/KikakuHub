@@ -54,6 +54,16 @@ RSpec.describe Theme, type: :model do
     end
   end
 
+  describe '#recalculate_hosting_ease_score!' do
+    it 'hosting_ease_score_cacheをHostingEaseCalculatorの結果で更新する' do
+      theme = create(:theme)
+      allow(Themes::HostingEaseCalculator).to receive(:call).with(theme).and_return({ score: 42 })
+
+      expect { theme.recalculate_hosting_ease_score! }
+        .to change { theme.reload.hosting_ease_score_cache }.to(42)
+    end
+  end
+
   describe 'scopes' do
     let!(:considering_theme) { create(:theme, created_at: 2.days.ago, theme_votes_count: 5, status: :considering) }
     let!(:confirmed_theme) { create(:theme, created_at: 1.day.ago, theme_votes_count: 10, status: :confirmed) }
@@ -79,6 +89,17 @@ RSpec.describe Theme, type: :model do
     describe '.popular' do
       it 'returns themes ordered by theme_votes_count desc' do
         expect(Theme.popular.where(id: [ considering_theme.id, confirmed_theme.id ])).to eq([ confirmed_theme, considering_theme ])
+      end
+    end
+
+    describe '.by_hosting_ease' do
+      it 'returns themes ordered by hosting_ease_score_cache desc' do
+        low_score_theme  = create(:theme, hosting_ease_score_cache: 10)
+        high_score_theme = create(:theme, hosting_ease_score_cache: 80)
+        mid_score_theme  = create(:theme, hosting_ease_score_cache: 50)
+
+        result = Theme.by_hosting_ease.where(id: [ low_score_theme.id, high_score_theme.id, mid_score_theme.id ])
+        expect(result).to eq([ high_score_theme, mid_score_theme, low_score_theme ])
       end
     end
 

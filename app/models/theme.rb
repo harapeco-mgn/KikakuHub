@@ -20,6 +20,7 @@ class Theme < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :by_category, ->(category) { where(category: category) }
   scope :popular, -> { order(theme_votes_count: :desc) }
+  scope :by_hosting_ease, -> { order(hosting_ease_score_cache: :desc) }
   scope :active_themes, -> { where.not(status: :archived) }
   scope :archived_themes, -> { where(status: :archived) }
   scope :search_by_keyword, ->(keyword) {
@@ -44,5 +45,10 @@ class Theme < ApplicationRecord
 
   def hosting_ease_score
     Themes::HostingEaseCalculator.call(self)
+  end
+
+  def recalculate_hosting_ease_score!
+    score = Themes::HostingEaseCalculator.call(self)[:score]
+    update_column(:hosting_ease_score_cache, score)
   end
 end
