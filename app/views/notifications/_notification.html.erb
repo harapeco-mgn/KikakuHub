@@ -1,0 +1,29 @@
+<div class="<%= notification.read? ? 'opacity-60' : 'bg-primary/5 border-l-4 border-primary' %> rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md">
+  <div class="flex items-start gap-3">
+    <div class="flex-none">
+      <div class="flex h-10 w-10 items-center justify-center rounded-full <%= notification_icon_bg(notification) %>">
+        <span class="material-icons-outlined text-xl <%= notification_icon_color(notification) %>"><%= notification_icon(notification) %></span>
+      </div>
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <p class="text-sm font-medium text-slate-800"><%= notification.message %></p>
+      <p class="mt-1 text-xs text-slate-500">
+        <span class="font-medium text-slate-700"><%= notification.actor.nickname %></span>
+        さん &middot; <%= time_ago_in_words(notification.created_at) %>前
+      </p>
+    </div>
+
+    <div class="flex-none">
+      <% unless notification.read? %>
+        <%= button_to read_notification_path(notification),
+            method: :patch,
+            class: "btn btn-ghost btn-xs text-primary hover:bg-primary/10" do %>
+          <span class="material-icons-outlined text-base">done</span>
+        <% end %>
+      <% else %>
+        <span class="material-icons-outlined text-base text-slate-300">done_all</span>
+      <% end %>
+    </div>
+  </div>
+</div>

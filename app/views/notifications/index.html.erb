@@ -1,0 +1,30 @@
+<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="font-heading text-2xl font-bold text-slate-800">通知</h1>
+    <% if current_user.notifications.unread.any? %>
+      <%= button_to read_all_notifications_path,
+          method: :patch,
+          class: "btn btn-ghost btn-sm text-slate-600 hover:bg-slate-100" do %>
+        <span class="material-icons-outlined text-base">done_all</span>
+        すべて既読にする
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @notifications.empty? %>
+    <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50 py-16 text-center">
+      <span class="material-icons-outlined text-4xl text-slate-300">notifications_none</span>
+      <p class="mt-3 text-sm text-slate-500">通知はありません</p>
+    </div>
+  <% else %>
+    <div class="space-y-3">
+      <% @notifications.each do |notification| %>
+        <%= render "notification", notification: notification %>
+      <% end %>
+    </div>
+
+    <div class="mt-8">
+      <%= paginate @notifications %>
+    </div>
+  <% end %>
+</div>

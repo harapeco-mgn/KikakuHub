@@ -28,6 +28,11 @@ end
     resource :rsvp,            only: [ :update ]
   end
 end
+  resources :notifications, only: [ :index ] do
+    member { patch :read }
+    collection { patch :read_all }
+  end
+
   get "guidance", to: "static_pages#guidance"
 
   if Rails.env.development?
