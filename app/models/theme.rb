@@ -34,6 +34,14 @@ class Theme < ApplicationRecord
   has_many :rsvps, dependent: :destroy
   has_many :rsvp_users, through: :rsvps, source: :user
 
+  def expired?
+    expires_at.present? && expires_at < Time.current
+  end
+
+  def expiring_soon?
+    expires_at.present? && !expired? && expires_at < 3.days.from_now
+  end
+
   def rsvp_counts
     grouped = rsvps.group(:status).count.symbolize_keys
     {

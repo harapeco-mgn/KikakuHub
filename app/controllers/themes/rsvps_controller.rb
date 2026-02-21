@@ -3,6 +3,13 @@ module Themes
     respond_to :turbo_stream
 
     def update
+      if @theme.expired?
+        @rsvp_counts = @theme.rsvp_counts
+        flash.now[:alert] = "募集期限が終了しているため、参加表明できません。"
+        render :update, status: :unprocessable_entity
+        return
+      end
+
       @rsvp = current_user.rsvps.find_or_initialize_by(theme: @theme)
       params_to_update = rsvp_params.to_h.symbolize_keys
 

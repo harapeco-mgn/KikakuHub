@@ -54,6 +54,45 @@ RSpec.describe Theme, type: :model do
     end
   end
 
+  describe '#expired?' do
+    it 'expires_atがnilの場合はfalseを返す' do
+      theme = build(:theme, expires_at: nil)
+      expect(theme.expired?).to be false
+    end
+
+    it 'expires_atが過去の場合はtrueを返す' do
+      theme = build(:theme, expires_at: 1.day.ago)
+      expect(theme.expired?).to be true
+    end
+
+    it 'expires_atが未来の場合はfalseを返す' do
+      theme = build(:theme, expires_at: 1.day.from_now)
+      expect(theme.expired?).to be false
+    end
+  end
+
+  describe '#expiring_soon?' do
+    it 'expires_atがnilの場合はfalseを返す' do
+      theme = build(:theme, expires_at: nil)
+      expect(theme.expiring_soon?).to be false
+    end
+
+    it 'expires_atが過去の場合はfalseを返す（期限切れはexpiring_soonではない）' do
+      theme = build(:theme, expires_at: 1.day.ago)
+      expect(theme.expiring_soon?).to be false
+    end
+
+    it 'expires_atが3日以内の場合はtrueを返す' do
+      theme = build(:theme, expires_at: 2.days.from_now)
+      expect(theme.expiring_soon?).to be true
+    end
+
+    it 'expires_atが3日より先の場合はfalseを返す' do
+      theme = build(:theme, expires_at: 5.days.from_now)
+      expect(theme.expiring_soon?).to be false
+    end
+  end
+
   describe '#recalculate_hosting_ease_score!' do
     it 'hosting_ease_score_cacheをHostingEaseCalculatorの結果で更新する' do
       theme = create(:theme)

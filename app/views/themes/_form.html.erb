@@ -64,6 +64,13 @@
     </fieldset>
   <% end %>
 
+  <fieldset class="fieldset">
+    <%= f.label :expires_at, "募集期限", class: "fieldset-legend" %>
+    <%= f.datetime_local_field :expires_at,
+          class: "input input-bordered w-full ring-1 ring-base-300 focus:ring-2 focus:ring-primary" %>
+    <span class="label-text-alt text-base-content/60">空白の場合は期限なし</span>
+  </fieldset>
+
   <div class="flex items-center gap-3 pt-2">
     <%= f.submit class: "btn btn-primary" %>
     <%= link_to "キャンセル", themes_path, class: "btn btn-ghost" %>
