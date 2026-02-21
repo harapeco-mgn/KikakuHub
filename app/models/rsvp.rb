@@ -10,6 +10,7 @@ class Rsvp < ApplicationRecord
   before_validation :set_default_status, on: :create
   before_save :clear_secondary_interest_unless_attending
   after_commit :recalculate_theme_hosting_ease
+  after_commit :notify_theme_owner_on_attending, on: %i[create update]
 
   private
 
@@ -23,5 +24,17 @@ class Rsvp < ApplicationRecord
 
   def recalculate_theme_hosting_ease
     theme.recalculate_hosting_ease_score!
+  end
+
+  def notify_theme_owner_on_attending
+    return unless attending?
+    return if theme.user == user
+
+    Notifications::CreateNotification.call(
+      recipients: [ theme.user ],
+      actor: user,
+      notifiable: self,
+      action_type: :rsvp_attending
+    )
   end
 end

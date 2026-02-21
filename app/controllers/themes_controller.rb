@@ -85,6 +85,7 @@ class ThemesController < ApplicationController
     attrs[:converted_event_url] = transition_params[:converted_event_url] if new_status == "confirmed"
 
     if @theme.update(attrs)
+      notify_theme_confirmed if new_status == "confirmed"
       redirect_to @theme, notice: status_change_message(new_status), status: :see_other
     else
       redirect_to @theme, alert: "状態の変更に失敗しました。", status: :see_other
@@ -118,6 +119,16 @@ class ThemesController < ApplicationController
     when "archived"  then "テーマをアーカイブしました。"
     else "状態を変更しました。"
     end
+  end
+
+  def notify_theme_confirmed
+    recipients = (@theme.voters.to_a + @theme.rsvp_users.to_a).uniq
+    Notifications::CreateNotification.call(
+      recipients: recipients,
+      actor: current_user,
+      notifiable: @theme,
+      action_type: :theme_confirmed
+    )
   end
 
   def set_theme
