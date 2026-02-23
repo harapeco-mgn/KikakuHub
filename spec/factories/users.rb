@@ -4,5 +4,13 @@ FactoryBot.define do
     password { "password123" }
     nickname { "テストユーザー" }
     cohort { 1 }
+
+    trait :admin do
+      role { :admin }
+    end
+
+    trait :editor do
+      role { :editor }
+    end
   end
 end

@@ -13,7 +13,14 @@ ja:
       theme: "テーマ"
       theme_comment: "コメント"
       availability_slot: "参加可能時間"
+      user: "ユーザー"
     attributes:
+      user:
+        role: "権限"
+        roles:
+          general: "一般"
+          editor: "編集者"
+          admin: "管理者"
       theme:
         category: "カテゴリ"
         title: "タイトル"

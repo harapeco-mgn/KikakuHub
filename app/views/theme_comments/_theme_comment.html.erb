@@ -6,7 +6,7 @@
         <p class="text-xs text-base-content/50">
           <%= l(theme_comment.created_at, format: :short) %>
         </p>
-        <% if user_signed_in? && current_user == theme_comment.user %>
+        <% if policy(theme_comment).destroy? %>
           <%= button_to "削除", theme_theme_comment_path(theme, theme_comment),
                         method: :delete,
                         data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },

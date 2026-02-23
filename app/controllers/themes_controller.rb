@@ -46,11 +46,11 @@ class ThemesController < ApplicationController
   end
 
   def edit
-    authorize_owner!(@theme)
+    authorize @theme
   end
 
   def update
-    authorize_owner!(@theme)
+    authorize @theme
 
     if @theme.update(theme_params)
       redirect_to @theme, notice: "テーマを更新しました。", status: :see_other
@@ -61,7 +61,7 @@ class ThemesController < ApplicationController
   end
 
   def destroy
-    authorize_owner!(@theme, theme_path(@theme))
+    authorize @theme
 
     if @theme.destroy
       redirect_to themes_path, notice: "テーマを削除しました。", status: :see_other
@@ -71,8 +71,7 @@ class ThemesController < ApplicationController
   end
 
   def transition
-    authorize_owner!(@theme)
-    return if performed?
+    authorize @theme, :transition?
 
     new_status = transition_params[:status]
 

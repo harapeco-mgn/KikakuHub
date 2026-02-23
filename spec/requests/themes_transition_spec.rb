@@ -52,5 +52,18 @@ RSpec.describe "Themes Transition", type: :request do
         expect(response).to redirect_to(root_path)
       end
     end
+
+    context "adminユーザーによる操作" do
+      let(:admin) { create(:user, :admin) }
+      let(:theme) { create(:theme, user: other_user, status: :considering) }
+
+      before { sign_in admin }
+
+      it "adminは他ユーザーのテーマも確定にできる" do
+        patch transition_theme_path(theme), params: { theme: { status: "confirmed", converted_event_url: "https://example.com" } }
+        expect(theme.reload).to be_confirmed
+        expect(response).to redirect_to(theme)
+      end
+    end
   end
 end
