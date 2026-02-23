@@ -5,6 +5,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  enum :role, { general: 0, editor: 1, admin: 2 }
+
   validates :nickname, presence: true, length: { maximum: 50 }
   validates :cohort, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 

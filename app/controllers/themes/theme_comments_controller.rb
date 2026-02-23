@@ -29,7 +29,7 @@ module Themes
     end
 
     def destroy
-      authorize_owner!(@theme_comment, theme_path(@theme))
+      authorize @theme_comment
 
       if @theme_comment.destroy
         load_theme_comments

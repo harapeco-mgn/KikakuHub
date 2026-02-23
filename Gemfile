@@ -17,6 +17,9 @@ gem "devise"
 gem "devise-i18n"
 gem "resend"
 
+# 認可
+gem "pundit"
+
 # tailwindcss
 gem "tailwindcss-rails"
 

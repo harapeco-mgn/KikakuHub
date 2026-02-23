@@ -1,4 +1,4 @@
-<% if current_user == theme.user %>
+<% if policy(theme).transition? %>
   <% case theme.status %>
   <% when "considering" %>
     <%# 「確定にする」ボタン（モーダルでURL入力）%>

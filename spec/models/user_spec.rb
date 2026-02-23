@@ -45,4 +45,25 @@ RSpec.describe User, type: :model do
       expect(User.cohort_options).to eq(User.cohort_options.sort)
     end
   end
+
+  describe 'role enum' do
+    it 'デフォルトロールがgeneralである' do
+      user = create(:user)
+      expect(user).to be_general
+    end
+
+    it 'adminトレイトでadminロールが設定される' do
+      admin = create(:user, :admin)
+      expect(admin).to be_admin
+    end
+
+    it 'editorトレイトでeditorロールが設定される' do
+      editor = create(:user, :editor)
+      expect(editor).to be_editor
+    end
+
+    it 'valid roles are general, editor, admin' do
+      expect(User.roles.keys).to match_array(%w[general editor admin])
+    end
+  end
 end
