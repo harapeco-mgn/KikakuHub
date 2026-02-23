@@ -1,0 +1,7 @@
+<%# ユーザーのロールに応じたバッジを表示 %>
+<% badge_class = case user.role
+                 when "admin"  then "badge-error"
+                 when "editor" then "badge-info"
+                 else               "badge-ghost"
+                 end %>
+<span class="badge <%= badge_class %>"><%= User.human_enum_name(:role, user.role) %></span>

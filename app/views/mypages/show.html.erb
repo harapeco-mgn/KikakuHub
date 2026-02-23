@@ -18,6 +18,11 @@
           <dt class="text-sm text-base-content/60">メールアドレス</dt>
           <dd class="text-sm"><%= current_user.email %></dd>
         </div>
+
+        <div>
+          <dt class="text-sm text-base-content/60">権限</dt>
+          <dd class="mt-1"><%= render "shared/role_badge", user: current_user %></dd>
+        </div>
       </dl>
 
       <div class="mt-6 flex gap-2">

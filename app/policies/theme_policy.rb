@@ -8,11 +8,11 @@ class ThemePolicy < ApplicationPolicy
   end
 
   def update?
-    owner_or_admin?
+    owner_or_editor_or_admin?
   end
 
   def destroy?
-    owner_or_admin?
+    owner_or_editor_or_admin?
   end
 
   def transition?

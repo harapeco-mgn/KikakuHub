@@ -44,8 +44,20 @@ class ApplicationPolicy
     user&.admin?
   end
 
+  def editor?
+    user&.editor?
+  end
+
+  def editor_or_admin?
+    editor? || admin?
+  end
+
   def owner_or_admin?
     owner? || admin?
+  end
+
+  def owner_or_editor_or_admin?
+    owner? || editor_or_admin?
   end
 
   class Scope
