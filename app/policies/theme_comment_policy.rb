@@ -4,7 +4,7 @@ class ThemeCommentPolicy < ApplicationPolicy
   end
 
   def destroy?
-    owner_or_admin?
+    owner_or_editor_or_admin?
   end
 
   class Scope < ApplicationPolicy::Scope

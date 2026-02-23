@@ -31,10 +31,12 @@ class ThemesController < ApplicationController
 
   def new
     @theme = Theme.new
+    authorize @theme
   end
 
   def create
     @theme = current_user.themes.build(theme_params)
+    authorize @theme
     @theme.community_id = Community::DEFAULT_ID
 
     if @theme.save
