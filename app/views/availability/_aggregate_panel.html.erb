@@ -106,7 +106,10 @@
         <% 0.upto(6) do |wday| %>
           <% count = safe_counts[wday][slot] %>
           <% tooltip_above = slot >= 24 %>
-          <div class="group relative cursor-default border border-white/20 transition-all hover:z-10 hover:brightness-90 <%= aggregate_cell_class_for_count(count) %> <%= is_hour_mark ? 'border-t border-t-base-300/60' : '' %>" style="height: 16px;">
+          <div class="group relative flex items-center justify-center cursor-default border border-white/20 transition-all hover:z-10 hover:brightness-90 <%= aggregate_cell_class_for_count(count) %> <%= is_hour_mark ? 'border-t border-t-base-300/60' : '' %>" style="height: 16px;">
+            <% if count > 0 %>
+              <span class="text-[9px] font-bold leading-none"><%= count %></span>
+            <% end %>
 
             <%# ツールチップ（上半分=下表示、下半分=上表示） %>
             <div class="pointer-events-none invisible absolute left-1/2 z-[100] -translate-x-1/2 whitespace-nowrap rounded-lg bg-neutral px-3 py-2 text-xs text-neutral-content opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 <%= tooltip_above ? 'bottom-full mb-2' : 'top-full mt-2' %>">
