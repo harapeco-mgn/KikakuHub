@@ -30,9 +30,6 @@ gem "kaminari"
 gem "chartkick"
 gem "groupdate"
 
-# 管理画面
-gem "administrate"
-
 # 非同期処理
 gem "sidekiq", "~> 6.5"
 gem "connection_pool", "~> 2.4"

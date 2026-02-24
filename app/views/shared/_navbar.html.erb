@@ -59,7 +59,7 @@
               <% if current_user.admin? %>
                 <li><%= link_to "ダッシュボード", admin_dashboard_path, class: "hover:bg-slate-50 hover:text-primary" %></li>
                 <li><%= link_to "通報管理", admin_reports_path, class: "hover:bg-slate-50 hover:text-warning" %></li>
-                <li><%= link_to "管理画面", admin_manage_root_path, class: "hover:bg-slate-50 hover:text-secondary" %></li>
+                <li><%= link_to "ユーザー管理", admin_users_path, class: "hover:bg-slate-50 hover:text-secondary" %></li>
               <% end %>
               <li><%= link_to "アカウント編集", edit_user_registration_path, class: "hover:bg-slate-50 hover:text-primary" %></li>
               <li>

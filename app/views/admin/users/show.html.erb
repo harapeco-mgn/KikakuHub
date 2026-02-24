@@ -1,0 +1,84 @@
+<div class="mx-auto max-w-4xl px-4 py-6">
+  <div class="mb-6 flex items-center gap-2">
+    <%= link_to "← ユーザー一覧", admin_users_path, class: "btn btn-ghost btn-sm" %>
+    <h1 class="text-2xl font-bold"><%= @user.nickname.presence || @user.email %></h1>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <!-- ユーザー情報 -->
+    <div class="lg:col-span-1">
+      <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+        <div class="card-body gap-4">
+          <h2 class="card-title text-base">ユーザー情報</h2>
+
+          <dl class="space-y-2 text-sm">
+            <div>
+              <dt class="text-base-content/60">ID</dt>
+              <dd class="font-mono"><%= @user.id %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">メール</dt>
+              <dd><%= @user.email %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">ニックネーム</dt>
+              <dd><%= @user.nickname.presence || "—" %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">コホート</dt>
+              <dd><%= @user.cohort.presence || "—" %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">登録日</dt>
+              <dd><%= l(@user.created_at, format: :short) %></dd>
+            </div>
+          </dl>
+
+          <!-- ロール変更 -->
+          <div class="divider my-0"></div>
+          <h3 class="text-sm font-semibold">ロール変更</h3>
+          <div class="flex flex-wrap gap-2">
+            <% User.roles.each_key do |role_key| %>
+              <%= button_to update_role_admin_user_path(@user),
+                            method: :patch,
+                            params: { role: role_key },
+                            class: "btn btn-sm #{@user.role == role_key ? 'btn-primary' : 'btn-ghost'}",
+                            data: { turbo_confirm: @user.role == role_key ? nil : "ロールを「#{User.human_attribute_name("role/#{role_key}")}」に変更しますか？" } do %>
+                <%= User.human_attribute_name("role/#{role_key}") %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- テーマ一覧 -->
+    <div class="lg:col-span-2">
+      <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+        <div class="card-body">
+          <h2 class="card-title text-base">投稿テーマ（<%= @themes.length %>件）</h2>
+
+          <% if @themes.empty? %>
+            <p class="text-sm text-base-content/60">テーマはありません</p>
+          <% else %>
+            <div class="space-y-2">
+              <% @themes.each do |theme| %>
+                <div class="flex items-center justify-between rounded-lg bg-base-200/50 px-3 py-2 text-sm">
+                  <div>
+                    <%= link_to theme.title, theme_path(theme), class: "link link-hover font-medium", target: "_blank" %>
+                    <span class="ml-2 badge badge-xs">
+                      <%= Theme.human_attribute_name("status/#{theme.status}") %>
+                    </span>
+                  </div>
+                  <span class="text-xs text-base-content/60">
+                    <%= l(theme.created_at, format: :short) %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

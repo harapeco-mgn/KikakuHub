@@ -1,0 +1,96 @@
+<div class="mx-auto max-w-4xl px-4 py-6">
+  <div class="mb-6 flex items-center gap-2">
+    <%= link_to "← テーマ一覧", admin_themes_path, class: "btn btn-ghost btn-sm" %>
+    <h1 class="text-2xl font-bold"><%= @theme.title %></h1>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-3">
+    <!-- テーマ情報 -->
+    <div class="lg:col-span-1">
+      <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+        <div class="card-body gap-4">
+          <h2 class="card-title text-base">テーマ情報</h2>
+
+          <dl class="space-y-2 text-sm">
+            <div>
+              <dt class="text-base-content/60">ID</dt>
+              <dd class="font-mono"><%= @theme.id %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">投稿者</dt>
+              <dd>
+                <%= link_to @theme.user.nickname.presence || @theme.user.email,
+                            admin_user_path(@theme.user),
+                            class: "link link-hover" %>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">カテゴリ</dt>
+              <dd>
+                <span class="badge badge-sm badge-ghost">
+                  <%= Theme.human_attribute_name("category/#{@theme.category}") %>
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">ステータス</dt>
+              <dd>
+                <% badge_class = case @theme.status
+                                 when "considering" then "badge-warning"
+                                 when "confirmed"   then "badge-info"
+                                 when "done"        then "badge-success"
+                                 else                    "badge-ghost"
+                                 end %>
+                <span class="badge badge-sm <%= badge_class %>">
+                  <%= Theme.human_attribute_name("status/#{@theme.status}") %>
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">投票数</dt>
+              <dd><%= @theme.theme_votes_count %></dd>
+            </div>
+            <div>
+              <dt class="text-base-content/60">投稿日</dt>
+              <dd><%= l(@theme.created_at, format: :short) %></dd>
+            </div>
+          </dl>
+
+          <div class="divider my-0"></div>
+          <%= link_to "公開ページを見る", theme_path(@theme), class: "btn btn-ghost btn-sm w-full", target: "_blank" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- テーマ詳細 -->
+    <div class="lg:col-span-2 space-y-4">
+      <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+        <div class="card-body">
+          <h2 class="card-title text-base">説明</h2>
+          <p class="text-sm whitespace-pre-wrap"><%= @theme.description %></p>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+        <div class="card-body">
+          <h2 class="card-title text-base">参加表明</h2>
+          <% counts = @theme.rsvp_counts %>
+          <div class="flex gap-4 text-sm">
+            <div>
+              <span class="text-base-content/60">参加：</span>
+              <span class="font-bold text-success"><%= counts[:attending] %></span>
+            </div>
+            <div>
+              <span class="text-base-content/60">不参加：</span>
+              <span class="font-bold text-error"><%= counts[:not_attending] %></span>
+            </div>
+            <div>
+              <span class="text-base-content/60">未定：</span>
+              <span class="font-bold"><%= counts[:undecided] %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
