@@ -76,11 +76,6 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
-    administrate (1.0.0)
-      actionpack (>= 6.0, < 9.0)
-      actionview (>= 6.0, < 9.0)
-      activerecord (>= 6.0, < 9.0)
-      kaminari (~> 1.2.2)
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
@@ -395,7 +390,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  administrate
   annotate
   better_errors
   binding_of_caller

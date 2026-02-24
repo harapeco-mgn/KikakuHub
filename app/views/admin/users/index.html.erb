@@ -1,0 +1,60 @@
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <div class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold">ユーザー管理</h1>
+    <span class="text-sm text-base-content/60">全 <%= @users.total_count %> 名</span>
+  </div>
+
+  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+    <div class="card-body p-0">
+      <% if @users.empty? %>
+        <p class="p-6 text-center text-base-content/60">ユーザーはいません</p>
+      <% else %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ニックネーム</th>
+                <th>メールアドレス</th>
+                <th>ロール</th>
+                <th>テーマ数</th>
+                <th>登録日</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
+                <tr>
+                  <td class="text-sm text-base-content/60"><%= user.id %></td>
+                  <td class="font-medium"><%= user.nickname.presence || "—" %></td>
+                  <td class="text-sm"><%= user.email %></td>
+                  <td>
+                    <% badge_class = case user.role
+                                     when "admin"   then "badge-error"
+                                     when "editor"  then "badge-info"
+                                     else                "badge-ghost"
+                                     end %>
+                    <span class="badge badge-sm <%= badge_class %>">
+                      <%= User.human_attribute_name("role/#{user.role}") %>
+                    </span>
+                  </td>
+                  <td><%= user.themes.size %></td>
+                  <td class="text-sm text-base-content/60">
+                    <%= l(user.created_at, format: :short) %>
+                  </td>
+                  <td>
+                    <%= link_to "詳細", admin_user_path(user), class: "btn btn-ghost btn-xs" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-center p-4">
+          <%= paginate @users %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
