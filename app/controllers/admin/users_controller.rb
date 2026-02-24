@@ -1,7 +1,10 @@
 module Admin
   class UsersController < BaseController
     def index
-      @users = User.includes(:themes).order(created_at: :desc)
+      @users = User.left_joins(:themes)
+                   .select("users.*, COUNT(themes.id) AS themes_count")
+                   .group("users.id")
+                   .order(created_at: :desc)
                    .page(params[:page]).per(30)
     end
 

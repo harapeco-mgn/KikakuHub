@@ -38,7 +38,7 @@
                       <%= User.human_attribute_name("role/#{user.role}") %>
                     </span>
                   </td>
-                  <td><%= user.themes.size %></td>
+                  <td><%= user.themes_count %></td>
                   <td class="text-sm text-base-content/60">
                     <%= l(user.created_at, format: :short) %>
                   </td>
