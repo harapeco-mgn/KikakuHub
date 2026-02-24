@@ -92,7 +92,7 @@ RSpec.describe "Themes ExpiresAt", type: :request do
       it "参加表明できず422を返す" do
         patch theme_rsvp_path(expired_theme), params: { rsvp: { status: "attending" } },
               headers: turbo_headers
-        expect(response).to have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
