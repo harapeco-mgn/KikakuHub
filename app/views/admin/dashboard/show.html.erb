@@ -1,14 +1,44 @@
 <div class="mx-auto max-w-7xl px-4 py-6">
   <h1 class="mb-6 text-2xl font-bold">管理ダッシュボード</h1>
 
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+  <%# ── KPI カード ── %>
+  <div class="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div class="card bg-primary text-primary-content shadow-lg">
+      <div class="card-body p-4">
+        <p class="text-sm opacity-80">総テーマ数</p>
+        <p class="text-3xl font-bold"><%= Theme.count %></p>
+      </div>
+    </div>
+    <div class="card bg-success text-success-content shadow-lg">
+      <div class="card-body p-4">
+        <p class="text-sm opacity-80">開催済み</p>
+        <p class="text-3xl font-bold"><%= Theme.where(status: :done).count %></p>
+      </div>
+    </div>
+    <div class="card bg-secondary text-secondary-content shadow-lg">
+      <div class="card-body p-4">
+        <p class="text-sm opacity-80">開催成功率</p>
+        <p class="text-3xl font-bold"><%= @success_rate %>%</p>
+        <p class="text-xs opacity-70">確定→開催済みの割合</p>
+      </div>
+    </div>
+    <div class="card bg-info text-info-content shadow-lg">
+      <div class="card-body p-4">
+        <p class="text-sm opacity-80">総ユーザー数</p>
+        <p class="text-3xl font-bold"><%= User.count %></p>
+      </div>
+    </div>
+  </div>
+
+  <%# ── 週別推移グラフ ── %>
+  <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
     <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
       <div class="card-body">
         <h2 class="card-title text-lg">週別テーマ作成数（直近12週）</h2>
         <%= bar_chart @weekly_themes,
               library: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
               colors: ["#7c3aed"],
-              height: "280px" %>
+              height: "260px" %>
       </div>
     </div>
 
@@ -18,8 +48,54 @@
         <%= bar_chart @weekly_rsvps,
               library: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
               colors: ["#0ea5e9"],
-              height: "280px" %>
+              height: "260px" %>
       </div>
     </div>
   </div>
+
+  <%# ── カテゴリ別・ステータス分布 ── %>
+  <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-lg">テーマステータス分布</h2>
+        <%= pie_chart @theme_status_counts.transform_keys { |k| Theme.human_attribute_name("status/#{k}") },
+              colors: ["#6d28d9", "#d97706", "#059669", "#94a3b8"],
+              height: "220px" %>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-lg">カテゴリ別投票数</h2>
+        <%= bar_chart @votes_by_category.transform_keys { |k| Theme.human_attribute_name("category/#{k}") },
+              library: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
+              colors: ["#7c3aed"],
+              height: "220px" %>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-lg">カテゴリ別参加表明数</h2>
+        <%= bar_chart @rsvps_by_category.transform_keys { |k| Theme.human_attribute_name("category/#{k}") },
+              library: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
+              colors: ["#0ea5e9"],
+              height: "220px" %>
+      </div>
+    </div>
+  </div>
+
+  <%# ── 開催しやすさスコア分布 ── %>
+  <% if @hosting_ease_distribution.any? %>
+    <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-lg">開催しやすさスコア分布</h2>
+        <p class="text-sm text-base-content/60">スコアが高いほど参加しやすいテーマ</p>
+        <%= bar_chart @hosting_ease_distribution,
+              library: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
+              colors: ["#10b981"],
+              height: "200px" %>
+      </div>
+    </div>
+  <% end %>
 </div>
