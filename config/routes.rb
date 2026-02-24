@@ -45,6 +45,7 @@ end
   end
 
   namespace :admin do
+    resource :dashboard, only: %i[show]
     resources :reports, only: %i[index] do
       member do
         patch :review

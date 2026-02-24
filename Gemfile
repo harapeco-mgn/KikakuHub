@@ -26,6 +26,10 @@ gem "tailwindcss-rails"
 # ページネーション
 gem "kaminari"
 
+# 集計可視化
+gem "chartkick"
+gem "groupdate"
+
 # 非同期処理
 gem "sidekiq", "~> 6.5"
 gem "connection_pool", "~> 2.4"
