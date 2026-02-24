@@ -57,6 +57,7 @@
               </li>
               <div class="my-1 h-px bg-slate-100"></div>
               <% if current_user.admin? %>
+                <li><%= link_to "ダッシュボード", admin_dashboard_path, class: "hover:bg-slate-50 hover:text-primary" %></li>
                 <li><%= link_to "通報管理", admin_reports_path, class: "hover:bg-slate-50 hover:text-warning" %></li>
               <% end %>
               <li><%= link_to "アカウント編集", edit_user_registration_path, class: "hover:bg-slate-50 hover:text-primary" %></li>

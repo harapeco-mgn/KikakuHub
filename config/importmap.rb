@@ -9,3 +9,6 @@ pin "controllers/application", to: "controllers/application.js"
 pin "controllers/secondary_button_controller", to: "controllers/secondary_button_controller.js"
 
 pin_all_from "app/javascript/controllers", under: "controllers"
+
+pin "chartkick", to: "chartkick.esm.js"
+pin "Chart.bundle", to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
