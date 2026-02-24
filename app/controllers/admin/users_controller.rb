@@ -15,7 +15,8 @@ module Admin
 
     def update_role
       @user = User.find(params[:id])
-      if @user.update(role: params[:role])
+      role_value = User.roles[params[:role]]
+      if role_value && @user.update_column(:role, role_value)
         redirect_to admin_user_path(@user), notice: "ロールを更新しました。"
       else
         redirect_to admin_user_path(@user), alert: "ロールの更新に失敗しました。"
