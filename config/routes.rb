@@ -54,6 +54,13 @@ end
     end
   end
 
+  # Administrate 管理画面（/admin/manage）
+  scope "/admin/manage", module: "admin/manage", as: "admin_manage" do
+    resources :users,  only: %i[index show edit update]
+    resources :themes, only: %i[index show destroy]
+    root to: "users#index", as: :root
+  end
+
   get "guidance", to: "static_pages#guidance"
 
   if Rails.env.development?
