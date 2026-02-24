@@ -13,6 +13,8 @@ module Themes
         else
           redirect_to theme_path(@theme), alert: @report.errors.full_messages.first, status: :see_other
         end
+      rescue ActiveRecord::RecordNotUnique
+        redirect_to theme_path(@theme), alert: "すでにこのコンテンツを通報済みです。", status: :see_other
       end
 
       private
