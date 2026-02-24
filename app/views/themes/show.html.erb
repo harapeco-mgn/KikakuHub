@@ -14,6 +14,9 @@
           <span class="badge badge-primary badge-lg"><%= Theme.human_enum_name(:category, @theme.category) %></span>
           <%= render "themes/status_badge", theme: @theme %>
           <%= render "themes/expires_at", theme: @theme %>
+          <% if @theme.hidden? %>
+            <span class="badge badge-warning badge-lg">非表示</span>
+          <% end %>
           <span class="text-sm text-base-content/60">
             <%= l(@theme.created_at, format: :short) %>
           </span>
@@ -31,6 +34,23 @@
                         data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },
                         form: { class: "inline" },
                         class: "btn btn-error btn-sm" %>
+        <% end %>
+        <% if policy(@theme).hide? %>
+          <% if @theme.hidden? %>
+            <%= button_to "非表示解除", unhide_theme_path(@theme),
+                          method: :patch,
+                          form: { class: "inline" },
+                          class: "btn btn-warning btn-sm" %>
+          <% else %>
+            <%= button_to "非表示", hide_theme_path(@theme),
+                          method: :patch,
+                          data: { confirm: "このテーマを非表示にしますか？", turbo_confirm: "このテーマを非表示にしますか？" },
+                          form: { class: "inline" },
+                          class: "btn btn-warning btn-sm" %>
+          <% end %>
+        <% end %>
+        <% if policy(@theme).report? %>
+          <%= render "themes/report_button", reportable: @theme, report_path: theme_reports_path(@theme) %>
         <% end %>
       </div>
     </header>

@@ -1,0 +1,31 @@
+<% modal_id = "report_modal_#{reportable.class.name.underscore}_#{reportable.id}" %>
+
+<button class="btn btn-ghost btn-sm text-warning"
+        onclick="document.getElementById('<%= modal_id %>').showModal()">
+  通報
+</button>
+
+<dialog id="<%= modal_id %>" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">コンテンツを通報する</h3>
+    <p class="py-2 text-sm text-base-content/70">不適切なコンテンツを通報してください。管理者が確認します。</p>
+
+    <%= form_with url: report_path, method: :post do |f| %>
+      <div class="form-control w-full">
+        <%= f.label :reason, "通報理由", class: "label" %>
+        <%= f.text_area :reason, rows: 4,
+                        class: "textarea textarea-bordered w-full",
+                        placeholder: "通報理由を入力してください（500文字以内）",
+                        required: true,
+                        maxlength: 500 %>
+      </div>
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('<%= modal_id %>').close()">キャンセル</button>
+        <%= f.submit "通報する", class: "btn btn-warning" %>
+      </div>
+    <% end %>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>閉じる</button>
+  </form>
+</dialog>

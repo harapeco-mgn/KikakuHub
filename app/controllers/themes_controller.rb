@@ -1,6 +1,6 @@
 class ThemesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_theme, only: %i[show edit update destroy transition]
+  before_action :set_theme, only: %i[show edit update destroy transition hide unhide]
 
   SORT_OPTIONS = {
     "recent"       => :recent,
@@ -21,7 +21,7 @@ class ThemesController < ApplicationController
 
   def show
     @theme_comment  = ThemeComment.new
-    @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
+    @theme_comments = policy_scope(@theme.theme_comments).includes(:user).order(created_at: :desc)
     @rsvp = current_user.rsvps.find_by(theme: @theme) if user_signed_in?
     @rsvp_counts = @theme.rsvp_counts
     @hosting_ease = @theme.hosting_ease_score
@@ -70,6 +70,18 @@ class ThemesController < ApplicationController
     else
       redirect_to theme_path(@theme), alert: "テーマの削除に失敗しました。", status: :see_other
     end
+  end
+
+  def hide
+    authorize @theme, :hide?
+    @theme.hide!
+    redirect_to @theme, notice: "テーマを非表示にしました。", status: :see_other
+  end
+
+  def unhide
+    authorize @theme, :unhide?
+    @theme.unhide!
+    redirect_to @theme, notice: "テーマの非表示を解除しました。", status: :see_other
   end
 
   def transition
@@ -134,6 +146,9 @@ class ThemesController < ApplicationController
 
   def set_theme
     @theme = Theme.find(params[:id])
+    unless current_user&.admin? || !@theme.hidden?
+      redirect_to themes_path, alert: "このテーマは非表示になっています。", status: :see_other
+    end
   end
 
   def apply_sort(themes)

@@ -50,4 +50,25 @@ RSpec.describe ThemePolicy, type: :policy do
     it { is_expected.to permit(editor_user, theme) }
     it { is_expected.to permit(admin_user, theme) }
   end
+
+  permissions :hide? do
+    it { is_expected.not_to permit(owner, theme) }
+    it { is_expected.not_to permit(other_user, theme) }
+    it { is_expected.not_to permit(editor_user, theme) }
+    it { is_expected.to permit(admin_user, theme) }
+  end
+
+  permissions :unhide? do
+    it { is_expected.not_to permit(owner, theme) }
+    it { is_expected.not_to permit(other_user, theme) }
+    it { is_expected.not_to permit(editor_user, theme) }
+    it { is_expected.to permit(admin_user, theme) }
+  end
+
+  permissions :report? do
+    it { is_expected.not_to permit(owner, theme) }
+    it { is_expected.to permit(other_user, theme) }
+    it { is_expected.to permit(editor_user, theme) }
+    it { is_expected.to permit(admin_user, theme) }
+  end
 end

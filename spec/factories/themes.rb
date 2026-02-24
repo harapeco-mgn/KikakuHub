@@ -19,5 +19,9 @@ FactoryBot.define do
     trait :archived do
       status { :archived }
     end
+
+    trait :hidden do
+      hidden_at { Time.current }
+    end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_23_080453) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_24_023826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_23_080453) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.bigint "reporter_id", null: false
+    t.string "reportable_type", null: false
+    t.bigint "reportable_id", null: false
+    t.text "reason", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable_type_and_reportable_id"
+    t.index ["reporter_id", "reportable_type", "reportable_id"], name: "index_reports_on_reporter_and_reportable", unique: true
+    t.index ["reporter_id"], name: "index_reports_on_reporter_id"
+  end
+
   create_table "rsvps", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "theme_id", null: false
@@ -75,6 +88,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_23_080453) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "hidden_at"
+    t.index ["hidden_at"], name: "index_theme_comments_on_hidden_at"
     t.index ["theme_id"], name: "index_theme_comments_on_theme_id"
     t.index ["user_id"], name: "index_theme_comments_on_user_id"
   end
@@ -104,9 +119,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_23_080453) do
     t.string "converted_event_url"
     t.integer "hosting_ease_score_cache", default: 0, null: false
     t.datetime "expires_at"
+    t.datetime "hidden_at"
     t.index ["category"], name: "index_themes_on_category"
     t.index ["community_id"], name: "index_themes_on_community_id"
     t.index ["created_at"], name: "index_themes_on_created_at"
+    t.index ["hidden_at"], name: "index_themes_on_hidden_at"
     t.index ["hosting_ease_score_cache"], name: "index_themes_on_hosting_ease_score_cache"
     t.index ["user_id"], name: "index_themes_on_user_id"
   end
@@ -132,6 +149,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_23_080453) do
   add_foreign_key "availability_slots", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "reports", "users", column: "reporter_id"
   add_foreign_key "rsvps", "themes"
   add_foreign_key "rsvps", "users"
   add_foreign_key "theme_comments", "themes"
