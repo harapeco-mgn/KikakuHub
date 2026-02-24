@@ -32,8 +32,9 @@ RSpec.describe Notification, type: :model do
       it "作成日時の降順で返す" do
         old = create(:notification, user: user, actor: actor, notifiable: theme, created_at: 2.days.ago)
         new_one = create(:notification, user: user, actor: actor, notifiable: theme, created_at: 1.day.ago)
-        expect(Notification.recent.first).to eq(new_one)
-        expect(Notification.recent.last).to eq(old)
+        scoped = Notification.where(user: user, actor: actor).recent
+        expect(scoped.first).to eq(new_one)
+        expect(scoped.last).to eq(old)
       end
     end
   end

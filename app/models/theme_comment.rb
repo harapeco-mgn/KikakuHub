@@ -14,11 +14,12 @@ class ThemeComment < ApplicationRecord
   def notify_theme_owner
     return if theme.user == user
 
-    Notifications::CreateNotification.call(
-      recipients: [ theme.user ],
-      actor: user,
-      notifiable: self,
-      action_type: :commented
+    Notifications::CreateNotificationJob.perform_later(
+      recipient_ids: [ theme.user.id ],
+      actor_id: user.id,
+      notifiable_type: self.class.name,
+      notifiable_id: id,
+      action_type: "commented"
     )
   end
 end

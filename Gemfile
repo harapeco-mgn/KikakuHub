@@ -26,6 +26,10 @@ gem "tailwindcss-rails"
 # ページネーション
 gem "kaminari"
 
+# 非同期処理
+gem "sidekiq", "~> 6.5"
+gem "connection_pool", "~> 2.4"
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
 

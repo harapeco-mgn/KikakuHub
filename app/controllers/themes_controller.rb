@@ -135,12 +135,13 @@ class ThemesController < ApplicationController
   end
 
   def notify_theme_confirmed
-    recipients = (@theme.voters.to_a + @theme.rsvp_users.to_a).uniq
-    Notifications::CreateNotification.call(
-      recipients: recipients,
-      actor: current_user,
-      notifiable: @theme,
-      action_type: :theme_confirmed
+    recipient_ids = (@theme.voters.pluck(:id) + @theme.rsvp_users.pluck(:id)).uniq
+    Notifications::CreateNotificationJob.perform_later(
+      recipient_ids: recipient_ids,
+      actor_id: current_user.id,
+      notifiable_type: @theme.class.name,
+      notifiable_id: @theme.id,
+      action_type: "theme_confirmed"
     )
   end
 

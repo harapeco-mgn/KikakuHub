@@ -1,7 +1,9 @@
 class ApplicationJob < ActiveJob::Base
-  # Automatically retry jobs that encountered a deadlock
-  # retry_on ActiveRecord::Deadlocked
+  queue_as :default
 
-  # Most jobs are safe to ignore if the underlying records are no longer available
-  # discard_on ActiveJob::DeserializationError
+  # デッドロック発生時に最大3回リトライ
+  retry_on ActiveRecord::Deadlocked, attempts: 3
+
+  # レコードが削除済みの場合はジョブを破棄
+  discard_on ActiveJob::DeserializationError
 end
