@@ -1,6 +1,6 @@
 module Admin
   module Manage
-    class ApplicationController < Administrate::ApplicationController
+    class ApplicationController < ::Administrate::ApplicationController
       before_action :authenticate_user!
       before_action :require_admin!
 
