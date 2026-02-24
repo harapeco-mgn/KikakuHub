@@ -23,4 +23,25 @@ RSpec.describe ThemeCommentPolicy, type: :policy do
     it { is_expected.to permit(editor_user, comment) }
     it { is_expected.to permit(admin_user, comment) }
   end
+
+  permissions :hide? do
+    it { is_expected.not_to permit(owner, comment) }
+    it { is_expected.not_to permit(other_user, comment) }
+    it { is_expected.not_to permit(editor_user, comment) }
+    it { is_expected.to permit(admin_user, comment) }
+  end
+
+  permissions :unhide? do
+    it { is_expected.not_to permit(owner, comment) }
+    it { is_expected.not_to permit(other_user, comment) }
+    it { is_expected.not_to permit(editor_user, comment) }
+    it { is_expected.to permit(admin_user, comment) }
+  end
+
+  permissions :report? do
+    it { is_expected.not_to permit(owner, comment) }
+    it { is_expected.to permit(other_user, comment) }
+    it { is_expected.to permit(editor_user, comment) }
+    it { is_expected.to permit(admin_user, comment) }
+  end
 end

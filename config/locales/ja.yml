@@ -14,6 +14,7 @@ ja:
       theme_comment: "コメント"
       availability_slot: "参加可能時間"
       user: "ユーザー"
+      report: "通報"
     attributes:
       user:
         role: "権限"
@@ -37,6 +38,13 @@ ja:
           done: "開催済"
       theme_comment:
         body: "コメント"
+      report:
+        reason: "通報理由"
+        status: "ステータス"
+        statuses:
+          pending: "未対応"
+          reviewed: "対応済み"
+          dismissed: "却下"
       availability_slot:
         category: "カテゴリ"
         categories:

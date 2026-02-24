@@ -6,12 +6,33 @@
         <p class="text-xs text-base-content/50">
           <%= l(theme_comment.created_at, format: :short) %>
         </p>
+        <% if theme_comment.hidden? %>
+          <span class="badge badge-warning badge-xs">非表示</span>
+        <% end %>
         <% if policy(theme_comment).destroy? %>
           <%= button_to "削除", theme_theme_comment_path(theme, theme_comment),
                         method: :delete,
                         data: { confirm: "本当に削除しますか？", turbo_confirm: "本当に削除しますか？" },
                         form: { class: "inline" },
                         class: "btn btn-ghost btn-xs text-error" %>
+        <% end %>
+        <% if policy(theme_comment).hide? %>
+          <% if theme_comment.hidden? %>
+            <%= button_to "非表示解除", unhide_theme_theme_comment_path(theme, theme_comment),
+                          method: :patch,
+                          form: { class: "inline" },
+                          class: "btn btn-ghost btn-xs text-warning" %>
+          <% else %>
+            <%= button_to "非表示", hide_theme_theme_comment_path(theme, theme_comment),
+                          method: :patch,
+                          form: { class: "inline" },
+                          class: "btn btn-ghost btn-xs text-warning" %>
+          <% end %>
+        <% end %>
+        <% if policy(theme_comment).report? %>
+          <%= render "themes/report_button",
+                     reportable: theme_comment,
+                     report_path: theme_theme_comment_reports_path(theme, theme_comment) %>
         <% end %>
       </div>
     </div>

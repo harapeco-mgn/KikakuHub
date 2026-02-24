@@ -19,6 +19,7 @@ class User < ApplicationRecord
   has_many :availability_slots, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :sent_notifications, class_name: "Notification", foreign_key: :actor_id, dependent: :destroy
+  has_many :reports, foreign_key: :reporter_id, dependent: :destroy
 
   def unread_notifications_count
     notifications.unread.count

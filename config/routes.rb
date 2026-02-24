@@ -21,16 +21,36 @@ end
   end
   member do
     patch :transition
+    patch :hide
+    patch :unhide
   end
   scope module: :themes do
     resource  :vote,           only: %i[create destroy]
-    resources :theme_comments, only: %i[create destroy]
+    resources :theme_comments, only: %i[create destroy] do
+      member do
+        patch :hide
+        patch :unhide
+      end
+      scope module: :theme_comments do
+        resources :reports, only: %i[create]
+      end
+    end
     resource :rsvp,            only: [ :update ]
+    resources :reports, only: %i[create]
   end
 end
   resources :notifications, only: [ :index ] do
     member { patch :read }
     collection { patch :read_all }
+  end
+
+  namespace :admin do
+    resources :reports, only: %i[index] do
+      member do
+        patch :review
+        patch :dismiss
+      end
+    end
   end
 
   get "guidance", to: "static_pages#guidance"

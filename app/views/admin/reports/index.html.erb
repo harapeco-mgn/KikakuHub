@@ -1,0 +1,93 @@
+<div class="mx-auto max-w-7xl px-4 py-6">
+  <h1 class="mb-6 text-2xl font-bold">通報管理</h1>
+
+  <!-- ステータスフィルタ -->
+  <div class="mb-4 flex gap-2">
+    <%= link_to "すべて", admin_reports_path,
+                class: "btn btn-sm #{params[:status].blank? ? 'btn-primary' : 'btn-ghost'}" %>
+    <%= link_to "未対応", admin_reports_path(status: :pending),
+                class: "btn btn-sm #{params[:status] == 'pending' ? 'btn-primary' : 'btn-ghost'}" %>
+    <%= link_to "対応済み", admin_reports_path(status: :reviewed),
+                class: "btn btn-sm #{params[:status] == 'reviewed' ? 'btn-primary' : 'btn-ghost'}" %>
+    <%= link_to "却下", admin_reports_path(status: :dismissed),
+                class: "btn btn-sm #{params[:status] == 'dismissed' ? 'btn-primary' : 'btn-ghost'}" %>
+  </div>
+
+  <div class="card bg-base-100 shadow-lg ring-1 ring-base-300">
+    <div class="card-body p-0">
+      <% if @reports.empty? %>
+        <p class="p-6 text-center text-base-content/60">通報はありません</p>
+      <% else %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>通報者</th>
+                <th>対象コンテンツ</th>
+                <th>通報理由</th>
+                <th>ステータス</th>
+                <th>通報日時</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @reports.each do |report| %>
+                <tr>
+                  <td><%= report.id %></td>
+                  <td><%= report.reporter.nickname %></td>
+                  <td>
+                    <% if report.reportable_type == "Theme" %>
+                      <%= link_to "テーマ ##{report.reportable_id}", theme_path(report.reportable_id),
+                                  class: "link link-primary" %>
+                    <% elsif report.reportable_type == "ThemeComment" %>
+                      コメント #<%= report.reportable_id %>
+                      <% if report.reportable %>
+                        <%= link_to "(テーマを見る)", theme_path(report.reportable.theme_id),
+                                    class: "link link-primary text-xs" %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td class="max-w-xs">
+                    <p class="truncate"><%= report.reason %></p>
+                  </td>
+                  <td>
+                    <% badge_class = case report.status
+                                     when "pending" then "badge-warning"
+                                     when "reviewed" then "badge-success"
+                                     when "dismissed" then "badge-ghost"
+                                     end %>
+                    <span class="badge <%= badge_class %>">
+                      <%= Report.human_enum_name(:status, report.status) %>
+                    </span>
+                  </td>
+                  <td class="text-sm text-base-content/60">
+                    <%= l(report.created_at, format: :short) %>
+                  </td>
+                  <td>
+                    <% if report.pending? %>
+                      <div class="flex gap-1">
+                        <%= button_to "対応済み", review_admin_report_path(report),
+                                      method: :patch,
+                                      form: { class: "inline" },
+                                      class: "btn btn-success btn-xs" %>
+                        <%= button_to "却下", dismiss_admin_report_path(report),
+                                      method: :patch,
+                                      form: { class: "inline" },
+                                      class: "btn btn-ghost btn-xs" %>
+                      </div>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-center p-4">
+          <%= paginate @reports %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

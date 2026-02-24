@@ -1,6 +1,6 @@
 module Themes
   class ThemeCommentsController < BaseController
-    before_action :set_theme_comment, only: [ :destroy ]
+    before_action :set_theme_comment, only: %i[destroy hide unhide]
 
     def create
       # テーマに紐づくコメントを作る（theme_id は自動で入る）
@@ -45,6 +45,30 @@ module Themes
       end
     end
 
+    def hide
+      authorize @theme_comment, :hide?
+      @theme_comment.hide!
+      respond_to do |format|
+        format.html { redirect_to theme_path(@theme), notice: "コメントを非表示にしました。", status: :see_other }
+        format.turbo_stream do
+          flash.now[:notice] = "コメントを非表示にしました。"
+          render :hide
+        end
+      end
+    end
+
+    def unhide
+      authorize @theme_comment, :unhide?
+      @theme_comment.unhide!
+      respond_to do |format|
+        format.html { redirect_to theme_path(@theme), notice: "コメントの非表示を解除しました。", status: :see_other }
+        format.turbo_stream do
+          flash.now[:notice] = "コメントの非表示を解除しました。"
+          render :unhide
+        end
+      end
+    end
+
     private
 
     def theme_comment_params
@@ -56,7 +80,7 @@ module Themes
     end
 
     def load_theme_comments
-      @theme_comments = @theme.theme_comments.includes(:user).order(created_at: :desc)
+      @theme_comments = policy_scope(@theme.theme_comments).includes(:user).order(created_at: :desc)
     end
 
     def load_show_dependencies

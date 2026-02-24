@@ -1,4 +1,7 @@
 class ThemeComment < ApplicationRecord
+  include Hideable
+  include Reportable
+
   belongs_to :user
   belongs_to :theme
 

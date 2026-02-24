@@ -148,6 +148,11 @@ RSpec.describe Theme, type: :model do
         expect(result).to include(considering_theme, confirmed_theme, done_theme)
         expect(result).not_to include(archived_theme)
       end
+
+      it '非表示テーマを含まない' do
+        hidden_theme = create(:theme, :hidden)
+        expect(Theme.active_themes).not_to include(hidden_theme)
+      end
     end
 
     describe '.archived_themes' do
@@ -155,6 +160,36 @@ RSpec.describe Theme, type: :model do
         expect(Theme.archived_themes).to include(archived_theme)
         expect(Theme.archived_themes).not_to include(considering_theme, confirmed_theme, done_theme)
       end
+    end
+
+    describe '.visible' do
+      it '非表示でないテーマを返す' do
+        visible_theme = create(:theme)
+        hidden_theme = create(:theme, :hidden)
+        expect(Theme.visible).to include(visible_theme)
+        expect(Theme.visible).not_to include(hidden_theme)
+      end
+    end
+
+    describe '.hidden' do
+      it '非表示テーマのみを返す' do
+        visible_theme = create(:theme)
+        hidden_theme = create(:theme, :hidden)
+        expect(Theme.hidden).to include(hidden_theme)
+        expect(Theme.hidden).not_to include(visible_theme)
+      end
+    end
+  end
+
+  describe '#hidden?' do
+    it 'hidden_atがnilの場合はfalseを返す' do
+      theme = build(:theme, hidden_at: nil)
+      expect(theme.hidden?).to be false
+    end
+
+    it 'hidden_atがある場合はtrueを返す' do
+      theme = build(:theme, hidden_at: Time.current)
+      expect(theme.hidden?).to be true
     end
   end
 end

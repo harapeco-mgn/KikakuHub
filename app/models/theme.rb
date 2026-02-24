@@ -1,4 +1,7 @@
 class Theme < ApplicationRecord
+  include Hideable
+  include Reportable
+
   CATEGORY_KEYS = %w[tech community].freeze
 
   belongs_to :community
@@ -21,8 +24,8 @@ class Theme < ApplicationRecord
   scope :by_category, ->(category) { where(category: category) }
   scope :popular, -> { order(theme_votes_count: :desc) }
   scope :by_hosting_ease, -> { order(hosting_ease_score_cache: :desc) }
-  scope :active_themes, -> { where.not(status: :archived) }
-  scope :archived_themes, -> { where(status: :archived) }
+  scope :active_themes, -> { visible.where.not(status: :archived) }
+  scope :archived_themes, -> { visible.where(status: :archived) }
   scope :search_by_keyword, ->(keyword) {
     return all if keyword.blank?
     where("title ILIKE :q OR description ILIKE :q", q: "%#{sanitize_sql_like(keyword)}%")
