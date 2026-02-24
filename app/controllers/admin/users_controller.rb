@@ -10,7 +10,7 @@ module Admin
 
     def show
       @user = User.find(params[:id])
-      @themes = @user.themes.order(created_at: :desc)
+      @themes = @user.themes.order(created_at: :desc).load
     end
 
     def update_role
